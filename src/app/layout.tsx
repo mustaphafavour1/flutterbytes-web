@@ -1,36 +1,25 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space', display: 'swap' });
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
+const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' });
 
 export const metadata: Metadata = {
   title: "FlutterBytes Conference 2026 — Becoming Flutter AI Engineer",
-  description:
-    "Africa's premier Flutter conference returns for its 5th edition. Two days of AI-powered sessions, workshops, and community. October 30–31, 2026 | Lagos, Nigeria.",
-  keywords: ["Flutter", "conference", "Africa", "Lagos", "mobile development", "AI"],
-  openGraph: {
-    title: "FlutterBytes Conference 2026",
-    description: "Africa's premier Flutter conference — Becoming Flutter AI Engineer",
-    type: "website",
-  },
+  description: "Africa's premier Flutter conference returns for its 5th edition. Two days of AI-powered sessions, workshops, and community. October 30–31, 2026 | Lagos, Nigeria.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className="font-inter antialiased">
-        {/* Noise texture overlay for glossy feel */}
-        <div className="noise-overlay" aria-hidden="true" />
-        {children}
+    <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
+      <body className="font-inter bg-fbc-light-bg dark:bg-fbc-navy text-fbc-light-text dark:text-fbc-white antialiased">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <div className="noise-overlay" aria-hidden="true" />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
