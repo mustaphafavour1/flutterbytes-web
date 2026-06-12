@@ -2,120 +2,105 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Giga Sans ── */
-@font-face {
-  font-family: "GigaSans";
-  src: url("/fonts/GigaSans-Regular.otf") format("opentype");
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: "GigaSans";
-  src: url("/fonts/GigaSans-Medium.otf") format("opentype");
-  font-weight: 500;
-  font-display: swap;
-}
-@font-face {
-  font-family: "GigaSans";
-  src: url("/fonts/GigaSans-SemiBold.otf") format("opentype");
-  font-weight: 600;
-  font-display: swap;
-}
-@font-face {
-  font-family: "GigaSans";
-  src: url("/fonts/GigaSans-Bold.otf") format("opentype");
-  font-weight: 700;
-  font-display: swap;
-}
-@font-face {
-  font-family: "GigaSans";
-  src: url("/fonts/GigaSans-Black.otf") format("opentype");
-  font-weight: 900;
-  font-display: swap;
-}
+/* GigaSans font faces */
+@font-face { font-family: 'GigaSans'; src: url('/fonts/GigaSans-Thin.otf') format('opentype'); font-weight: 100; font-display: swap; }
+@font-face { font-family: 'GigaSans'; src: url('/fonts/GigaSans-Light.otf') format('opentype'); font-weight: 300; font-display: swap; }
+@font-face { font-family: 'GigaSans'; src: url('/fonts/GigaSans-Regular.otf') format('opentype'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'GigaSans'; src: url('/fonts/GigaSans-Medium.otf') format('opentype'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'GigaSans'; src: url('/fonts/GigaSans-SemiBold.otf') format('opentype'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'GigaSans'; src: url('/fonts/GigaSans-Bold.otf') format('opentype'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'GigaSans'; src: url('/fonts/GigaSans-BoldItalic.otf') format('opentype'); font-weight: 700; font-style: italic; font-display: swap; }
+@font-face { font-family: 'GigaSans'; src: url('/fonts/GigaSans-ExtraBold.otf') format('opentype'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'GigaSans'; src: url('/fonts/GigaSans-Black.otf') format('opentype'); font-weight: 900; font-display: swap; }
+@font-face { font-family: 'GigaSans'; src: url('/fonts/GigaSans-SemiBoldItalic.otf') format('opentype'); font-weight: 600; font-style: italic; font-display: swap; }
 
-/* ── CSS Variables ── */
 :root {
-  --fbc-100: #d0efff;
-  --fbc-200: #2a9df4;
-  --fbc-300: #187bcd;
-  --fbc-400: #1167b1;
-  --fbc-500: #03254c;
+  --color-navy: #050E1F;
+  --color-dark: #0A1628;
+  --color-card: #0F1E38;
+  --color-blue: #2563EB;
+  --color-sky: #38BDF8;
+  --color-glow: #60A5FA;
+  --color-white: #F8FAFF;
+  --color-muted: #94A3B8;
+  --color-border: #1E3A5F;
 }
 
-/* ── Base ── */
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  font-family: var(--font-inter), "Inter", sans-serif;
-  background: linear-gradient(
-    135deg,
-    #d0efff 0%,
-    #ffffff 55%,
-    rgba(42, 157, 244, 0.06) 100%
-  );
-  min-height: 100vh;
-  color: #0f172a;
-  -webkit-font-smoothing: antialiased;
+  font-family: var(--font-inter), Inter, sans-serif;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "GigaSans", sans-serif;
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-space), 'Space Grotesk', sans-serif;
 }
 
-/* ── Noise overlay ── */
+/* Selection color */
+::selection {
+  background-color: rgba(37, 99, 235, 0.3);
+  color: #F8FAFF;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #050E1F;
+}
+::-webkit-scrollbar-thumb {
+  background: #2563EB;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #38BDF8;
+}
+
+/* Noise overlay */
 .noise-overlay {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 200px 200px;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
 }
 
-/* ── Glass card ── */
-@layer components {
-  .glass-card {
-    @apply bg-white/50 backdrop-blur-md border border-white/70 shadow-xl rounded-3xl;
-  }
-  .glass-card-dark {
-    @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-xl rounded-3xl;
-  }
-  .pill-btn-primary {
-    @apply rounded-full px-6 py-3 bg-fbc-200 hover:bg-fbc-300 text-white font-semibold transition-all duration-200 inline-flex items-center gap-2 shadow-md hover:shadow-fbc-200/30 hover:shadow-lg;
-  }
-  .pill-btn-outline {
-    @apply rounded-full px-6 py-3 border-2 border-fbc-200 text-fbc-200 hover:bg-fbc-200 hover:text-white font-semibold transition-all duration-200 inline-flex items-center gap-2;
-  }
-  .pill-btn-outline-white {
-    @apply rounded-full px-6 py-3 border-2 border-white/40 text-white hover:bg-white/10 font-semibold transition-all duration-200 inline-flex items-center gap-2;
-  }
-  .section-title {
-    @apply font-gigasans font-bold text-3xl md:text-4xl lg:text-5xl text-fbc-500 leading-tight;
-  }
-  .nav-pill-link {
-    @apply rounded-full px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200 whitespace-nowrap;
-  }
+/* Glass cards */
+.glass-card {
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
 }
 
-/* ── Scrollbar ── */
-::-webkit-scrollbar {
-  height: 4px;
-  width: 4px;
+.glass-card-light {
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid #CBD5E1;
+  border-radius: 1.5rem;
 }
-::-webkit-scrollbar-track {
-  background: transparent;
+
+/* Glow box */
+.glow-box {
+  box-shadow: 0 0 40px rgba(37, 99, 235, 0.3);
 }
-::-webkit-scrollbar-thumb {
-  background: rgba(42, 157, 244, 0.4);
-  border-radius: 999px;
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Print styles */
+@media print {
+  .no-print { display: none; }
+  body { background: white; color: black; }
 }

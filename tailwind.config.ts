@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
-
 const config: Config = {
+  darkMode: 'class',
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,51 +9,54 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        "fbc-100": "#D0EFFF",
-        "fbc-200": "#2A9DF4",
-        "fbc-300": "#187BCD",
-        "fbc-400": "#1167B1",
-        "fbc-500": "#03254C",
+        'fbc-navy': '#050E1F',
+        'fbc-dark': '#0A1628',
+        'fbc-card': '#0F1E38',
+        'fbc-blue': '#2563EB',
+        'fbc-sky': '#38BDF8',
+        'fbc-glow': '#60A5FA',
+        'fbc-white': '#F8FAFF',
+        'fbc-muted': '#94A3B8',
+        'fbc-border': '#1E3A5F',
+        'fbc-light-bg': '#F0F6FF',
+        'fbc-light-card': '#FFFFFF',
+        'fbc-light-border': '#CBD5E1',
+        'fbc-light-text': '#0F172A',
+        'fbc-light-sub': '#475569',
       },
       fontFamily: {
-        gigasans: ["GigaSans", "sans-serif"],
-        inter: ["var(--font-inter)", "Inter", "sans-serif"],
+        'space': ['var(--font-space)', 'Space Grotesk', 'sans-serif'],
+        'inter': ['var(--font-inter)', 'Inter', 'sans-serif'],
+        'mono': ['var(--font-mono)', 'JetBrains Mono', 'monospace'],
       },
       animation: {
-        "scroll-left": "scrollLeft 40s linear infinite",
-        "scroll-right": "scrollRight 40s linear infinite",
-        "pulse-glow": "pulseGlow 2.5s ease-in-out infinite",
-        "fade-up": "fadeUp 0.6s ease-out forwards",
+        'scroll-left': 'scrollLeft 40s linear infinite',
+        'scroll-right': 'scrollRight 40s linear infinite',
+        'glow-pulse': 'glowPulse 3s ease-in-out infinite',
+        'cursor-blink': 'cursorBlink 1s step-end infinite',
+        'gradient-shift': 'gradientShift 4s ease infinite',
+        'float': 'float 6s ease-in-out infinite',
       },
       keyframes: {
-        scrollLeft: {
-          "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(-50%)" },
+        scrollLeft: { '0%': { transform: 'translateX(0)' }, '100%': { transform: 'translateX(-50%)' } },
+        scrollRight: { '0%': { transform: 'translateX(-50%)' }, '100%': { transform: 'translateX(0)' } },
+        glowPulse: {
+          '0%, 100%': { boxShadow: '0 0 20px rgba(37,99,235,0.3)' },
+          '50%': { boxShadow: '0 0 60px rgba(37,99,235,0.6), 0 0 100px rgba(56,189,248,0.2)' },
         },
-        scrollRight: {
-          "0%": { transform: "translateX(-50%)" },
-          "100%": { transform: "translateX(0)" },
+        cursorBlink: { '0%, 100%': { opacity: '1' }, '50%': { opacity: '0' } },
+        gradientShift: {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
         },
-        pulseGlow: {
-          "0%, 100%": {
-            boxShadow:
-              "0 0 15px rgba(42,157,244,0.3), 0 0 30px rgba(42,157,244,0.1)",
-          },
-          "50%": {
-            boxShadow:
-              "0 0 40px rgba(42,157,244,0.7), 0 0 80px rgba(42,157,244,0.3)",
-          },
-        },
-        fadeUp: {
-          "0%": { opacity: "0", transform: "translateY(30px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
+        float: { '0%, 100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-12px)' } },
       },
       backgroundImage: {
-        "hero-gradient":
-          "radial-gradient(ellipse at 50% 50%, rgba(42,157,244,0.15) 0%, rgba(3,37,76,1) 70%)",
-        "page-gradient":
-          "linear-gradient(135deg, #D0EFFF 0%, #ffffff 60%, rgba(42,157,244,0.06) 100%)",
+        'vscode-grid': 'radial-gradient(circle, rgba(37,99,235,0.12) 1px, transparent 1px)',
+        'vscode-grid-light': 'radial-gradient(circle, rgba(37,99,235,0.07) 1px, transparent 1px)',
+      },
+      backgroundSize: {
+        'grid-32': '32px 32px',
       },
     },
   },
