@@ -25,8 +25,9 @@ const config: Config = {
         'fbc-light-sub': '#475569',
       },
       fontFamily: {
-        'space': ['var(--font-space)', 'Space Grotesk', 'sans-serif'],
-        'inter': ['var(--font-inter)', 'Inter', 'sans-serif'],
+        'space': ['GigaSans', 'var(--font-space)', 'Space Grotesk', 'sans-serif'],
+        'gigasans': ['GigaSans', 'sans-serif'],
+        'inter': ['GigaSans', 'var(--font-inter)', 'Inter', 'sans-serif'],
         'mono': ['var(--font-mono)', 'JetBrains Mono', 'monospace'],
       },
       animation: {
