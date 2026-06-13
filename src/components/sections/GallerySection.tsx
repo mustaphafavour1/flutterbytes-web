@@ -5,87 +5,100 @@ import Image from "next/image";
 import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 
-/* 4 layout configs — each defines the grid shape for a set */
-type Cell = { col: string; row: string; aspect: string };
+type Cell = { width: number; circle?: boolean };
 
+/* 4 layout strips — each defines a horizontal row of compact thumbnails */
 const LAYOUTS: Cell[][] = [
-  // Set 1
   [
-    { col: "col-span-2", row: "row-span-2", aspect: "aspect-square" },
-    { col: "col-span-1", row: "row-span-1", aspect: "aspect-[4/3]" },
-    { col: "col-span-1", row: "row-span-1", aspect: "aspect-[4/3]" },
-    { col: "col-span-1", row: "row-span-1", aspect: "aspect-[3/4]" },
-    { col: "col-span-1", row: "row-span-1", aspect: "aspect-[3/4]" },
-    { col: "col-span-2", row: "row-span-1", aspect: "aspect-[16/5]" },
+    { width: 64, circle: true },
+    { width: 128 },
+    { width: 64, circle: true },
+    { width: 96 },
+    { width: 64, circle: true },
+    { width: 192 },
+    { width: 64, circle: true },
+    { width: 96 },
+    { width: 64, circle: true },
+    { width: 128 },
   ],
-  // Set 2
   [
-    { col: "col-span-1", row: "row-span-2", aspect: "aspect-[2/3]" },
-    { col: "col-span-2", row: "row-span-1", aspect: "aspect-[16/6]" },
-    { col: "col-span-1", row: "row-span-1", aspect: "aspect-square" },
-    { col: "col-span-1", row: "row-span-1", aspect: "aspect-square" },
-    { col: "col-span-1", row: "row-span-1", aspect: "aspect-square" },
-    { col: "col-span-2", row: "row-span-1", aspect: "aspect-[16/6]" },
+    { width: 96 },
+    { width: 64, circle: true },
+    { width: 160 },
+    { width: 64, circle: true },
+    { width: 128 },
+    { width: 64, circle: true },
+    { width: 96 },
+    { width: 64, circle: true },
+    { width: 160 },
+    { width: 64, circle: true },
   ],
-  // Set 3
   [
-    { col: "col-span-1", row: "row-span-1", aspect: "aspect-[4/3]" },
-    { col: "col-span-1", row: "row-span-1", aspect: "aspect-[4/3]" },
-    { col: "col-span-2", row: "row-span-1", aspect: "aspect-[16/6]" },
-    { col: "col-span-1", row: "row-span-2", aspect: "aspect-[3/5]" },
-    { col: "col-span-1", row: "row-span-1", aspect: "aspect-[4/3]" },
-    { col: "col-span-1", row: "row-span-1", aspect: "aspect-[4/3]" },
+    { width: 64, circle: true },
+    { width: 64, circle: true },
+    { width: 160 },
+    { width: 64, circle: true },
+    { width: 64, circle: true },
+    { width: 128 },
+    { width: 96 },
+    { width: 64, circle: true },
+    { width: 192 },
+    { width: 64, circle: true },
   ],
-  // Set 4
   [
-    { col: "col-span-2", row: "row-span-1", aspect: "aspect-[16/6]" },
-    { col: "col-span-1", row: "row-span-2", aspect: "aspect-[2/3]" },
-    { col: "col-span-1", row: "row-span-1", aspect: "aspect-square" },
-    { col: "col-span-1", row: "row-span-1", aspect: "aspect-square" },
-    { col: "col-span-1", row: "row-span-1", aspect: "aspect-[4/3]" },
-    { col: "col-span-1", row: "row-span-1", aspect: "aspect-[4/3]" },
+    { width: 192 },
+    { width: 64, circle: true },
+    { width: 96 },
+    { width: 64, circle: true },
+    { width: 128 },
+    { width: 64, circle: true },
+    { width: 64, circle: true },
+    { width: 96 },
+    { width: 64, circle: true },
+    { width: 160 },
   ],
 ];
 
-/* Gradient placeholder colours per slot */
-const PLACEHOLDERS = [
+const GRADIENTS = [
   "from-blue-900 to-indigo-800",
   "from-indigo-900 to-blue-700",
   "from-cyan-900 to-blue-800",
   "from-fbc-dark to-fbc-card",
   "from-blue-800 to-cyan-900",
   "from-slate-800 to-blue-900",
+  "from-indigo-800 to-cyan-900",
+  "from-blue-700 to-slate-800",
+  "from-cyan-800 to-indigo-900",
+  "from-slate-900 to-blue-800",
 ];
 
-/* A single photo cell */
-function PhotoCell({ src, gradient, colClass, rowClass, aspectClass }: {
-  src?: string; gradient: string; colClass: string; rowClass: string; aspectClass: string;
+function PhotoCell({ src, gradient, width, circle }: {
+  src?: string; gradient: string; width: number; circle?: boolean;
 }) {
   return (
-    <div className={`${colClass} ${rowClass}`}>
-      <div className={`${aspectClass} w-full rounded-3xl overflow-hidden relative`}>
-        {src ? (
-          <Image src={src} alt="FlutterBytes event" fill className="object-cover" sizes="(max-width:768px) 50vw, 33vw" />
-        ) : (
-          <div className={`w-full h-full bg-gradient-to-br ${gradient}`} />
-        )}
-      </div>
+    <div
+      className={`flex-shrink-0 overflow-hidden relative ${circle ? "rounded-full" : "rounded-2xl"}`}
+      style={{ width, height: 64 }}
+    >
+      {src ? (
+        <Image src={src} alt="FlutterBytes event" fill className="object-cover" sizes={`${width}px`} />
+      ) : (
+        <div className={`w-full h-full bg-gradient-to-br ${gradient}`} />
+      )}
     </div>
   );
 }
 
-/* Gallery set */
-function GallerySet({ layout, photos }: { layout: Cell[]; photos: string[] }) {
+function GalleryStrip({ layout, photos }: { layout: Cell[]; photos: string[] }) {
   return (
-    <div className="grid grid-cols-3 gap-3 auto-rows-auto">
+    <div className="flex gap-3 items-center justify-center flex-wrap">
       {layout.map((cell, i) => (
         <PhotoCell
           key={i}
           src={photos[i]}
-          gradient={PLACEHOLDERS[i % PLACEHOLDERS.length]}
-          colClass={cell.col}
-          rowClass={cell.row}
-          aspectClass={cell.aspect}
+          gradient={GRADIENTS[i % GRADIENTS.length]}
+          width={cell.width}
+          circle={cell.circle}
         />
       ))}
     </div>
@@ -95,16 +108,15 @@ function GallerySet({ layout, photos }: { layout: Cell[]; photos: string[] }) {
 export default function GallerySection() {
   const [setIdx, setSetIdx] = useState(0);
 
-  /* Rotate every 5 s */
   useEffect(() => {
     const id = setInterval(() => setSetIdx((i) => (i + 1) % LAYOUTS.length), 5000);
     return () => clearInterval(id);
   }, []);
 
-  const photos: string[] = []; // populated from Sheets in prod
+  const photos: string[] = [];
 
   return (
-    <section id="gallery" className="relative py-24 bg-fbc-navy overflow-hidden">
+    <section id="gallery" className="relative py-32 bg-fbc-navy overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none opacity-15"
         style={{
@@ -115,28 +127,28 @@ export default function GallerySection() {
       />
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateOnScroll>
-          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-2">
+          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-2 text-center">
             What happens at FlutterBytes
           </h2>
-          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-sky mb-3">
+          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-sky mb-3 text-center">
             doesn&apos;t end at FlutterBytes
           </h2>
-          <p className="text-fbc-muted text-sm mb-10 max-w-xl">
+          <p className="text-fbc-muted text-sm mb-10 text-center max-w-xl mx-auto">
             The impact of each edition always outlasts the event day, and the evidence abounds.
           </p>
         </AnimateOnScroll>
 
-        {/* Rotating gallery grid */}
-        <div className="relative min-h-[360px]">
+        {/* Rotating gallery strip */}
+        <div className="relative" style={{ minHeight: 80 }}>
           <AnimatePresence mode="wait">
             <motion.div
               key={setIdx}
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
+              exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5 }}
             >
-              <GallerySet layout={LAYOUTS[setIdx]} photos={photos} />
+              <GalleryStrip layout={LAYOUTS[setIdx]} photos={photos} />
             </motion.div>
           </AnimatePresence>
         </div>

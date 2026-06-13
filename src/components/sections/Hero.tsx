@@ -376,11 +376,11 @@ export default function Hero() {
         variants={container}
         initial="hidden"
         animate="visible"
-        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-32 pt-36 text-center"
+        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-32 pt-52 text-center"
       >
         {/* File-tab badge */}
-        <motion.div variants={item} className="flex justify-center mb-8">
-          <div className="inline-flex items-center justify-between font-mono text-sm bg-fbc-card/90 border border-fbc-border rounded-lg px-4 py-2.5 gap-8 min-w-[320px] max-w-lg">
+        <motion.div variants={item} className="flex justify-center mb-4">
+          <div className="inline-flex items-center justify-between font-mono text-sm bg-fbc-card/90 border border-fbc-border rounded-full px-5 py-2.5 gap-8 min-w-[320px] max-w-lg">
             <div className="flex items-center gap-2 min-w-0">
               <span className="w-2 h-2 rounded-full bg-fbc-sky/70 flex-shrink-0" />
               <span className="text-fbc-white text-sm truncate">FlutterBytes2026.dart</span>
@@ -391,6 +391,14 @@ export default function Hero() {
             </span>
           </div>
         </motion.div>
+
+        {/* Date line */}
+        <motion.p
+          variants={item}
+          className="font-mono text-fbc-muted/60 text-sm text-center mb-8"
+        >
+          Friday and Saturday, October 30th &amp; 31st, 2026
+        </motion.p>
 
         {/* Main heading */}
         <motion.h1

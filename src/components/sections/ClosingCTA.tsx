@@ -12,25 +12,35 @@ type ElementDef = {
   finalYPercent: number;
 };
 
-const ELEMENTS: ElementDef[] = Array.from({ length: 26 }, (_, i) => ({
+/* 70 elements, denser and filling the lower portion */
+const ELEMENTS: ElementDef[] = Array.from({ length: 70 }, (_, i) => ({
   id: i,
   type: (i % 3 === 0 ? "circle" : "rod") as "circle" | "rod",
-  x: 3 + Math.floor((i * 37) % 94),
-  size: 8 + (i * 7) % 20,
-  delay: (i * 0.18) % 3.5,
-  finalYPercent: 55 + (i * 11) % 42,
+  x: 1 + Math.floor((i * 23) % 97),
+  size: 5 + (i * 5) % 18,
+  delay: (i * 0.10) % 2.6,
+  finalYPercent: 70 + (i * 7) % 29,
 }));
+
+const CHIPS = [
+  "Live Workshops",
+  "Networking Sessions",
+  "Fun!",
+  "Photos & Games",
+  "Meet Senior Devs",
+  "International Attendees",
+];
 
 export default function ClosingCTA() {
   return (
     <section
-      className="relative py-32 overflow-hidden"
+      className="relative py-40 overflow-hidden"
       style={{
         background:
           "linear-gradient(160deg, #050E1F 0%, #0A1628 40%, #0F1E38 70%, #050E1F 100%)",
       }}
     >
-      {/* Falling brand pattern elements */}
+      {/* Dense outline elements filling the lower portion */}
       <div
         className="absolute inset-0 pointer-events-none overflow-hidden"
         aria-hidden="true"
@@ -54,15 +64,15 @@ export default function ClosingCTA() {
                   cx={el.size}
                   cy={el.size}
                   r={el.size - 2}
-                  stroke="rgba(30,58,95,0.6)"
+                  stroke="rgba(30,58,95,0.65)"
                   strokeWidth="1.5"
                   fill="none"
                 />
               </svg>
             ) : (
               <svg
-                width={el.size * 0.4 + 4}
-                height={el.size + 20}
+                width={Math.round(el.size * 0.8) + 4}
+                height={el.size + 30}
                 style={{
                   transform: `rotate(${((el.id * 25) % 140) - 70}deg)`,
                 }}
@@ -70,10 +80,10 @@ export default function ClosingCTA() {
                 <rect
                   x="1"
                   y="1"
-                  width={el.size * 0.4}
-                  height={el.size + 18}
+                  width={Math.round(el.size * 0.8)}
+                  height={el.size + 28}
                   rx="6"
-                  stroke="rgba(30,58,95,0.6)"
+                  stroke="rgba(30,58,95,0.65)"
                   strokeWidth="1.5"
                   fill="none"
                 />
@@ -96,11 +106,7 @@ export default function ClosingCTA() {
             "0 0 0px rgba(42,157,244,0)",
           ],
         }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
       />
 
       {/* Content */}
@@ -113,12 +119,26 @@ export default function ClosingCTA() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            Your next level is two days away.
+            2 days is enough to transform your development journey…
           </motion.h2>
-          <p className="text-fbc-muted text-lg md:text-xl mb-10 leading-relaxed">
+          <p className="text-fbc-muted text-lg md:text-xl mb-8 leading-relaxed">
             Join 600+ Flutter developers in Lagos this October. Bring your
             curiosity. Leave with your next project idea.
           </p>
+
+          {/* Activity chips */}
+          <div className="flex flex-wrap justify-center gap-2 mb-10">
+            {CHIPS.map((chip) => (
+              <span
+                key={chip}
+                className="rounded-full px-4 py-1.5 text-sm font-medium border border-fbc-sky/25 text-fbc-sky/80"
+                style={{ background: "rgba(42,157,244,0.08)" }}
+              >
+                {chip}
+              </span>
+            ))}
+          </div>
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
             <a
               href="#tickets"

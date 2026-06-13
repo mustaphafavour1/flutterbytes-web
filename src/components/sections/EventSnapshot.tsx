@@ -6,42 +6,43 @@ import AnimateOnScroll from "@/components/AnimateOnScroll";
 import CountdownTimer from "@/components/CountdownTimer";
 
 const INFO_CELLS = [
-  { num: "35",   label: "Speakers",     icon: "🎤" },
-  { num: "600+", label: "Flutter Devs", icon: "👥" },
-  { num: "32",   label: "Sessions",     icon: "💡" },
-  { num: "2",    label: "Days",         icon: "📅" },
-  { num: "5th",  label: "Edition",      icon: "🏆" },
-  { num: "AI",   label: "Focus",        icon: "🤖" },
+  { num: "35",   label: "Speakers"     },
+  { num: "600+", label: "Flutter Devs" },
+  { num: "32",   label: "Sessions"     },
+  { num: "2",    label: "Days"         },
+  { num: "5th",  label: "Edition"      },
+  { num: "AI",   label: "Focus"        },
 ];
 
 function InfoCell({ cell }: { cell: typeof INFO_CELLS[0] }) {
   return (
     <motion.div
-      className="group flex flex-col gap-1 p-4 rounded-xl cursor-default"
+      className="group flex flex-col gap-1 p-5 cursor-default bg-fbc-navy"
       whileHover={{
-        backgroundColor: "rgba(42,157,244,0.06)",
-        boxShadow: "0 0 22px rgba(42,157,244,0.10)",
+        boxShadow: "0 0 28px rgba(42,157,244,0.22), inset 0 0 18px rgba(42,157,244,0.07)",
       }}
       transition={{ duration: 0.2 }}
     >
-      <span className="text-xl mb-0.5">{cell.icon}</span>
-      <div className="font-gigasans font-black text-3xl text-fbc-sky leading-none tracking-tight">
+      <div className="font-gigasans font-black text-5xl md:text-6xl text-fbc-sky leading-none tracking-tight">
         {cell.num}
       </div>
-      <div className="text-fbc-muted text-xs font-medium mt-0.5">{cell.label}</div>
+      <div className="text-fbc-muted text-xs font-medium mt-1">{cell.label}</div>
     </motion.div>
   );
 }
 
 export default function EventSnapshot() {
   return (
-    <section id="event-info" className="relative bg-fbc-dark overflow-hidden">
-      <div className="flex flex-col lg:flex-row" style={{ minHeight: "72vh" }}>
+    <section
+      id="event-info"
+      className="relative overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #050E1F 0%, #0A1628 100%)" }}
+    >
+      <div className="flex flex-col lg:flex-row" style={{ minHeight: "78vh" }}>
 
         {/* ── Left: event info ── */}
-        <div className="flex-1 px-8 sm:px-12 lg:px-16 py-20 flex flex-col justify-center border-r border-white/[0.05]">
+        <div className="flex-1 px-8 sm:px-12 lg:px-16 py-24 flex flex-col justify-center border-r border-white/[0.05]">
           <AnimateOnScroll>
-            {/* Section micro-label */}
             <p className="font-mono text-[10px] uppercase tracking-widest text-fbc-muted/40 mb-10">
               — The Event
             </p>
@@ -65,17 +66,18 @@ export default function EventSnapshot() {
               </div>
             </div>
 
-            {/* Divider */}
             <div className="border-t border-white/[0.06] mb-6" />
 
-            {/* 2 × 3 info grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 mb-6">
+            {/* 2 × 3 info grid with hairline dividers */}
+            <div
+              className="grid grid-cols-3 gap-px mb-6"
+              style={{ background: "rgba(255,255,255,0.05)" }}
+            >
               {INFO_CELLS.map((cell) => (
                 <InfoCell key={cell.label} cell={cell} />
               ))}
             </div>
 
-            {/* Divider */}
             <div className="border-t border-white/[0.06] mb-6" />
 
             {/* Countdown + CTA */}
@@ -92,7 +94,7 @@ export default function EventSnapshot() {
                 href="#tickets"
                 className="rounded-full px-6 py-3 font-gigasans font-semibold text-sm text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_20px_rgba(42,157,244,0.35)]"
               >
-                Pick Up a Ticket →
+                Pick up your ticket now →
               </a>
             </div>
           </AnimateOnScroll>
@@ -108,7 +110,6 @@ export default function EventSnapshot() {
             allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
           />
-          {/* Address popover */}
           <div className="absolute bottom-5 left-5 bg-fbc-navy/92 backdrop-blur-md rounded-xl px-4 py-3 border border-white/[0.08] flex items-start gap-2.5 max-w-[250px] shadow-lg">
             <MapPin size={13} className="text-fbc-sky mt-0.5 flex-shrink-0" />
             <div>

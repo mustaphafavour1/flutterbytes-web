@@ -23,7 +23,6 @@ function AgendaGrid({ sessions }: { sessions: AgendaSession[] }) {
     preview.slice(r * perRow, (r + 1) * perRow)
   );
 
-  /* slow auto-scroll */
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -113,10 +112,7 @@ function AgendaGrid({ sessions }: { sessions: AgendaSession[] }) {
 function AgendaComingSoon({ sessions }: { sessions: AgendaSession[] }) {
   return (
     <div className="relative">
-      <div
-        className="pointer-events-none select-none"
-        style={{ filter: "blur(5px)", opacity: 0.25 }}
-      >
+      <div className="pointer-events-none select-none" style={{ filter: "blur(5px)", opacity: 0.25 }}>
         <AgendaGrid sessions={sessions} />
       </div>
       <div className="absolute inset-0 flex items-center justify-center">
@@ -133,11 +129,11 @@ function AgendaComingSoon({ sessions }: { sessions: AgendaSession[] }) {
 }
 
 export default function AgendaPreview({ friday, saturday, agendaVisible }: Props) {
-  const [tab, setTab] = useState<"friday" | "saturday">("friday");
-  const sessions = tab === "friday" ? friday : saturday;
+  const [tab, setTab] = useState<"friday" | "saturday" | "past">("friday");
+  const sessions = tab === "friday" ? friday : tab === "saturday" ? saturday : [...friday, ...saturday];
 
   return (
-    <section id="agenda" className="relative py-24 bg-fbc-dark overflow-hidden">
+    <section id="agenda" className="relative py-32 bg-fbc-dark overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none opacity-20"
         style={{
@@ -148,30 +144,34 @@ export default function AgendaPreview({ friday, saturday, agendaVisible }: Props
       />
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateOnScroll>
-          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-2">
+          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-3 text-center">
             What&apos;s on the schedule
           </h2>
-          <p className="text-fbc-muted text-sm mb-8">
-            Two days. Thirty-something sessions. Zero excuse to not level up.
+          <p className="text-fbc-muted text-sm mb-8 text-center max-w-xl mx-auto leading-relaxed">
+            A line up of sessions that will literally equip you to become A Flutter AI engineer.
           </p>
         </AnimateOnScroll>
 
         {/* Day tabs */}
         <AnimateOnScroll delay={0.1}>
-          <div className="flex gap-2 mb-6" role="tablist">
-            {(["friday", "saturday"] as const).map((day) => (
+          <div className="flex gap-2 mb-6 justify-center" role="tablist">
+            {([
+              ["friday",   "Friday, Oct 30"],
+              ["saturday", "Saturday, Oct 31"],
+              ["past",     "Past Editions"],
+            ] as const).map(([val, label]) => (
               <button
-                key={day}
+                key={val}
                 role="tab"
-                aria-selected={tab === day}
-                onClick={() => setTab(day)}
+                aria-selected={tab === val}
+                onClick={() => setTab(val)}
                 className={`rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 ${
-                  tab === day
+                  tab === val
                     ? "bg-fbc-blue text-white shadow-[0_0_14px_rgba(42,157,244,0.4)]"
                     : "bg-fbc-card text-fbc-muted border border-fbc-border hover:text-fbc-white"
                 }`}
               >
-                {day === "friday" ? "Friday, Oct 30" : "Saturday, Oct 31"}
+                {label}
               </button>
             ))}
           </div>
@@ -186,9 +186,11 @@ export default function AgendaPreview({ friday, saturday, agendaVisible }: Props
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.18 }}
             >
-              {agendaVisible
+              {tab === "past"
                 ? <AgendaGrid sessions={sessions} />
-                : <AgendaComingSoon sessions={sessions} />
+                : agendaVisible
+                  ? <AgendaGrid sessions={sessions} />
+                  : <AgendaComingSoon sessions={sessions} />
               }
             </motion.div>
           </AnimatePresence>

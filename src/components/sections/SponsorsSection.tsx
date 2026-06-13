@@ -30,15 +30,15 @@ const TIER_COLOR: Record<string, string> = {
 function SponsorCard({ name, tier, fillIdx, myIdx }: {
   name: string; tier: string; fillIdx: number; myIdx: number;
 }) {
-  const isFilling = myIdx === fillIdx;
-  const isFilled  = myIdx < fillIdx;
-  const color     = TIER_COLOR[tier] ?? "#94A3B8";
+  const isActive = myIdx === fillIdx;
+  const isFilled = myIdx < fillIdx;
+  const color    = TIER_COLOR[tier] ?? "#94A3B8";
 
   return (
     <div className="relative" style={{ width: 176, height: 84 }}>
-      {/* Base: dimmed state */}
+      {/* Dimmed base */}
       <div
-        className="absolute inset-0 rounded-[20px] flex items-center justify-center"
+        className="absolute inset-0 rounded-[28px] flex items-center justify-center"
         style={{
           background: "rgba(15,30,56,0.7)",
           border: "1px solid rgba(30,58,95,0.6)",
@@ -49,29 +49,25 @@ function SponsorCard({ name, tier, fillIdx, myIdx }: {
         </span>
       </div>
 
-      {/* Fill layer — clips from bottom to top */}
+      {/* Fill overlay — uses clipPath so it doesn't cause layout reflow */}
       <motion.div
-        className="absolute inset-0 rounded-[20px] overflow-hidden"
-        initial={false}
+        className="absolute inset-0 rounded-[28px] flex items-center justify-center"
+        style={{ background: "rgba(255,255,255,0.97)" }}
+        animate={{
+          clipPath: isFilled
+            ? "inset(0% 0 0% 0 round 28px)"
+            : isActive
+            ? ["inset(100% 0 0% 0 round 28px)", "inset(0% 0 0% 0 round 28px)"]
+            : "inset(100% 0 0% 0 round 28px)",
+        }}
+        transition={{ duration: 0.55, ease: "easeInOut" }}
       >
-        <motion.div
-          className="absolute inset-0 flex items-center justify-center"
-          style={{
-            background: "rgba(255,255,255,0.97)",
-            originY: 1,
-          }}
-          animate={{
-            scaleY: isFilled ? 1 : isFilling ? [0, 1] : 0,
-            transition: { duration: 0.55, ease: "easeInOut" },
-          }}
+        <span
+          className="font-gigasans font-bold text-sm text-center px-3 leading-tight"
+          style={{ color }}
         >
-          <span
-            className="font-gigasans font-bold text-sm text-center px-3 leading-tight"
-            style={{ color }}
-          >
-            {name}
-          </span>
-        </motion.div>
+          {name}
+        </span>
       </motion.div>
     </div>
   );
@@ -80,7 +76,7 @@ function SponsorCard({ name, tier, fillIdx, myIdx }: {
 function YourBrandCard() {
   return (
     <motion.div
-      className="relative rounded-[20px] flex items-center justify-center"
+      className="relative rounded-[28px] flex items-center justify-center"
       style={{
         width: 176,
         height: 84,
@@ -108,30 +104,31 @@ function YourBrandCard() {
 export default function SponsorsSection() {
   const [fillIdx, setFillIdx] = useState(-1);
 
-  /* Cycle fill animation */
+  /* Slower cycle — 3000ms per sponsor */
   useEffect(() => {
     const id = setInterval(() => {
       setFillIdx((prev) => {
         if (prev >= SPONSORS.length - 1) return -1;
         return prev + 1;
       });
-    }, 1000);
+    }, 3000);
     return () => clearInterval(id);
   }, []);
 
   return (
-    <section id="sponsors" className="relative py-24 bg-fbc-dark overflow-hidden">
+    <section id="sponsors" className="relative py-32 bg-fbc-dark overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateOnScroll>
-          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-2">
-            Built with support from
+          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-2 text-center">
+            FlutterBytes sponsors
           </h2>
-          <p className="text-fbc-muted text-sm mb-12 max-w-md">
-            Companies that invest in developers because they know it&apos;s the best bet.
+          <p className="text-fbc-muted text-sm mb-12 text-center max-w-xl mx-auto">
+            FlutterBytes Conference has been sponsored by some of the top companies in Africa
+            and the world — companies that invest in developers because they know it&apos;s the best bet.
           </p>
         </AnimateOnScroll>
 
-        {/* Sponsor oval grid */}
+        {/* Sponsor grid */}
         <AnimateOnScroll delay={0.1}>
           <div className="flex flex-wrap gap-4 justify-center mb-6">
             {SPONSORS.map((s, i) => (

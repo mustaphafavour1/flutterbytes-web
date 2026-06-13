@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,7 +11,8 @@ interface Props {
   pastSpeakers: Speaker[];
 }
 
-const SLOT = 8; // speakers per wheel set
+const SLOT     = 8;
+const INTERVAL = 2500; // ms per slot
 
 /* ── Spinning wheel ── */
 function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
@@ -19,38 +20,69 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
   const [activeSlot, setActiveSlot]   = useState(0);
   const [setIdx, setSetIdx]           = useState(0);
   const [wheelDeg, setWheelDeg]       = useState(0);
+  const [spinDir, setSpinDir]         = useState<-1 | 1>(-1); // -1=ccw (default), 1=cw
+  const [msLeft, setMsLeft]           = useState(INTERVAL);
+  const lastTickRef                   = useRef<number>(Date.now());
 
-  const totalSets   = Math.ceil(speakers.length / SLOT);
-  const currentSet  = Array.from({ length: SLOT }, (_, i) =>
+  const totalSets  = Math.ceil(speakers.length / SLOT);
+  const currentSet = Array.from({ length: SLOT }, (_, i) =>
     speakers[(setIdx * SLOT + i) % speakers.length]
   );
-  const displayIdx  = hoveredSlot ?? activeSlot;
-  const active      = currentSet[displayIdx];
+  const displayIdx = hoveredSlot ?? activeSlot;
+  const active     = currentSet[displayIdx];
 
-  /* auto-cycle */
+  /* auto-cycle slots */
   useEffect(() => {
     if (hoveredSlot !== null) return;
     const id = setInterval(() => {
+      lastTickRef.current = Date.now();
+      setMsLeft(INTERVAL);
       setActiveSlot((prev) => {
         const next = (prev + 1) % SLOT;
         if (next === 0) {
-          setWheelDeg((d) => d - 360);
+          const extraRevs = Math.floor(Math.random() * 3); // 0-2 bonus revolutions
+          setWheelDeg((d) => d + spinDir * (360 + extraRevs * 360));
           setSetIdx((s) => (s + 1) % totalSets);
+        } else {
+          setWheelDeg((d) => d + spinDir * (360 / SLOT));
         }
         return next;
       });
-    }, 2500);
+    }, INTERVAL);
     return () => clearInterval(id);
-  }, [hoveredSlot, totalSets]);
+  }, [hoveredSlot, totalSets, spinDir]);
 
-  /* geometry */
-  const BIG_R   = 240; // outer circle radius
-  const SMALL_R = 42;  // speaker avatar radius
-  const ORBIT_R = BIG_R - SMALL_R - 6; // center of avatars
+  /* countdown tick */
+  useEffect(() => {
+    if (hoveredSlot !== null) return;
+    const id = setInterval(() => {
+      const elapsed = Date.now() - lastTickRef.current;
+      setMsLeft(Math.max(0, INTERVAL - elapsed));
+    }, 100);
+    return () => clearInterval(id);
+  }, [hoveredSlot, activeSlot]);
+
+  /* manual spin */
+  const manualSpin = (dir: -1 | 1) => {
+    setSpinDir(dir);
+    const revs = 1 + Math.floor(Math.random() * 3);
+    setWheelDeg((d) => d + dir * revs * 360);
+    setSetIdx((s) => (s + 1) % totalSets);
+    setActiveSlot(0);
+    lastTickRef.current = Date.now();
+    setMsLeft(INTERVAL);
+  };
+
+  /* geometry — bigger wheel */
+  const BIG_R   = 310;
+  const SMALL_R = 52;
+  const ORBIT_R = BIG_R - SMALL_R - 6;
   const SIZE    = BIG_R * 2;
 
+  const secsLeft = Math.ceil(msLeft / 1000);
+
   return (
-    <div className="flex items-center justify-center w-full" style={{ minHeight: "min(90vh,640px)" }}>
+    <div className="flex flex-col items-center justify-center w-full gap-6" style={{ minHeight: "min(90vh,680px)" }}>
       <div className="relative" style={{ width: SIZE, height: SIZE }}>
         {/* Outer ring */}
         <div
@@ -60,23 +92,20 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
         {/* Inner ring */}
         <div
           className="absolute rounded-full"
-          style={{
-            inset: SMALL_R + 10,
-            border: "1px solid rgba(30,58,95,0.25)",
-          }}
+          style={{ inset: SMALL_R + 10, border: "1px solid rgba(30,58,95,0.25)" }}
         />
 
         {/* Rotating wheel */}
         <motion.div
           className="absolute inset-0"
           animate={{ rotate: wheelDeg }}
-          transition={{ duration: 1.4, ease: "easeInOut" }}
+          transition={{ duration: 1.6, ease: "easeInOut" }}
         >
           {currentSet.map((speaker, i) => {
             if (!speaker) return null;
-            const angle   = (i / SLOT) * 2 * Math.PI - Math.PI / 2;
-            const cx      = BIG_R + ORBIT_R * Math.cos(angle) - SMALL_R;
-            const cy      = BIG_R + ORBIT_R * Math.sin(angle) - SMALL_R;
+            const angle    = (i / SLOT) * 2 * Math.PI - Math.PI / 2;
+            const cx       = BIG_R + ORBIT_R * Math.cos(angle) - SMALL_R;
+            const cy       = BIG_R + ORBIT_R * Math.sin(angle) - SMALL_R;
             const isActive = displayIdx === i;
             const initials = speaker.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
 
@@ -90,8 +119,7 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
                   left: cx,
                   top: cy,
                   borderColor: isActive ? "#2A9DF4" : "#1E3A5F",
-                  boxShadow: isActive ? "0 0 18px rgba(42,157,244,0.55)" : "none",
-                  /* counter-rotate so avatars stay upright as wheel spins */
+                  boxShadow: isActive ? "0 0 22px rgba(42,157,244,0.55)" : "none",
                   rotate: -wheelDeg + "deg",
                 }}
                 animate={{ scale: isActive ? 1.15 : 1 }}
@@ -118,7 +146,7 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
         </motion.div>
 
         {/* Centre info */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none px-14">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none px-16">
           <AnimatePresence mode="wait">
             {active && (
               <motion.div
@@ -129,11 +157,7 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
                 transition={{ duration: 0.25 }}
                 className="text-center"
               >
-                {/* active indicator line */}
-                <div
-                  className="w-6 h-0.5 mx-auto mb-3 rounded-full"
-                  style={{ background: "#2A9DF4" }}
-                />
+                <div className="w-6 h-0.5 mx-auto mb-3 rounded-full" style={{ background: "#2A9DF4" }} />
                 <p className="font-gigasans font-bold text-fbc-white text-lg leading-tight mb-1">
                   {active.name}
                 </p>
@@ -157,6 +181,52 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* Controls + countdown */}
+      <div className="flex flex-col items-center gap-3">
+        <div className="flex items-center gap-4">
+          {/* CCW button */}
+          <button
+            onClick={() => manualSpin(-1)}
+            className="w-10 h-10 rounded-full border border-fbc-border text-fbc-muted hover:text-fbc-sky hover:border-fbc-sky/50 transition-all flex items-center justify-center"
+            aria-label="Spin counter-clockwise"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+            </svg>
+          </button>
+
+          <p className="text-fbc-muted/50 text-[11px] text-center whitespace-nowrap">
+            {hoveredSlot !== null
+              ? "Hover paused"
+              : `Wheel spins in ${secsLeft}s`
+            }
+          </p>
+
+          {/* CW button */}
+          <button
+            onClick={() => manualSpin(1)}
+            className="w-10 h-10 rounded-full border border-fbc-border text-fbc-muted hover:text-fbc-sky hover:border-fbc-sky/50 transition-all flex items-center justify-center"
+            aria-label="Spin clockwise"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+              <path d="M21 3v5h-5" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Progress bar */}
+        {hoveredSlot === null && (
+          <div className="w-32 h-0.5 bg-fbc-border rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-fbc-sky/50 rounded-full"
+              style={{ width: `${(1 - msLeft / INTERVAL) * 100}%` }}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -175,18 +245,18 @@ export default function SpeakersPreview({ speakers, pastSpeakers }: Props) {
         }}
         aria-hidden="true"
       />
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-6 w-full">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-6 w-full">
         <AnimateOnScroll>
-          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-2">
+          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-2 text-center">
             FlutterBytes Speakers so far…
           </h2>
-          <p className="text-fbc-muted text-sm mb-8 max-w-xl">
+          <p className="text-fbc-muted text-sm mb-8 text-center max-w-xl mx-auto">
             Engineers, founders, and Flutter enthusiasts who&apos;ve taken the stage across all editions.
           </p>
         </AnimateOnScroll>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-4" role="tablist">
+        <div className="flex gap-2 mb-4 justify-center" role="tablist">
           {([["2026", "2026 Speakers"], ["past", "Past Editions"]] as const).map(([val, label]) => (
             <button
               key={val}
@@ -254,7 +324,7 @@ export default function SpeakersPreview({ speakers, pastSpeakers }: Props) {
         </AnimatePresence>
       </div>
 
-      <div className="relative z-10 pb-12 text-center">
+      <div className="relative z-10 pb-16 text-center">
         <Link
           href="/speakers"
           className="rounded-full px-7 py-3 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-sky hover:bg-fbc-sky/10 transition-all inline-flex items-center gap-2"

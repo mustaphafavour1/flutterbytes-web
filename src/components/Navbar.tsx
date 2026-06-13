@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
   { label: "Be a sponsor", href: "#sponsors" },
@@ -70,7 +69,6 @@ export default function Navbar() {
 
             {/* Right */}
             <div className="hidden lg:flex items-center gap-3">
-              <ThemeToggle />
               <a
                 href="#tickets"
                 className="rounded-full px-5 py-2.5 text-sm font-semibold text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_20px_rgba(37,99,235,0.5)] hover:shadow-[0_0_30px_rgba(96,165,250,0.6)]"
@@ -130,9 +128,6 @@ export default function Navbar() {
                 >
                   Get Tickets
                 </a>
-                <div className="flex justify-center pt-2">
-                  <ThemeToggle />
-                </div>
               </div>
             </motion.div>
           </motion.div>
