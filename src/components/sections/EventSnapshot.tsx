@@ -1,149 +1,125 @@
 "use client";
-import { MapPin } from "lucide-react";
 import { Suspense } from "react";
+import { motion } from "framer-motion";
+import { Calendar, Clock, MapPin } from "lucide-react";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import CountdownTimer from "@/components/CountdownTimer";
 
-function AfricanWave({ className }: { className?: string }) {
+const INFO_CELLS = [
+  { num: "35",   label: "Speakers",     icon: "🎤" },
+  { num: "600+", label: "Flutter Devs", icon: "👥" },
+  { num: "32",   label: "Sessions",     icon: "💡" },
+  { num: "2",    label: "Days",         icon: "📅" },
+  { num: "5th",  label: "Edition",      icon: "🏆" },
+  { num: "AI",   label: "Focus",        icon: "🤖" },
+];
+
+function InfoCell({ cell }: { cell: typeof INFO_CELLS[0] }) {
   return (
-    <svg
-      className={`absolute right-0 top-0 h-full w-1/2 ${className}`}
-      viewBox="0 0 200 300"
-      xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="xMaxYMid slice"
-      aria-hidden="true"
+    <motion.div
+      className="group flex flex-col gap-1 p-4 rounded-xl cursor-default"
+      whileHover={{
+        backgroundColor: "rgba(42,157,244,0.06)",
+        boxShadow: "0 0 22px rgba(42,157,244,0.10)",
+      }}
+      transition={{ duration: 0.2 }}
     >
-      <defs>
-        <pattern id="wave-pat" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-          <polygon points="20,2 38,20 20,38 2,20" fill="none" stroke="#38BDF8" strokeWidth="1" />
-          <polygon points="20,12 28,20 20,28 12,20" fill="#38BDF8" opacity="0.3" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#wave-pat)" opacity="0.12" />
-    </svg>
+      <span className="text-xl mb-0.5">{cell.icon}</span>
+      <div className="font-gigasans font-black text-3xl text-fbc-sky leading-none tracking-tight">
+        {cell.num}
+      </div>
+      <div className="text-fbc-muted text-xs font-medium mt-0.5">{cell.label}</div>
+    </motion.div>
   );
 }
 
 export default function EventSnapshot() {
   return (
-    <section
-      id="event-info"
-      className="relative py-24 bg-fbc-dark dark:bg-fbc-dark overflow-hidden"
-    >
-      {/* Light VS Code grid */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-40"
-        style={{
-          backgroundImage: "radial-gradient(circle, rgba(37,99,235,0.1) 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
-        aria-hidden="true"
-      />
+    <section id="event-info" className="relative bg-fbc-dark overflow-hidden">
+      <div className="flex flex-col lg:flex-row" style={{ minHeight: "72vh" }}>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        {/* ── Left: event info ── */}
+        <div className="flex-1 px-8 sm:px-12 lg:px-16 py-20 flex flex-col justify-center border-r border-white/[0.05]">
+          <AnimateOnScroll>
+            {/* Section micro-label */}
+            <p className="font-mono text-[10px] uppercase tracking-widest text-fbc-muted/40 mb-10">
+              — The Event
+            </p>
 
-          {/* Card 1 — Date & Venue (large) */}
-          <AnimateOnScroll delay={0}>
-            <div className="relative rounded-3xl overflow-hidden bg-fbc-card border border-fbc-border p-8 min-h-[260px] flex flex-col justify-between">
-              <AfricanWave />
-              <div className="relative z-10">
-                <span className="inline-block font-mono text-xs uppercase tracking-widest text-fbc-sky/70 mb-4 border border-fbc-border rounded-full px-3 py-1">
-                  A 2-Day Event
-                </span>
-                <h2 className="font-space font-bold text-2xl md:text-3xl text-fbc-white leading-snug mb-3">
-                  Friday &amp; Saturday
-                </h2>
-                <p className="text-fbc-sky text-xl font-semibold mb-4">
-                  October 30th &amp; 31st, 2026
-                </p>
-                <span className="inline-flex items-center gap-2 bg-fbc-blue/20 border border-fbc-blue/30 rounded-full px-4 py-2 text-fbc-white text-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-fbc-sky" />
-                  9:00 AM on both days
-                </span>
-              </div>
-            </div>
-          </AnimateOnScroll>
-
-          {/* Right column */}
-          <div className="flex flex-col gap-6">
-            {/* Card 2 — Stats */}
-            <AnimateOnScroll delay={0.1}>
-              <div className="rounded-3xl bg-fbc-card border border-fbc-border p-6">
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { n: "35", l: "Speakers" },
-                    { n: "600+", l: "Flutter Devs" },
-                    { n: "32", l: "Sessions" },
-                    { n: "02", l: "Days" },
-                  ].map((s) => (
-                    <div key={s.l} className="text-center p-3 rounded-2xl bg-fbc-dark/60">
-                      <div className="font-space font-bold text-4xl text-fbc-sky">{s.n}</div>
-                      <div className="text-fbc-muted text-sm mt-1">{s.l}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </AnimateOnScroll>
-
-            {/* Card 3 — Location */}
-            <AnimateOnScroll delay={0.15}>
-              <div className="rounded-3xl bg-fbc-card border border-fbc-border p-6 flex items-center gap-5 flex-1">
-                {/* Map placeholder */}
-                <div
-                  className="w-16 h-16 flex-shrink-0 rounded-2xl flex items-center justify-center relative overflow-hidden"
-                  style={{
-                    backgroundImage: "radial-gradient(circle, rgba(37,99,235,0.2) 1px, transparent 1px)",
-                    backgroundSize: "8px 8px",
-                    backgroundColor: "#0A1628",
-                    border: "1px solid #1E3A5F",
-                  }}
-                >
-                  <MapPin size={24} className="text-fbc-sky" />
-                </div>
+            {/* Date + time */}
+            <div className="mb-6">
+              <div className="flex items-start gap-3 mb-1">
+                <Calendar size={14} className="text-fbc-sky/50 flex-shrink-0 mt-1" />
                 <div>
-                  <p className="font-space font-semibold text-fbc-white text-base leading-tight">
-                    The Zone (Zone Tech Park)
+                  <h2 className="font-gigasans font-bold text-3xl md:text-4xl text-fbc-white leading-tight">
+                    Friday &amp; Saturday
+                  </h2>
+                  <p className="font-gigasans font-semibold text-fbc-blue text-xl mt-0.5">
+                    October 30th &amp; 31st, 2026
                   </p>
-                  <p className="text-fbc-muted text-sm mt-1">Gbagada, Lagos, Nigeria</p>
-                  <a
-                    href="https://maps.google.com/?q=Zone+Tech+Park+Gbagada+Lagos"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-fbc-sky text-xs font-semibold mt-1.5 inline-flex items-center gap-1 hover:text-fbc-glow transition-colors"
-                  >
-                    View on map →
-                  </a>
                 </div>
               </div>
-            </AnimateOnScroll>
-          </div>
-        </div>
-
-        {/* Full-width bottom bar */}
-        <AnimateOnScroll delay={0.2}>
-          <div className="rounded-3xl bg-fbc-card border border-fbc-border px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div>
-              <p className="font-space font-bold text-xl text-fbc-white">
-                Don&apos;t miss out on all the fun!
-              </p>
-              <p className="text-fbc-muted text-sm mt-0.5">
-                Join 600+ Flutter developers for two unforgettable days.
-              </p>
+              <div className="flex items-center gap-2 ml-[22px] mt-2">
+                <Clock size={12} className="text-fbc-muted/40" />
+                <span className="text-fbc-muted text-sm">9:00 AM WAT on both days</span>
+              </div>
             </div>
-            <div className="flex items-center gap-6">
-              <Suspense fallback={<div className="w-36 h-10" />}>
-                <CountdownTimer />
-              </Suspense>
+
+            {/* Divider */}
+            <div className="border-t border-white/[0.06] mb-6" />
+
+            {/* 2 × 3 info grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 mb-6">
+              {INFO_CELLS.map((cell) => (
+                <InfoCell key={cell.label} cell={cell} />
+              ))}
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-white/[0.06] mb-6" />
+
+            {/* Countdown + CTA */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <div>
+                <p className="font-mono text-[9px] uppercase tracking-widest text-fbc-muted/40 mb-2">
+                  Countdown
+                </p>
+                <Suspense fallback={<div className="h-10" />}>
+                  <CountdownTimer />
+                </Suspense>
+              </div>
               <a
                 href="#tickets"
-                className="whitespace-nowrap rounded-full px-6 py-3 font-space font-semibold text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)]"
+                className="rounded-full px-6 py-3 font-gigasans font-semibold text-sm text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_20px_rgba(42,157,244,0.35)]"
               >
                 Pick Up a Ticket →
               </a>
             </div>
+          </AnimateOnScroll>
+        </div>
+
+        {/* ── Right: Google Map ── */}
+        <div className="w-full lg:w-[45%] relative min-h-[400px] lg:min-h-0">
+          <iframe
+            src="https://maps.google.com/maps?q=Zone+Tech+Park,+Gbagada,+Lagos,+Nigeria&output=embed&z=15"
+            title="Zone Tech Park, Gbagada, Lagos"
+            className="absolute inset-0 w-full h-full border-0 grayscale-[20%]"
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+          {/* Address popover */}
+          <div className="absolute bottom-5 left-5 bg-fbc-navy/92 backdrop-blur-md rounded-xl px-4 py-3 border border-white/[0.08] flex items-start gap-2.5 max-w-[250px] shadow-lg">
+            <MapPin size={13} className="text-fbc-sky mt-0.5 flex-shrink-0" />
+            <div>
+              <p className="text-fbc-white text-xs font-semibold">Zone Tech Park</p>
+              <p className="text-fbc-muted text-[11px] mt-0.5 leading-snug">
+                Off Gbagada Express, Gbagada, Lagos
+              </p>
+            </div>
           </div>
-        </AnimateOnScroll>
+        </div>
+
       </div>
     </section>
   );

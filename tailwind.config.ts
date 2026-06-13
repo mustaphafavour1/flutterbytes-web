@@ -12,7 +12,7 @@ const config: Config = {
         'fbc-navy': '#050E1F',
         'fbc-dark': '#0A1628',
         'fbc-card': '#0F1E38',
-        'fbc-blue': '#2563EB',
+        'fbc-blue': '#2A9DF4',
         'fbc-sky': '#38BDF8',
         'fbc-glow': '#60A5FA',
         'fbc-white': '#F8FAFF',

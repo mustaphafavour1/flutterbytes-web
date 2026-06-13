@@ -1,215 +1,432 @@
 "use client";
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, MapPin, Calendar } from "lucide-react";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 
-const editions = [
+// ─── Data ────────────────────────────────────────────────────────────────────
+
+const editionData = [
   {
-    num: "01",
     year: "2022",
-    theme: "Flutter: Beyond Mobile",
-    location: "The Zone, Gbagada",
-    date: "Nov 2022",
-    highlight: "200 Devs",
-    bg: "from-indigo-900 to-blue-800",
-    badge: null,
+    theme: "First Edition of the Conference",
+    date: "November 2022",
+    attendees: "~200 devs",
+    above: true,
     isCurrent: false,
   },
   {
-    num: "02",
     year: "2023",
-    theme: "Flutter Everywhere",
-    location: "The Zone, Gbagada",
-    date: "Oct 2023",
-    highlight: "400 Devs · 20 Speakers",
-    bg: "from-blue-900 to-cyan-800",
-    badge: null,
+    theme: "Africa Flutterverse: A Journey of Learning, Sharing, and Growing",
+    date: "October 2023",
+    attendees: "400+ Devs · 20 Speakers",
+    above: false,
     isCurrent: false,
   },
   {
-    num: "03",
     year: "2024",
-    theme: "Flutter for the Future",
-    location: "The Zone, Gbagada",
-    date: "Nov 2024",
-    highlight: "500 Devs · 28 Speakers",
-    bg: "from-cyan-900 to-teal-800",
-    badge: null,
+    theme: "Beyond Borders: The Global Impact of African Flutter Engineers",
+    date: "November 2024",
+    attendees: "500+ Devs · 28 Speakers",
+    above: true,
     isCurrent: false,
   },
   {
-    num: "04",
     year: "2025",
     theme: "Flutter: The Framework of the Future",
-    location: "The Zone, Gbagada",
-    date: "Oct 31 & Nov 1, 2025",
-    highlight: "600 Devs · 35 Speakers · 32 Sessions",
-    bg: "from-teal-900 to-emerald-800",
-    badge: "Previous Edition",
+    date: "Oct 31 – Nov 1, 2025",
+    attendees: "600+ Devs · 35 Speakers · 32 Sessions",
+    above: false,
     isCurrent: false,
   },
   {
-    num: "05",
     year: "2026",
     theme: "Becoming Flutter AI Engineer",
-    location: "The Zone, Gbagada",
-    date: "Oct 30 & 31, 2026",
-    highlight: "You're here. 🎉",
-    bg: "from-blue-600 via-indigo-500 to-cyan-400",
-    badge: "This Edition",
+    date: "Oct 30–31, 2026",
+    attendees: "You're here! 🎉",
+    above: true,
     isCurrent: true,
   },
 ];
 
+// ─── Wave path computation ────────────────────────────────────────────────────
+
+const INTRO_W = 280;
+const ITEM_W = 300;
+const CY = 270;
+const PEAK_Y = 140;
+const TROUGH_Y = 400;
+const TOTAL_W = 2800;
+
+const anchors: [number, number][] = [
+  [0, CY],
+  [INTRO_W, CY],
+  ...editionData.map((ed, i): [number, number] => [
+    INTRO_W + i * ITEM_W + ITEM_W / 2,
+    ed.above ? PEAK_Y : TROUGH_Y,
+  ]),
+  [INTRO_W + 5 * ITEM_W + 190, CY],
+  [TOTAL_W, CY],
+];
+
+function buildWavePath(pts: [number, number][]): string {
+  let path = `M ${pts[0][0]},${pts[0][1]}`;
+  for (let i = 1; i < pts.length; i++) {
+    const [x0, y0] = pts[i - 1];
+    const [x1, y1] = pts[i];
+    const mx = (x0 + x1) / 2;
+    path += ` C ${mx},${y0} ${mx},${y1} ${x1},${y1}`;
+  }
+  return path;
+}
+
+const WAVE_PATH = buildWavePath(anchors);
+
+// ─── Component ───────────────────────────────────────────────────────────────
+
 export default function FiveEditions() {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
+  const rafRef = useRef<number | null>(null);
+  const pausedRef = useRef(false);
+  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const scroll = (dir: "left" | "right") => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.scrollBy({ left: dir === "right" ? 330 : -330, behavior: "smooth" });
-  };
-
+  // Auto-scroll logic
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    const handler = () => {
-      const idx = Math.round(el.scrollLeft / 330);
-      setActive(Math.min(idx, editions.length - 1));
+
+    const step = () => {
+      if (!pausedRef.current && el) {
+        // Stop auto-scroll when we reach the end
+        if (el.scrollLeft + el.clientWidth < el.scrollWidth) {
+          el.scrollLeft += 0.6;
+        }
+      }
+      rafRef.current = requestAnimationFrame(step);
     };
-    el.addEventListener("scroll", handler, { passive: true });
-    return () => el.removeEventListener("scroll", handler);
+
+    rafRef.current = requestAnimationFrame(step);
+
+    const pause = () => {
+      pausedRef.current = true;
+      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+      resumeTimerRef.current = setTimeout(() => {
+        pausedRef.current = false;
+      }, 2500);
+    };
+
+    el.addEventListener("wheel", pause, { passive: true });
+    el.addEventListener("touchmove", pause, { passive: true });
+    el.addEventListener("mousedown", pause);
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+      el.removeEventListener("wheel", pause);
+      el.removeEventListener("touchmove", pause);
+      el.removeEventListener("mousedown", pause);
+    };
   }, []);
 
   return (
-    <section id="editions" className="relative py-24 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section
+      id="editions"
+      style={{ backgroundColor: "#0A1628" }}
+      className="py-16"
+    >
+      {/* Heading block */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
         <AnimateOnScroll>
-          <div className="mb-3">
-            <h2 className="font-space font-bold text-3xl md:text-5xl text-fbc-light-text dark:text-fbc-white">
-              Five Years. One Community. Zero Chill.
-            </h2>
-          </div>
-          <p className="text-fbc-light-sub dark:text-fbc-muted text-base mb-8 max-w-xl">
-            From 200 devs in a room debating Flutter&apos;s future to 600 engineers building it. Here&apos;s how we got here.
+          <h2
+            className="font-gigasans font-black text-3xl md:text-5xl text-white leading-tight"
+          >
+            Five Years. One Community. Zero Chill.
+          </h2>
+          <p className="text-fbc-muted text-base mt-3 max-w-2xl">
+            From 200 devs in a room to 600 engineers building Africa&apos;s Flutter
+            future. Here&apos;s the story.
           </p>
         </AnimateOnScroll>
+      </div>
 
-        {/* Scroll arrows (desktop) */}
-        <div className="hidden md:flex gap-2 mb-5 justify-end">
-          <button
-            onClick={() => scroll("left")}
-            className="w-10 h-10 rounded-full border border-fbc-border flex items-center justify-center text-fbc-muted hover:text-fbc-white hover:border-fbc-sky transition-all"
-            aria-label="Scroll left"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <button
-            onClick={() => scroll("right")}
-            className="w-10 h-10 rounded-full border border-fbc-border flex items-center justify-center text-fbc-muted hover:text-fbc-white hover:border-fbc-sky transition-all"
-            aria-label="Scroll right"
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
-
-        {/* Scroll container */}
+      {/* Horizontal scroll container */}
+      <div
+        ref={scrollRef}
+        className="overflow-x-auto scrollbar-hide"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
+        {/* Inner canvas */}
         <div
-          ref={scrollRef}
-          className="flex gap-5 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide"
-          role="list"
-          aria-label="FlutterBytes editions timeline"
+          className="relative"
+          style={{ width: TOTAL_W, height: 540 }}
         >
-          {editions.map((ed, i) => (
-            <motion.div
-              key={ed.num}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="snap-start flex-shrink-0 w-[300px] rounded-3xl border flex flex-col overflow-hidden"
-              style={
-                ed.isCurrent
-                  ? {
-                      borderColor: "#38BDF8",
-                      boxShadow: "0 0 30px rgba(56,189,248,0.2)",
-                    }
-                  : {
-                      borderColor: "#1E3A5F",
-                    }
-              }
-              role="listitem"
-            >
-              {/* Image area */}
-              <div className={`h-40 bg-gradient-to-br ${ed.bg} relative flex items-end justify-between p-4`}>
-                <span
-                  className="font-space font-black text-6xl text-white/15 absolute top-2 left-3 leading-none select-none"
-                  aria-hidden="true"
-                >
-                  {ed.num}
-                </span>
-                {ed.badge && (
-                  <span
-                    className={`absolute top-3 right-3 text-xs font-semibold rounded-full px-3 py-1 ${
-                      ed.isCurrent
-                        ? "bg-fbc-sky text-fbc-navy"
-                        : "bg-white/20 text-white"
-                    }`}
-                  >
-                    {ed.badge}
-                  </span>
-                )}
-                <span className="font-space font-black text-3xl text-white relative z-10">
-                  {ed.year}
-                </span>
-              </div>
-
-              {/* Body */}
-              <div className="flex-1 bg-fbc-card dark:bg-fbc-card p-5">
-                <h3 className="font-space font-semibold text-fbc-white text-sm leading-snug mb-3">
-                  {ed.theme}
-                </h3>
-                <div className="space-y-1.5 text-xs text-fbc-muted mb-4">
-                  <div className="flex items-center gap-1.5">
-                    <MapPin size={11} className="flex-shrink-0" />
-                    {ed.location}
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Calendar size={11} className="flex-shrink-0" />
-                    {ed.date}
-                  </div>
-                </div>
-                <div
-                  className={`rounded-xl px-3 py-2 text-xs font-semibold ${
-                    ed.isCurrent
-                      ? "bg-fbc-sky/15 text-fbc-sky border border-fbc-sky/30"
-                      : "bg-fbc-dark text-fbc-muted"
-                  }`}
-                >
-                  {ed.highlight}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Dot progress — mobile */}
-        <div className="flex justify-center gap-2 mt-4 md:hidden" role="group" aria-label="Edition progress">
-          {editions.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => {
-                scrollRef.current?.scrollTo({ left: i * 330, behavior: "smooth" });
-                setActive(i);
-              }}
-              className={`rounded-full transition-all ${
-                active === i ? "w-6 h-2 bg-fbc-sky" : "w-2 h-2 bg-fbc-border"
-              }`}
-              aria-label={`Go to edition ${i + 1}`}
+          {/* ── SVG Wave ─────────────────────────────────────── */}
+          <svg
+            className="absolute inset-0"
+            width={TOTAL_W}
+            height={540}
+            style={{ pointerEvents: "none" }}
+          >
+            {/* Glow layer */}
+            <path
+              d={WAVE_PATH}
+              fill="none"
+              stroke="#2A9DF4"
+              strokeWidth={4}
+              strokeOpacity={0.06}
             />
-          ))}
+            {/* Main wave */}
+            <path
+              id="fbc-wave-path"
+              d={WAVE_PATH}
+              fill="none"
+              stroke="#1E3A5F"
+              strokeWidth={1.5}
+              strokeOpacity={0.5}
+            />
+            {/* Animated dot */}
+            <circle r={5} fill="#2A9DF4">
+              <animateMotion dur="28s" repeatCount="indefinite">
+                <mpath href="#fbc-wave-path" />
+              </animateMotion>
+            </circle>
+          </svg>
+
+          {/* ── Intro caption ────────────────────────────────── */}
+          <div
+            className="absolute"
+            style={{
+              left: 0,
+              top: 0,
+              width: 280,
+              height: 540,
+              display: "flex",
+              alignItems: "center",
+              maskImage:
+                "linear-gradient(to right, rgba(0,0,0,0.9) 40%, rgba(0,0,0,0) 100%)",
+              WebkitMaskImage:
+                "linear-gradient(to right, rgba(0,0,0,0.9) 40%, rgba(0,0,0,0) 100%)",
+            }}
+          >
+            <p
+              className="text-fbc-muted text-xs italic leading-relaxed"
+              style={{ paddingLeft: 24, paddingRight: 20 }}
+            >
+              What started in a room of 200 developers passionate about Flutter
+              and Africa&apos;s tech future has grown into something much bigger...
+            </p>
+          </div>
+
+          {/* ── Edition milestones ───────────────────────────── */}
+          {editionData.map((ed, i) => {
+            const cx = INTRO_W + i * ITEM_W + ITEM_W / 2;
+            const anchorY = ed.above ? PEAK_Y : TROUGH_Y;
+            const flagLeft = cx - 120;
+
+            const isAbove = ed.above;
+
+            // Above: flag from y=20, pole from ~220 to anchorY=140
+            // Below: flag from y=320, pole from anchorY=400 to y=320
+            const flagTop = isAbove ? 20 : 320;
+            const poleTop = isAbove ? 218 : anchorY; // TROUGH_Y = 400
+            const poleBottom = isAbove ? anchorY : 320; // PEAK_Y = 140
+            const poleHeight = Math.abs(poleBottom - poleTop);
+
+            const flagClip = isAbove
+              ? "polygon(0 0, 100% 0, 100% 82%, 50% 100%, 0 82%)"
+              : "polygon(50% 0, 100% 18%, 100% 100%, 0 100%, 0 18%)";
+
+            const flagPadding = isAbove
+              ? "20px 24px 40px 24px"
+              : "40px 24px 20px 24px";
+
+            const transformOrigin = isAbove ? "top center" : "bottom center";
+
+            const flagBg = ed.isCurrent
+              ? "rgba(42,157,244,0.15)"
+              : "rgba(15,30,56,0.85)";
+            const flagBorder = ed.isCurrent
+              ? "1px solid rgba(42,157,244,0.4)"
+              : "1px solid rgba(30,58,95,0.5)";
+
+            const yearColor = ed.isCurrent
+              ? "#2A9DF4"
+              : "rgba(148,163,184,0.35)";
+
+            const dotFill = ed.isCurrent ? "#2A9DF4" : "#0A1628";
+            const dotBorder = ed.isCurrent ? "#2A9DF4" : "#1E3A5F";
+
+            return (
+              <div key={ed.year}>
+                {/* Flag card */}
+                <motion.div
+                  initial={{ scaleY: 0 }}
+                  whileInView={{ scaleY: 1 }}
+                  viewport={{ once: true, margin: "-10%" }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  style={{
+                    position: "absolute",
+                    left: flagLeft,
+                    top: flagTop,
+                    width: 240,
+                    clipPath: flagClip,
+                    background: flagBg,
+                    border: flagBorder,
+                    backdropFilter: "blur(8px)",
+                    WebkitBackdropFilter: "blur(8px)",
+                    padding: flagPadding,
+                    transformOrigin,
+                  }}
+                >
+                  {/* Year */}
+                  <div
+                    className="font-gigasans font-black text-4xl leading-none"
+                    style={{ color: yearColor }}
+                  >
+                    {ed.year}
+                  </div>
+
+                  {/* Theme */}
+                  <div
+                    className="text-white/80 leading-snug mt-2"
+                    style={{ fontSize: 11 }}
+                  >
+                    {ed.theme}
+                  </div>
+
+                  {/* Divider */}
+                  <div
+                    className="my-2"
+                    style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
+                  />
+
+                  {/* Date + attendees */}
+                  <div
+                    className="text-fbc-muted"
+                    style={{ fontSize: 10, opacity: 0.5 }}
+                  >
+                    {ed.date}
+                    <br />
+                    {ed.attendees}
+                  </div>
+                </motion.div>
+
+                {/* Pole */}
+                <div
+                  style={{
+                    position: "absolute",
+                    left: cx,
+                    top: poleTop,
+                    width: 1,
+                    height: poleHeight,
+                    background: "rgba(30,58,95,0.6)",
+                  }}
+                />
+
+                {/* Dot at wave anchor */}
+                <div
+                  style={{
+                    position: "absolute",
+                    left: cx - 6,
+                    top: anchorY - 6,
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    background: dotFill,
+                    border: `2px solid ${dotBorder}`,
+                    boxShadow: ed.isCurrent
+                      ? "0 0 8px rgba(42,157,244,0.6)"
+                      : "none",
+                  }}
+                />
+              </div>
+            );
+          })}
+
+          {/* ── Future section ───────────────────────────────── */}
+          <div
+            className="absolute"
+            style={{
+              left: INTRO_W + 5 * ITEM_W,
+              top: 0,
+              width: 380,
+              height: 540,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              paddingLeft: 32,
+              maskImage:
+                "linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)",
+              WebkitMaskImage:
+                "linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)",
+            }}
+          >
+            {/* Horizontal continuation line */}
+            <div
+              style={{
+                position: "absolute",
+                top: CY,
+                left: 0,
+                right: 0,
+                height: 1,
+                background:
+                  "linear-gradient(to right, rgba(30,58,95,0.5), rgba(30,58,95,0))",
+              }}
+            />
+
+            <p
+              className="italic"
+              style={{
+                fontSize: 11,
+                color: "rgba(148,163,184,0.2)",
+                marginBottom: 10,
+                position: "relative",
+              }}
+            >
+              The story continues...
+            </p>
+
+            <div className="flex items-center gap-3" style={{ position: "relative" }}>
+              {["2027", "2028", "2029", "2030+"].map((yr, idx) => (
+                <span
+                  key={yr}
+                  style={{
+                    fontSize: 11,
+                    fontFamily: "monospace",
+                    color: `rgba(148,163,184,${Math.max(0.05, 0.3 - idx * 0.07)})`,
+                  }}
+                >
+                  {yr}
+                  {idx < 3 && (
+                    <span style={{ marginLeft: 6, opacity: 0.3 }}>→</span>
+                  )}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Outro caption ────────────────────────────────── */}
+          <div
+            className="absolute"
+            style={{
+              left: INTRO_W + 5 * ITEM_W + 380,
+              top: 0,
+              width: 300,
+              height: 540,
+              display: "flex",
+              alignItems: "center",
+              maskImage:
+                "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 40%)",
+              WebkitMaskImage:
+                "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 40%)",
+            }}
+          >
+            <p
+              className="text-fbc-muted text-xs italic leading-relaxed"
+              style={{ paddingLeft: 20, paddingRight: 24 }}
+            >
+              The community keeps shipping. The next chapter is yours.
+            </p>
+          </div>
         </div>
       </div>
     </section>

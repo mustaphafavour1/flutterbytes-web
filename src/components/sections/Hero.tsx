@@ -279,16 +279,16 @@ const STATS = [
   { value: "2",    label: "Days" },
 ];
 
-/* Arc positions — [L-outer, L-inner, R-inner, R-outer] */
+/* Arc positions — [L-outer, L-inner, R-inner, R-outer] — symmetric around center */
 const POS_NORMAL = [
   { left: "6%",  y: 0 },
   { left: "21%", y: -60 },
-  { left: "61%", y: -60 },
-  { left: "76%", y: 0 },
+  { left: "79%", y: -60 },
+  { left: "93%", y: 0 },
 ];
 const POS_SWAPPED = [
-  { left: "76%", y: 0 },
-  { left: "61%", y: -60 },
+  { left: "93%", y: 0 },
+  { left: "79%", y: -60 },
   { left: "21%", y: -60 },
   { left: "6%",  y: 0 },
 ];
@@ -325,9 +325,9 @@ export default function Hero() {
     return () => clearTimeout(id);
   }, [showIcon]);
 
-  /* Chip swap every 4 s */
+  /* Chip swap every 10 s */
   useEffect(() => {
-    const id = setInterval(() => setSwapped((s) => !s), 4000);
+    const id = setInterval(() => setSwapped((s) => !s), 10000);
     return () => clearInterval(id);
   }, []);
 

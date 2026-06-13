@@ -23,7 +23,7 @@ const linkCols = [
 
 export default function Footer() {
   return (
-    <footer className="bg-fbc-navy border-t border-fbc-border">
+    <footer className="bg-fbc-navy border-t border-white/[0.06]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
           {/* Left — logo + tagline + social */}
@@ -82,7 +82,7 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="border-t border-fbc-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="border-t border-white/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-fbc-muted/40 text-sm">&copy;2026 Copyrights FlutterBytes</p>
           <p className="text-fbc-muted/30 text-xs">
             The Zone, Gbagada, Lagos, Nigeria &middot; Oct 30&ndash;31, 2026

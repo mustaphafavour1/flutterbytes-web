@@ -9,16 +9,18 @@ import GallerySection from "@/components/sections/GallerySection";
 import SponsorsSection from "@/components/sections/SponsorsSection";
 import CommitteeSection from "@/components/sections/CommitteeSection";
 import ClosingCTA from "@/components/sections/ClosingCTA";
-import { getSpeakers, getAgenda, getCommittee } from "@/lib/sheets";
+import { getSpeakers, getAgenda, getCommittee, getAgendaVisible, getPastSpeakers } from "@/lib/sheets";
 
 export const revalidate = 3600;
 
 export default async function Home() {
-  const [speakers, friday, saturday, committee] = await Promise.all([
+  const [speakers, friday, saturday, committee, agendaVisible, pastSpeakers] = await Promise.all([
     getSpeakers(),
     getAgenda("Friday"),
     getAgenda("Saturday"),
     getCommittee(),
+    getAgendaVisible(),
+    getPastSpeakers(),
   ]);
 
   return (
@@ -28,8 +30,8 @@ export default async function Home() {
         <Hero />
         <EventSnapshot />
         <FiveEditions />
-        <AgendaPreview friday={friday} saturday={saturday} />
-        <SpeakersPreview speakers={speakers} />
+        <AgendaPreview friday={friday} saturday={saturday} agendaVisible={agendaVisible} />
+        <SpeakersPreview speakers={speakers} pastSpeakers={pastSpeakers} />
         <GallerySection />
         <SponsorsSection />
         <CommitteeSection members={committee} />

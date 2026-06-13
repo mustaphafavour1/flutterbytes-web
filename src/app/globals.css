@@ -18,7 +18,7 @@
   --color-navy: #050E1F;
   --color-dark: #0A1628;
   --color-card: #0F1E38;
-  --color-blue: #2563EB;
+  --color-blue: #2A9DF4;
   --color-sky: #38BDF8;
   --color-glow: #60A5FA;
   --color-white: #F8FAFF;
@@ -32,10 +32,15 @@ html {
 
 body {
   font-family: 'GigaSans', var(--font-inter), Inter, sans-serif;
+  letter-spacing: -0.01em;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'GigaSans', sans-serif;
+}
+
+p, span, li, label, a, button, td, th, input, textarea {
+  letter-spacing: -0.012em;
 }
 
 /* Selection color */

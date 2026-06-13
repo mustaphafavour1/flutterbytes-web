@@ -79,3 +79,74 @@ export async function getCommittee(): Promise<CommitteeMember[]> {
     }));
   } catch { return fallbackCommittee; }
 }
+
+/**
+ * Settings tab: rows of [KEY, VALUE].
+ * Add a row "AGENDA_VISIBLE | true" to show the agenda grid.
+ * Without that row (or when value is not "true"), shows the coming-soon overlay.
+ */
+export async function getAgendaVisible(): Promise<boolean> {
+  if (!hasSheetsCreds()) return false;
+  try {
+    const sheets = google.sheets({ version: 'v4', auth: getAuth() });
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SPREADSHEET_ID,
+      range: 'Settings!A1:B20',
+    });
+    const rows = res.data.values || [];
+    const row = rows.find(([k]) => k?.toLowerCase().trim() === 'agenda_visible');
+    const val = row?.[1]?.toLowerCase().trim() ?? '';
+    return val === 'true' || val === 'yes' || val === '1';
+  } catch { return false; }
+}
+
+/**
+ * Past editions speakers — separate sheet tab "PastSpeakers".
+ * Columns: name, role, company, twitter, photo, bio, tags, edition (year)
+ */
+export async function getPastSpeakers(): Promise<Speaker[]> {
+  if (!hasSheetsCreds()) return fallbackSpeakers;
+  try {
+    const sheets = google.sheets({ version: 'v4', auth: getAuth() });
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SPREADSHEET_ID,
+      range: 'PastSpeakers!A2:H200',
+    });
+    const rows = res.data.values || [];
+    return rows.map(([name, role, company, twitter, photo, bio, tags]) => ({
+      name: name || '',
+      role: role || '',
+      company: company || '',
+      twitter: twitter || undefined,
+      photo: convertDriveUrl(photo),
+      bio: bio || undefined,
+      tags: tags ? tags.split(',').map((t: string) => t.trim()) : [],
+    }));
+  } catch { return fallbackSpeakers; }
+}
+
+/**
+ * Gallery photo sets — "Gallery" sheet tab.
+ * Columns: set (1-4), src (Drive URL or direct URL), caption?
+ * Returns 4 arrays of photo URLs.
+ */
+export async function getGalleryPhotos(): Promise<string[][]> {
+  const empty: string[][] = [[], [], [], []];
+  if (!hasSheetsCreds()) return empty;
+  try {
+    const sheets = google.sheets({ version: 'v4', auth: getAuth() });
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SPREADSHEET_ID,
+      range: 'Gallery!A2:C200',
+    });
+    const rows = res.data.values || [];
+    const sets: string[][] = [[], [], [], []];
+    for (const [set, src] of rows) {
+      const idx = parseInt(set, 10) - 1;
+      if (idx >= 0 && idx < 4 && src) {
+        sets[idx].push(convertDriveUrl(src));
+      }
+    }
+    return sets;
+  } catch { return empty; }
+}

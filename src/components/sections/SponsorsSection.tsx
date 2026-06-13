@@ -1,140 +1,178 @@
 "use client";
-import { useState } from "react";
-import { Mail, Phone, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Mail } from "lucide-react";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 
-const tiers = [
-  {
-    name: "Platinum",
-    style: "border-amber-400/50 shadow-[0_0_20px_rgba(251,191,36,0.2)]",
-    labelStyle: "text-amber-400",
-    sponsors: ["Google"],
-  },
-  {
-    name: "Gold",
-    style: "border-yellow-400/40",
-    labelStyle: "text-yellow-400",
-    sponsors: ["ServerPod"],
-  },
-  {
-    name: "Silver",
-    style: "border-slate-400/40",
-    labelStyle: "text-slate-400",
-    sponsors: ["Cake Wallet"],
-  },
-  {
-    name: "Bronze",
-    style: "border-amber-700/40",
-    labelStyle: "text-amber-700",
-    sponsors: ["Codemagic", "ShoreBird"],
-  },
+const SPONSORS = [
+  { name: "Flutter",             tier: "platinum" },
+  { name: "Google",              tier: "platinum" },
+  { name: "Zapp!",               tier: "gold" },
+  { name: "Built by Invertase",  tier: "gold" },
+  { name: "Codemagic",           tier: "gold" },
+  { name: "Native Teams",        tier: "silver" },
+  { name: "Cake Wallet",         tier: "silver" },
+  { name: "FlutterFlow",         tier: "silver" },
+  { name: "aptLearn",            tier: "silver" },
+  { name: "Very Good Ventures",  tier: "silver" },
+  { name: "GenZ Techies",        tier: "bronze" },
+  { name: "Industrial Flutter",  tier: "bronze" },
+  { name: "Shuttlers",           tier: "bronze" },
 ];
 
-function SponsorLogo({ name, tierStyle }: { name: string; tierStyle: string }) {
+const TIER_COLOR: Record<string, string> = {
+  platinum: "#E5C07B",
+  gold:     "#F0C040",
+  silver:   "#94A3B8",
+  bronze:   "#B87333",
+};
+
+function SponsorCard({ name, tier, fillIdx, myIdx }: {
+  name: string; tier: string; fillIdx: number; myIdx: number;
+}) {
+  const isFilling = myIdx === fillIdx;
+  const isFilled  = myIdx < fillIdx;
+  const color     = TIER_COLOR[tier] ?? "#94A3B8";
+
   return (
-    <div
-      className={`w-24 h-24 rounded-2xl bg-fbc-card dark:bg-fbc-card flex items-center justify-center border ${tierStyle} flex-shrink-0`}
-    >
-      <span className="text-fbc-muted text-xs font-semibold text-center px-2 leading-tight">
-        {name}
-      </span>
+    <div className="relative" style={{ width: 176, height: 84 }}>
+      {/* Base: dimmed state */}
+      <div
+        className="absolute inset-0 rounded-[20px] flex items-center justify-center"
+        style={{
+          background: "rgba(15,30,56,0.7)",
+          border: "1px solid rgba(30,58,95,0.6)",
+        }}
+      >
+        <span className="font-gigasans font-semibold text-sm text-fbc-muted/30 text-center px-3">
+          {name}
+        </span>
+      </div>
+
+      {/* Fill layer — clips from bottom to top */}
+      <motion.div
+        className="absolute inset-0 rounded-[20px] overflow-hidden"
+        initial={false}
+      >
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center"
+          style={{
+            background: "rgba(255,255,255,0.97)",
+            originY: 1,
+          }}
+          animate={{
+            scaleY: isFilled ? 1 : isFilling ? [0, 1] : 0,
+            transition: { duration: 0.55, ease: "easeInOut" },
+          }}
+        >
+          <span
+            className="font-gigasans font-bold text-sm text-center px-3 leading-tight"
+            style={{ color }}
+          >
+            {name}
+          </span>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
 
-export default function SponsorsSection() {
-  const [copied, setCopied] = useState(false);
+function YourBrandCard() {
+  return (
+    <motion.div
+      className="relative rounded-[20px] flex items-center justify-center"
+      style={{
+        width: 176,
+        height: 84,
+        border: "1.5px dashed rgba(42,157,244,0.4)",
+      }}
+      animate={{
+        borderColor: [
+          "rgba(42,157,244,0.2)",
+          "rgba(42,157,244,0.7)",
+          "rgba(42,157,244,0.2)",
+        ],
+        boxShadow: [
+          "0 0 0 rgba(42,157,244,0)",
+          "0 0 16px rgba(42,157,244,0.3)",
+          "0 0 0 rgba(42,157,244,0)",
+        ],
+      }}
+      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+    >
+      <span className="text-fbc-muted/50 text-sm font-medium">Your Brand</span>
+    </motion.div>
+  );
+}
 
-  const copyPhone = async () => {
-    try {
-      await navigator.clipboard.writeText("+2348000000000");
-    } catch {
-      /* ignore */
-    }
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+export default function SponsorsSection() {
+  const [fillIdx, setFillIdx] = useState(-1);
+
+  /* Cycle fill animation */
+  useEffect(() => {
+    const id = setInterval(() => {
+      setFillIdx((prev) => {
+        if (prev >= SPONSORS.length - 1) return -1;
+        return prev + 1;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
 
   return (
-    <section id="sponsors" className="relative py-24 overflow-hidden">
+    <section id="sponsors" className="relative py-24 bg-fbc-dark overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateOnScroll>
-          <h2 className="font-space font-bold text-3xl md:text-5xl text-fbc-light-text dark:text-fbc-white mb-2">
+          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-2">
             Built with support from
           </h2>
-          <p className="text-fbc-light-sub dark:text-fbc-muted text-base mb-12 max-w-xl">
-            Companies that understand that investing in developers is investing in the future.
+          <p className="text-fbc-muted text-sm mb-12 max-w-md">
+            Companies that invest in developers because they know it&apos;s the best bet.
           </p>
         </AnimateOnScroll>
 
-        {/* Tiers */}
-        <div className="space-y-6 mb-12">
-          {tiers.map((tier, ti) => (
-            <AnimateOnScroll key={tier.name} delay={ti * 0.08}>
-              <div className="rounded-3xl border border-fbc-border dark:border-fbc-border bg-fbc-card/30 dark:bg-fbc-card/30 p-6">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="h-px flex-1 bg-fbc-border" />
-                  <span className={`font-mono text-xs uppercase tracking-widest ${tier.labelStyle}`}>
-                    {tier.name}
-                  </span>
-                  <div className="h-px flex-1 bg-fbc-border" />
-                </div>
-                <div className="flex flex-wrap gap-4 justify-center">
-                  {tier.sponsors.map((name) => (
-                    <SponsorLogo key={name} name={name} tierStyle={tier.style} />
-                  ))}
-                </div>
-              </div>
-            </AnimateOnScroll>
-          ))}
-        </div>
-
-        {/* Past sponsors */}
-        <AnimateOnScroll delay={0.2}>
-          <div className="text-center mb-12">
-            <p className="text-fbc-muted text-xs font-mono uppercase tracking-widest mb-4">Past Sponsors</p>
-            <div className="flex flex-wrap gap-3 justify-center">
-              {["Google", "GitHub", "JetBrains", "Cloudinary", "Vercel", "Auth0"].map((n) => (
-                <div
-                  key={n}
-                  className="h-10 px-5 rounded-full bg-fbc-card/50 border border-fbc-border flex items-center text-fbc-muted text-xs opacity-50"
-                >
-                  {n}
-                </div>
-              ))}
-            </div>
+        {/* Sponsor oval grid */}
+        <AnimateOnScroll delay={0.1}>
+          <div className="flex flex-wrap gap-4 justify-center mb-6">
+            {SPONSORS.map((s, i) => (
+              <SponsorCard
+                key={s.name}
+                name={s.name}
+                tier={s.tier}
+                fillIdx={fillIdx}
+                myIdx={i}
+              />
+            ))}
+            <YourBrandCard />
           </div>
         </AnimateOnScroll>
 
-        {/* Become a sponsor CTA */}
-        <AnimateOnScroll delay={0.25}>
-          <div
-            className="rounded-3xl p-8 md:p-10 text-center"
-            style={{ background: "linear-gradient(135deg, #0F1E38 0%, #1E3A5F 100%)", border: "1px solid #1E3A5F" }}
-          >
-            <h3 className="font-space font-bold text-2xl md:text-3xl text-fbc-white mb-3">
+        {/* Become a sponsor */}
+        <AnimateOnScroll delay={0.2}>
+          <div className="mt-16 text-center">
+            <div className="border-t border-white/[0.05] mb-10" />
+            <p className="font-mono text-[10px] uppercase tracking-widest text-fbc-muted/40 mb-4">
+              Partner with us
+            </p>
+            <h3 className="font-gigasans font-bold text-2xl md:text-3xl text-fbc-white mb-3">
               Become a sponsor
             </h3>
-            <p className="text-fbc-muted mb-8 max-w-md mx-auto leading-relaxed">
-              Partner with Africa&apos;s biggest Flutter conference and reach thousands of developers,
-              engineers, and tech enthusiasts.
+            <p className="text-fbc-muted text-sm max-w-sm mx-auto leading-relaxed mb-7">
+              Reach 600+ Flutter engineers, founders and tech leaders at Africa&apos;s premier mobile conference.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
                 href="mailto:sponsors@flutterbytes.ng"
-                className="rounded-full px-6 py-3 font-space font-semibold text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_20px_rgba(37,99,235,0.5)] inline-flex items-center justify-center gap-2"
+                className="rounded-full px-6 py-2.5 font-gigasans font-semibold text-sm text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_18px_rgba(42,157,244,0.4)] inline-flex items-center justify-center gap-2"
               >
-                <Mail size={16} />
-                Send us a mail →
+                <Mail size={14} /> Send us a mail →
               </a>
-              <button
-                onClick={copyPhone}
-                className="rounded-full px-6 py-3 font-space font-semibold border border-fbc-sky/40 text-fbc-sky hover:bg-fbc-sky/10 transition-all inline-flex items-center justify-center gap-2"
-                aria-live="polite"
+              <a
+                href="/sponsors"
+                className="rounded-full px-6 py-2.5 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-sky hover:bg-fbc-sky/10 transition-all inline-flex items-center justify-center gap-2"
               >
-                {copied ? <Check size={16} /> : <Phone size={16} />}
-                {copied ? "Copied!" : "Copy phone number"}
-              </button>
+                View sponsorship packages →
+              </a>
             </div>
           </div>
         </AnimateOnScroll>
