@@ -6,6 +6,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
       { protocol: 'https', hostname: 'ui-avatars.com' },
       { protocol: 'https', hostname: 'randomuser.me' },
+      { protocol: 'https', hostname: 'images.pexels.com' },
     ],
   },
 };
