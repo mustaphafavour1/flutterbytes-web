@@ -82,7 +82,7 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
   const secsLeft = Math.ceil(msLeft / 1000);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full gap-6" style={{ minHeight: "min(90vh,680px)", overflowX: "hidden" }}>
+    <div className="flex flex-col items-center justify-center w-full gap-6" style={{ minHeight: "min(90vh,680px)", overflow: "hidden" }}>
       <div className="transform scale-[0.55] sm:scale-[0.75] md:scale-90 lg:scale-100 origin-top">
       <div className="relative" style={{ width: SIZE, height: SIZE }}>
         {/* Outer ring */}
@@ -255,7 +255,7 @@ export default function SpeakersPreview({ speakers, pastSpeakers }: Props) {
         </AnimateOnScroll>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-4 justify-center" role="tablist">
+        <div className="flex gap-2 mb-12 justify-center" role="tablist">
           {([["2026", "2026 Speakers"], ["past", "Past Editions"]] as const).map(([val, label]) => (
             <button
               key={val}

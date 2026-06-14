@@ -113,7 +113,7 @@ export default function ClosingCTA() {
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 text-center">
         <AnimateOnScroll>
           <motion.h2
-            className="font-gigasans font-bold text-4xl md:text-6xl text-white leading-tight mb-6"
+            className="font-gigasans font-bold text-4xl md:text-6xl text-fbc-white leading-tight mb-6"
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}

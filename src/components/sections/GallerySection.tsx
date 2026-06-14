@@ -10,51 +10,51 @@ type Cell = { width: number; circle?: boolean };
 /* 4 layout strips — each defines a horizontal row of compact thumbnails */
 const LAYOUTS: Cell[][] = [
   [
-    { width: 88, circle: true },
+    { width: 176, circle: true },
     { width: 148 },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
     { width: 112 },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
     { width: 216 },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
     { width: 112 },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
     { width: 148 },
   ],
   [
     { width: 112 },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
     { width: 176 },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
     { width: 148 },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
     { width: 112 },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
     { width: 176 },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
   ],
   [
-    { width: 88, circle: true },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
+    { width: 176, circle: true },
     { width: 176 },
-    { width: 88, circle: true },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
+    { width: 176, circle: true },
     { width: 148 },
     { width: 112 },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
     { width: 216 },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
   ],
   [
     { width: 216 },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
     { width: 112 },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
     { width: 148 },
-    { width: 88, circle: true },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
+    { width: 176, circle: true },
     { width: 112 },
-    { width: 88, circle: true },
+    { width: 176, circle: true },
     { width: 176 },
   ],
 ];
@@ -75,10 +75,10 @@ const GRADIENTS = [
 function PhotoCell({ src, gradient, width, circle }: {
   src?: string; gradient: string; width: number; circle?: boolean;
 }) {
-  const height = circle ? width : 96;
+  const height = circle ? width : 192;
   return (
     <div
-      className={`flex-shrink-0 overflow-hidden relative ${circle ? "rounded-full" : "rounded-2xl"}`}
+      className="flex-shrink-0 overflow-hidden relative rounded-full"
       style={{ width, height }}
     >
       {src ? (
@@ -140,7 +140,7 @@ export default function GallerySection() {
         </AnimateOnScroll>
 
         {/* Rotating gallery strip */}
-        <div className="relative overflow-hidden" style={{ minHeight: 104 }}>
+        <div className="relative overflow-hidden" style={{ minHeight: 200 }}>
           <AnimatePresence mode="wait">
             <motion.div
               key={setIdx}

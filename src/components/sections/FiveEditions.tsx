@@ -130,7 +130,7 @@ export default function FiveEditions() {
       {/* Heading */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <AnimateOnScroll>
-          <h2 className="font-gigasans font-black text-3xl md:text-5xl text-white leading-tight">
+          <h2 className="font-gigasans font-black text-3xl md:text-5xl text-fbc-white leading-tight">
             <span className="block">5 Years, 1 Community:</span>
             <span className="block text-fbc-sky">Continuous Growth and Impact</span>
           </h2>
@@ -211,9 +211,9 @@ export default function FiveEditions() {
             const poleBottom = isAbove ? anchorY : 330;
             const poleHeight = Math.abs(poleBottom - poleTop);
 
-            const yearColor  = ed.isCurrent ? "#2A9DF4" : "rgba(148,163,184,0.35)";
-            const dotFill    = ed.isCurrent ? "#2A9DF4" : "#0A1628";
-            const dotBorder  = ed.isCurrent ? "#2A9DF4" : "#1E3A5F";
+            const yearColor  = ed.isCurrent ? "#2A9DF4" : "rgb(var(--color-muted) / 0.5)";
+            const dotFill    = ed.isCurrent ? "#2A9DF4" : "rgb(var(--color-dark))";
+            const dotBorder  = ed.isCurrent ? "#2A9DF4" : "rgb(var(--color-border))";
             const transformOrigin = isAbove ? "top center" : "bottom center";
 
             return (
@@ -229,8 +229,8 @@ export default function FiveEditions() {
                     left: flagLeft,
                     top: flagTop,
                     width: 240,
-                    background: "rgba(6,12,26,0.96)",
-                    border: ed.isCurrent ? "1px solid rgba(42,157,244,0.35)" : "1px solid rgba(18,36,66,0.9)",
+                    background: "rgb(var(--color-card) / 0.97)",
+                    border: ed.isCurrent ? "1px solid rgba(42,157,244,0.35)" : "1px solid rgb(var(--color-border) / 0.6)",
                     backdropFilter: "blur(12px)",
                     WebkitBackdropFilter: "blur(12px)",
                     borderRadius: 10,
@@ -240,23 +240,23 @@ export default function FiveEditions() {
                 >
                   {/* Terminal title bar */}
                   <div style={{
-                    background: "rgba(4,9,20,0.9)",
-                    borderBottom: ed.isCurrent ? "1px solid rgba(42,157,244,0.18)" : "1px solid rgba(18,36,66,0.7)",
+                    background: "rgb(var(--color-navy) / 0.95)",
+                    borderBottom: ed.isCurrent ? "1px solid rgba(42,157,244,0.18)" : "1px solid rgb(var(--color-border) / 0.5)",
                     padding: "7px 10px",
                     display: "flex",
                     alignItems: "center",
                     gap: 5,
                   }}>
-                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: ed.isCurrent ? "#ff5f57" : "#1e2d44" }} />
-                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: ed.isCurrent ? "#febc2e" : "#18273d" }} />
-                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: ed.isCurrent ? "#28c840" : "#121e30" }} />
-                    <span style={{ marginLeft: 8, fontSize: 9, fontFamily: "monospace", color: "rgba(148,163,184,0.3)" }}>
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: ed.isCurrent ? "#ff5f57" : "rgb(var(--color-border))" }} />
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: ed.isCurrent ? "#febc2e" : "rgb(var(--color-border) / 0.7)" }} />
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: ed.isCurrent ? "#28c840" : "rgb(var(--color-border) / 0.5)" }} />
+                    <span style={{ marginLeft: 8, fontSize: 9, fontFamily: "monospace", color: "rgb(var(--color-muted) / 0.4)" }}>
                       edition.dart
                     </span>
                   </div>
                   {/* Terminal content */}
                   <div style={{ padding: "10px 13px", fontFamily: "monospace" }}>
-                    <div style={{ color: "rgba(148,163,184,0.25)", fontSize: 9, marginBottom: 3 }}>
+                    <div style={{ color: "rgb(var(--color-muted) / 0.3)", fontSize: 9, marginBottom: 3 }}>
                       ~/flutterbytes/{ed.year}
                     </div>
                     <div style={{ color: yearColor, fontSize: 28, fontWeight: 900, lineHeight: 1, letterSpacing: "-0.02em" }}>
@@ -265,9 +265,9 @@ export default function FiveEditions() {
                     <div style={{ color: "rgba(96,160,220,0.7)", fontSize: 10, marginTop: 6, lineHeight: 1.45 }}>
                       {"// "}{ed.theme}
                     </div>
-                    <div style={{ borderTop: "1px solid rgba(255,255,255,0.04)", marginTop: 8, paddingTop: 8 }}>
-                      <div style={{ color: "rgba(148,163,184,0.35)", fontSize: 9 }}>{"/* "}{ed.date}</div>
-                      <div style={{ color: "rgba(148,163,184,0.35)", fontSize: 9, marginTop: 2 }}>&nbsp;&nbsp;&nbsp;{ed.attendees}{" */"}</div>
+                    <div style={{ borderTop: "1px solid rgb(var(--color-border) / 0.3)", marginTop: 8, paddingTop: 8 }}>
+                      <div style={{ color: "rgb(var(--color-muted) / 0.5)", fontSize: 9 }}>{"/* "}{ed.date}</div>
+                      <div style={{ color: "rgb(var(--color-muted) / 0.5)", fontSize: 9, marginTop: 2 }}>&nbsp;&nbsp;&nbsp;{ed.attendees}{" */"}</div>
                     </div>
                   </div>
                 </motion.div>

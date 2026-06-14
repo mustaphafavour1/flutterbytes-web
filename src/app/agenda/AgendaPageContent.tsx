@@ -29,21 +29,21 @@ function AgendaComingSoon({ sessions }: { sessions: AgendaSession[] }) {
                     key={ci}
                     className="relative flex-shrink-0 rounded-xl"
                     style={{
-                      width: 180,
-                      height: 90,
+                      width: 270,
+                      height: 135,
                       border: "1px solid rgba(42,157,244,0.08)",
                       background: "rgba(42,157,244,0.04)",
                     }}
                   >
-                    <div className="p-2.5 h-full flex flex-col justify-between">
-                      <p style={{ color: "rgba(148,163,184,0.5)", fontSize: 10, fontWeight: 500 }} className="line-clamp-2 leading-snug">{session.session}</p>
+                    <div className="p-3 h-full flex flex-col justify-between">
+                      <p style={{ color: "rgb(var(--color-muted) / 0.6)", fontSize: 10, fontWeight: 500 }} className="line-clamp-2 leading-snug">{session.session}</p>
                       <div style={{ opacity: 0, borderTop: "1px solid rgba(42,157,244,0.22)", paddingTop: 4 }}>
                         <div className="flex items-center justify-between">
                           <span style={{ fontSize: 9, color: "#38BDF8", fontWeight: 600 }}>{session.time}</span>
-                          <span style={{ fontSize: 9, color: "#94A3B8" }}>{session.hall}</span>
+                          <span style={{ fontSize: 9, color: "rgb(var(--color-muted))" }}>{session.hall}</span>
                         </div>
                       </div>
-                      <p style={{ fontSize: 9, color: "rgba(148,163,184,0.3)" }} className="truncate">{session.speaker.split(",")[0]}</p>
+                      <p style={{ fontSize: 9, color: "rgb(var(--color-muted) / 0.4)" }} className="truncate">{session.speaker.split(",")[0]}</p>
                     </div>
                   </div>
                 ))}
@@ -115,8 +115,8 @@ function PastSessionsGrid({ sessions }: { sessions: AgendaSession[] }) {
                   key={ci}
                   className="relative flex-shrink-0 rounded-xl cursor-pointer"
                   style={{
-                    width: 180,
-                    height: 90,
+                    width: 270,
+                    height: 135,
                     border: `1px solid ${isHovered ? "rgba(42,157,244,0.35)" : "rgba(42,157,244,0.08)"}`,
                     background: isHovered ? "rgba(42,157,244,0.16)" : "rgba(42,157,244,0.04)",
                     transition: "border-color 0.18s, background 0.18s",
@@ -124,15 +124,15 @@ function PastSessionsGrid({ sessions }: { sessions: AgendaSession[] }) {
                   onMouseEnter={() => setHoveredIdx(idx)}
                   onMouseLeave={() => setHoveredIdx(null)}
                 >
-                  <div className="p-2.5 h-full flex flex-col justify-between">
-                    <p style={{ color: isHovered ? "rgba(248,250,255,0.9)" : "rgba(148,163,184,0.5)", fontSize: 10, fontWeight: 500 }} className="line-clamp-2 leading-snug">{session.session}</p>
+                  <div className="p-3 h-full flex flex-col justify-between">
+                    <p style={{ color: isHovered ? "rgb(var(--color-white) / 0.9)" : "rgb(var(--color-muted) / 0.6)", fontSize: 10, fontWeight: 500 }} className="line-clamp-2 leading-snug">{session.session}</p>
                     <div style={{ opacity: isHovered ? 1 : 0, transition: "opacity 0.18s", borderTop: "1px solid rgba(42,157,244,0.22)", paddingTop: 4 }}>
                       <div className="flex items-center justify-between">
                         <span style={{ fontSize: 9, color: "#38BDF8", fontWeight: 600 }}>{session.time}</span>
-                        <span style={{ fontSize: 9, color: "#94A3B8" }}>{session.hall}</span>
+                        <span style={{ fontSize: 9, color: "rgb(var(--color-muted))" }}>{session.hall}</span>
                       </div>
                     </div>
-                    <p style={{ fontSize: 9, color: isHovered ? "rgba(148,163,184,0.7)" : "rgba(148,163,184,0.3)" }} className="truncate">{session.speaker.split(",")[0]}</p>
+                    <p style={{ fontSize: 9, color: isHovered ? "rgb(var(--color-muted) / 0.8)" : "rgb(var(--color-muted) / 0.4)" }} className="truncate">{session.speaker.split(",")[0]}</p>
                   </div>
                 </div>
               );

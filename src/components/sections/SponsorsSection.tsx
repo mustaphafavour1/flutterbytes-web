@@ -38,7 +38,7 @@ function SponsorCard({ name, tier, fillIdx, myIdx }: {
     <div className="relative w-36 sm:w-44" style={{ height: 84 }}>
       {/* Dimmed base */}
       <div
-        className="absolute inset-0 rounded-[28px] flex items-center justify-center"
+        className="absolute inset-0 rounded-full flex items-center justify-center"
         style={{
           background: "rgba(15,30,56,0.7)",
           border: "1px solid rgba(30,58,95,0.6)",
@@ -51,14 +51,14 @@ function SponsorCard({ name, tier, fillIdx, myIdx }: {
 
       {/* Fill overlay — uses clipPath so it doesn't cause layout reflow */}
       <motion.div
-        className="absolute inset-0 rounded-[28px] flex items-center justify-center"
+        className="absolute inset-0 rounded-full flex items-center justify-center"
         style={{ background: "rgba(255,255,255,0.97)" }}
         animate={{
           clipPath: isFilled
-            ? "inset(0% 0 0% 0 round 28px)"
+            ? "inset(0% 0 0% 0 round 9999px)"
             : isActive
-            ? ["inset(100% 0 0% 0 round 28px)", "inset(0% 0 0% 0 round 28px)"]
-            : "inset(100% 0 0% 0 round 28px)",
+            ? ["inset(100% 0 0% 0 round 9999px)", "inset(0% 0 0% 0 round 9999px)"]
+            : "inset(100% 0 0% 0 round 9999px)",
         }}
         transition={{ duration: 0.55, ease: "easeInOut" }}
       >
@@ -76,7 +76,7 @@ function SponsorCard({ name, tier, fillIdx, myIdx }: {
 function YourBrandCard() {
   return (
     <motion.div
-      className="relative rounded-[28px] flex items-center justify-center w-36 sm:w-44"
+      className="relative rounded-full flex items-center justify-center w-36 sm:w-44"
       style={{
         height: 84,
         border: "1.5px dashed rgba(42,157,244,0.4)",

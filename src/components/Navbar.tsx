@@ -20,7 +20,7 @@ function Logo() {
   const src = !mounted || resolvedTheme === "dark" ? "/logo-dark.png" : "/logo-light.png";
   return (
     <a href="/" className="flex items-center" aria-label="FlutterBytes Conference Home">
-      <Image src={src} alt="FlutterBytes Conference" width={140} height={36} className="h-9 w-auto" priority />
+      <Image src={src} alt="FlutterBytes Conference" width={120} height={32} className="h-8 w-auto" priority />
     </a>
   );
 }
@@ -38,16 +38,19 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-fbc-navy/80 backdrop-blur-xl ${
-          scrolled ? "border-b border-white/[0.07] shadow-lg shadow-black/20" : "border-b border-white/[0.04]"
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-sm ${
+          scrolled ? "border-b border-fbc-border/20" : ""
         }`}
         aria-label="Main navigation"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Logo />
+          <div className="flex items-center h-14">
+            {/* Logo — flex-1 left */}
+            <div className="flex-1 flex items-center">
+              <Logo />
+            </div>
 
-            {/* Center pill nav — desktop */}
+            {/* Center pill nav — desktop only, truly centered */}
             <div className="hidden lg:flex items-center bg-fbc-card/60 backdrop-blur border border-white/10 rounded-full px-2 py-1 gap-0.5">
               {navLinks.map((link) => (
                 <a
@@ -60,26 +63,28 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* Right */}
-            <div className="hidden lg:flex items-center gap-3">
-              <ThemeToggle />
+            {/* Right side — flex-1 right */}
+            <div className="flex-1 flex items-center justify-end gap-3">
+              {/* Desktop: Get Tickets then ThemeToggle */}
               <a
                 href="#tickets"
-                className="rounded-full px-5 py-2.5 text-sm font-semibold text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_20px_rgba(37,99,235,0.5)] hover:shadow-[0_0_30px_rgba(96,165,250,0.6)]"
+                className="hidden lg:inline-flex rounded-full px-5 py-2.5 text-sm font-semibold text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_20px_rgba(37,99,235,0.5)] hover:shadow-[0_0_30px_rgba(96,165,250,0.6)]"
               >
                 Get Tickets
               </a>
+              <div className="hidden lg:block">
+                <ThemeToggle />
+              </div>
+              {/* Mobile hamburger */}
+              <button
+                className="lg:hidden w-10 h-10 flex items-center justify-center rounded-full border border-fbc-border/40 text-fbc-muted hover:text-fbc-white transition-colors"
+                onClick={() => setMobileOpen(!mobileOpen)}
+                aria-label={mobileOpen ? "Close menu" : "Open menu"}
+                aria-expanded={mobileOpen}
+              >
+                {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+              </button>
             </div>
-
-            {/* Mobile hamburger */}
-            <button
-              className="lg:hidden w-10 h-10 flex items-center justify-center rounded-full border border-white/10 text-fbc-muted hover:text-white transition-colors"
-              onClick={() => setMobileOpen(!mobileOpen)}
-              aria-label={mobileOpen ? "Close menu" : "Open menu"}
-              aria-expanded={mobileOpen}
-            >
-              {mobileOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
           </div>
         </div>
       </nav>

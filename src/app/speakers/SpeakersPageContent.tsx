@@ -16,7 +16,7 @@ export default function SpeakersPageContent({ speakers, pastSpeakers }: Props) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
       {/* Tabs */}
-      <div className="flex gap-2 mb-4 justify-center" role="tablist">
+      <div className="flex gap-2 mb-12 justify-center" role="tablist">
         {([["2026", "2026 Speakers"], ["past", "Past Editions"]] as const).map(([val, label]) => (
           <button
             key={val}

@@ -108,7 +108,7 @@ export default function CommitteeSection({ members }: Props) {
     <section id="committee" className="relative py-16 sm:py-24 md:py-32 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateOnScroll>
-          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-white mb-3 text-center">
+          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-3 text-center">
             The Flutter Bytes
           </h2>
           <p className="font-gigasans font-semibold text-base md:text-lg text-fbc-white/80 mb-3 text-center max-w-2xl mx-auto">
@@ -216,7 +216,7 @@ export default function CommitteeSection({ members }: Props) {
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
                 >
-                  <p className="text-white font-semibold text-xs leading-tight">{activeMember.name}</p>
+                  <p className="text-fbc-white font-semibold text-xs leading-tight">{activeMember.name}</p>
                   <p className="text-fbc-muted text-[10px] leading-snug mt-0.5">{activeMember.role}</p>
                 </motion.div>
               )}
