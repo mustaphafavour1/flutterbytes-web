@@ -198,7 +198,7 @@ function CodeBg() {
             key={i}
             className="font-mono text-[10px] leading-[1.65] whitespace-pre"
             style={{
-              color: "rgba(56,189,248,0.065)",
+              color: "var(--code-text-color)",
               maskImage:
                 "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 12%, rgba(0,0,0,0.7) 88%, transparent 100%)",
               WebkitMaskImage:
@@ -295,7 +295,7 @@ const POS_SWAPPED = [
 
 function StatChip({ stat }: { stat: typeof STATS[0] }) {
   return (
-    <div className="relative flex items-center bg-white/[0.06] backdrop-blur-md border border-white/[0.13] rounded-full overflow-visible shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
+    <div className="relative flex items-center bg-fbc-card/50 backdrop-blur-md border border-fbc-border/40 rounded-full overflow-visible" style={{ boxShadow: "var(--stat-chip-shadow)" }}>
       <span
         className="font-gigasans font-black text-fbc-sky leading-none px-3 flex-shrink-0"
         style={{ fontSize: "1.5rem", marginTop: -7, marginBottom: -7 }}
@@ -380,12 +380,12 @@ export default function Hero() {
       >
         {/* File-tab badge */}
         <motion.div variants={item} className="flex justify-center mb-8">
-          <div className="inline-flex items-center gap-3 font-mono text-sm bg-fbc-card/90 border border-fbc-border rounded-full px-5 py-2.5 min-w-0 w-full max-w-sm sm:w-auto">
-            <span className="w-2 h-2 rounded-full bg-fbc-sky/70 flex-shrink-0" />
-            <span className="text-fbc-white text-sm">FlutterBytes2026.dart</span>
+          <div className="inline-flex items-center gap-2 font-mono text-xs bg-fbc-card/90 border border-fbc-border rounded-full px-4 py-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-fbc-sky/70 flex-shrink-0" />
+            <span className="text-fbc-white">FlutterBytes2026.dart</span>
             <span className="text-fbc-sky/50 animate-cursor-blink flex-shrink-0">|</span>
-            <span className="text-fbc-blue font-semibold whitespace-nowrap text-sm flex-shrink-0">
-              Friday &amp; Saturday, Oct 30–31, 2026
+            <span className="text-fbc-blue font-semibold flex-shrink-0">
+              <span className="hidden sm:inline">Friday &amp; Saturday, </span>Oct 30–31, 2026
             </span>
           </div>
         </motion.div>
@@ -396,12 +396,12 @@ export default function Hero() {
           className="font-gigasans font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05] tracking-tight mb-6"
           aria-label="Becoming Flutter AI Engineer"
         >
-          <span className="block text-white">
+          <span className="block text-fbc-white">
             Becoming Flu
             <AnimatedLetters letters="tt" icon={currentPair.tt} showIcon={showIcon} />
             er
           </span>
-          <span className="block text-white mt-1">
+          <span className="block text-fbc-white mt-1">
             AI Engin
             <AnimatedLetters letters="ee" icon={currentPair.ee} showIcon={showIcon} />
             r

@@ -34,6 +34,15 @@ html.light {
   --color-white: 15 23 42;
   --color-muted: 71 85 105;
   --color-border: 203 213 225;
+  /* Light-mode overrides for specific use-cases */
+  --code-text-color: rgba(5,14,31,0.06);
+  --stat-chip-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Dark-mode defaults for the above vars */
+:root {
+  --code-text-color: rgba(56,189,248,0.065);
+  --stat-chip-shadow: 0 4px 24px rgba(0,0,0,0.4);
 }
 
 html {
