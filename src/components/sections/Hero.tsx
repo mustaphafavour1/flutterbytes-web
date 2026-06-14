@@ -390,21 +390,18 @@ export default function Hero() {
           </div>
         </motion.div>
 
-        {/* Main heading */}
+        {/* Main heading — 3 explicit lines so words never break mid-word on any screen */}
         <motion.h1
           variants={item}
           className="font-gigasans font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05] tracking-tight mb-6"
           aria-label="Becoming Flutter AI Engineer"
         >
-          <span className="block text-fbc-white">
-            Becoming Flu
-            <AnimatedLetters letters="tt" icon={currentPair.tt} showIcon={showIcon} />
-            er
+          <span className="block text-fbc-white">Becoming</span>
+          <span className="block text-fbc-white mt-1">
+            Flu<AnimatedLetters letters="tt" icon={currentPair.tt} showIcon={showIcon} />er
           </span>
           <span className="block text-fbc-white mt-1">
-            AI Engin
-            <AnimatedLetters letters="ee" icon={currentPair.ee} showIcon={showIcon} />
-            r
+            AI Engin<AnimatedLetters letters="ee" icon={currentPair.ee} showIcon={showIcon} />r
           </span>
         </motion.h1>
 

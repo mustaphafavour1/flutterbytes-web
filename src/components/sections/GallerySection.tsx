@@ -72,10 +72,10 @@ const GRADIENTS = [
   "from-slate-900 to-blue-800",
 ];
 
-function PhotoCell({ src, gradient, width, circle }: {
-  src?: string; gradient: string; width: number; circle?: boolean;
+function PhotoCell({ src, gradient, width, height: heightProp, circle }: {
+  src?: string; gradient: string; width: number; height?: number; circle?: boolean;
 }) {
-  const height = circle ? width : 192;
+  const height = heightProp ?? (circle ? width : 192);
   return (
     <div
       className="flex-shrink-0 overflow-hidden relative rounded-full"
@@ -101,6 +101,35 @@ function GalleryStrip({ layout, photos }: { layout: Cell[]; photos: string[] }) 
           width={cell.width}
           circle={cell.circle}
         />
+      ))}
+    </div>
+  );
+}
+
+const MOBILE_SCALE = 0.55;
+
+function MobileGallery({ photos }: { photos: string[] }) {
+  return (
+    <div className="flex flex-col gap-4">
+      {LAYOUTS.slice(0, 3).map((layout, ri) => (
+        <div key={ri} className="overflow-x-auto scrollbar-hide">
+          <div className="flex gap-3 items-center px-4" style={{ minWidth: "max-content" }}>
+            {layout.map((cell, ci) => {
+              const mw = Math.round(cell.width * MOBILE_SCALE);
+              const mh = cell.circle ? mw : Math.round(192 * MOBILE_SCALE);
+              return (
+                <PhotoCell
+                  key={ci}
+                  src={photos[ci]}
+                  gradient={GRADIENTS[ci % GRADIENTS.length]}
+                  width={mw}
+                  height={mh}
+                  circle={cell.circle}
+                />
+              );
+            })}
+          </div>
+        </div>
       ))}
     </div>
   );
@@ -139,33 +168,40 @@ export default function GallerySection() {
           </p>
         </AnimateOnScroll>
 
-        {/* Rotating gallery strip */}
-        <div className="relative overflow-hidden" style={{ minHeight: 200 }}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={setIdx}
-              initial={{ opacity: 0, x: 80 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -80 }}
-              transition={{ duration: 0.45, ease: "easeInOut" }}
-            >
-              <GalleryStrip layout={LAYOUTS[setIdx]} photos={photos} />
-            </motion.div>
-          </AnimatePresence>
+        {/* Mobile gallery — 3 horizontal scroll rows */}
+        <div className="md:hidden mb-8">
+          <MobileGallery photos={photos} />
         </div>
 
-        {/* Set indicator dots */}
-        <div className="flex justify-center gap-2 mt-6 mb-8">
-          {LAYOUTS.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setSetIdx(i)}
-              className={`rounded-full transition-all duration-300 ${
-                i === setIdx ? "w-6 h-1.5 bg-fbc-sky" : "w-1.5 h-1.5 bg-fbc-border"
-              }`}
-              aria-label={`Photo set ${i + 1}`}
-            />
-          ))}
+        {/* Desktop gallery — rotating single strip */}
+        <div className="hidden md:block">
+          <div className="relative overflow-hidden" style={{ minHeight: 200 }}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={setIdx}
+                initial={{ opacity: 0, x: 80 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -80 }}
+                transition={{ duration: 0.45, ease: "easeInOut" }}
+              >
+                <GalleryStrip layout={LAYOUTS[setIdx]} photos={photos} />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Set indicator dots — desktop only */}
+          <div className="flex justify-center gap-2 mt-6 mb-8">
+            {LAYOUTS.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setSetIdx(i)}
+                className={`rounded-full transition-all duration-300 ${
+                  i === setIdx ? "w-6 h-1.5 bg-fbc-sky" : "w-1.5 h-1.5 bg-fbc-border"
+                }`}
+                aria-label={`Photo set ${i + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
         <AnimateOnScroll delay={0.1}>
