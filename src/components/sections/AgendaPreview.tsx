@@ -62,34 +62,40 @@ function AgendaGrid({ sessions }: { sessions: AgendaSession[] }) {
                   key={ci}
                   className="relative flex-shrink-0 rounded-xl cursor-pointer"
                   style={{
-                    width: 180,
-                    height: 90,
-                    border: `1px solid ${isHovered ? "rgba(42,157,244,0.35)" : "rgba(42,157,244,0.08)"}`,
-                    background: "rgba(42,157,244,0.07)",
-                    transition: "border-color 0.18s",
+                    width: 270,
+                    height: 135,
+                    border: `1px solid ${isHovered ? "rgba(42,157,244,0.38)" : "rgba(42,157,244,0.07)"}`,
+                    background: isHovered ? "rgba(42,157,244,0.14)" : "rgba(42,157,244,0.04)",
+                    transition: "border-color 0.18s, background 0.18s",
                   }}
                   onMouseEnter={() => setHoveredIdx(idx)}
                   onMouseLeave={() => setHoveredIdx(null)}
                 >
-                  <div className="p-2.5 h-full flex flex-col justify-between">
-                    <p className="text-fbc-white/80 text-[10px] font-medium leading-snug line-clamp-2">
+                  <div className="p-3.5 h-full flex flex-col justify-between">
+                    <p
+                      className="text-[11px] font-medium leading-snug line-clamp-3"
+                      style={{ color: isHovered ? "rgba(248,250,255,0.9)" : "rgba(148,163,184,0.5)", transition: "color 0.18s" }}
+                    >
                       {session.session}
                     </p>
-                    {/* Time + hall — always in layout, opacity toggles on hover so speaker stays at bottom */}
+                    {/* Time + hall — always in layout, opacity toggles so speaker stays at bottom */}
                     <div
                       style={{
                         opacity: isHovered ? 1 : 0,
                         transition: "opacity 0.18s",
                         borderTop: "1px solid rgba(42,157,244,0.22)",
-                        paddingTop: 4,
+                        paddingTop: 5,
                       }}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-fbc-sky font-semibold" style={{ fontSize: 9 }}>{session.time}</span>
-                        <span className="text-fbc-muted" style={{ fontSize: 9 }}>{session.hall}</span>
+                        <span className="text-fbc-sky font-semibold" style={{ fontSize: 10 }}>{session.time}</span>
+                        <span className="text-fbc-muted" style={{ fontSize: 10 }}>{session.hall}</span>
                       </div>
                     </div>
-                    <p className="text-fbc-muted/50 truncate" style={{ fontSize: 9 }}>
+                    <p
+                      className="truncate"
+                      style={{ fontSize: 10, color: isHovered ? "rgba(148,163,184,0.75)" : "rgba(148,163,184,0.3)", transition: "color 0.18s" }}
+                    >
                       {session.speaker.split(",")[0]}
                     </p>
                   </div>

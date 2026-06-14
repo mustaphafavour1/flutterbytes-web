@@ -1,5 +1,4 @@
 "use client";
-import { motion } from "framer-motion";
 import { Users, BrainCircuit, TrendingUp, Heart } from "lucide-react";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 
@@ -12,21 +11,16 @@ const values = [
 
 export default function AboutValueCards() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="divide-y divide-fbc-border/30">
       {values.map(({ Icon, title, desc }, i) => (
-        <AnimateOnScroll key={title} delay={i * 0.1}>
-          <motion.div
-            whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(42,157,244,0.15)" }}
-            className="rounded-2xl bg-fbc-card border border-fbc-border p-6 flex gap-4"
-          >
-            <div className="w-10 h-10 rounded-xl bg-fbc-blue/20 flex items-center justify-center flex-shrink-0">
-              <Icon size={20} className="text-fbc-sky" />
-            </div>
+        <AnimateOnScroll key={title} delay={i * 0.08}>
+          <div className="flex gap-5 py-6">
+            <Icon size={18} className="text-fbc-sky mt-0.5 flex-shrink-0" />
             <div>
-              <h3 className="font-space font-semibold text-fbc-white mb-1">{title}</h3>
+              <h3 className="font-space font-semibold text-fbc-white text-sm mb-1">{title}</h3>
               <p className="text-fbc-muted text-sm leading-relaxed">{desc}</p>
             </div>
-          </motion.div>
+          </div>
         </AnimateOnScroll>
       ))}
     </div>

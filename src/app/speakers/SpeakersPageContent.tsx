@@ -1,137 +1,88 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, X, AtSign, ExternalLink } from "lucide-react";
-import Image from "next/image";
-import SpeakerCard from "@/components/SpeakerCard";
+import SpeakerWheel from "@/components/SpeakerWheel";
 import type { Speaker } from "@/data/fallback-speakers";
 
-interface ModalProps {
-  speaker: Speaker;
-  onClose: () => void;
+interface Props {
+  speakers: Speaker[];
+  pastSpeakers: Speaker[];
 }
 
-function SpeakerModal({ speaker, onClose }: ModalProps) {
-  const initials = speaker.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ scale: 0.95, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.95, y: 20 }}
-        transition={{ duration: 0.2 }}
-        className="bg-fbc-card border border-fbc-border rounded-3xl p-8 max-w-md w-full relative"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 rounded-full border border-fbc-border flex items-center justify-center text-fbc-muted hover:text-fbc-white transition-colors"
-          aria-label="Close"
-        >
-          <X size={14} />
-        </button>
-
-        <div className="flex items-center gap-5 mb-6">
-          <div
-            className="rounded-[40%] border-2 border-fbc-border overflow-hidden flex-shrink-0"
-            style={{ width: 80, height: 100 }}
-          >
-            {speaker.photo && !speaker.photo.includes("ui-avatars") ? (
-              <Image src={speaker.photo} alt={speaker.name} width={80} height={100} className="object-cover w-full h-full" />
-            ) : (
-              <div className="w-full h-full bg-fbc-dark flex items-center justify-center">
-                <span className="font-space font-bold text-lg text-fbc-sky/70">{initials}</span>
-              </div>
-            )}
-          </div>
-          <div>
-            <h2 className="font-space font-bold text-fbc-white text-xl">{speaker.name}</h2>
-            <p className="text-fbc-muted text-sm">{speaker.role}</p>
-            <p className="text-fbc-blue text-sm font-medium">{speaker.company}</p>
-            {speaker.twitter && (
-              <a
-                href={`https://twitter.com/${speaker.twitter.replace("@", "")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 text-fbc-sky/70 text-xs mt-1 hover:text-fbc-sky transition-colors"
-              >
-                <AtSign size={11} />
-                {speaker.twitter}
-                <ExternalLink size={9} />
-              </a>
-            )}
-          </div>
-        </div>
-
-        {speaker.bio && (
-          <p className="text-fbc-muted text-sm leading-relaxed mb-4">{speaker.bio}</p>
-        )}
-
-        {speaker.tags && speaker.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {speaker.tags.map((t) => (
-              <span key={t} className="text-xs rounded-full px-3 py-1 bg-fbc-blue/15 text-fbc-sky border border-fbc-border">
-                {t}
-              </span>
-            ))}
-          </div>
-        )}
-      </motion.div>
-    </motion.div>
-  );
-}
-
-export default function SpeakersPageContent({ speakers }: { speakers: Speaker[] }) {
-  const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<Speaker | null>(null);
-
-  const filtered = speakers.filter((s) => {
-    return (
-      !search ||
-      s.name.toLowerCase().includes(search.toLowerCase()) ||
-      s.company.toLowerCase().includes(search.toLowerCase())
-    );
-  });
+export default function SpeakersPageContent({ speakers, pastSpeakers }: Props) {
+  const [tab, setTab] = useState<"2026" | "past">("past");
+  const allPast = pastSpeakers.length > 0 ? pastSpeakers : speakers;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-      {/* Search */}
-      <div className="flex mb-10">
-        <div className="relative flex-1 max-w-sm">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-fbc-muted" aria-hidden="true" />
-          <input
-            type="search"
-            placeholder="Search speakers..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-full bg-fbc-card border border-fbc-border text-fbc-white placeholder:text-fbc-muted/50 text-sm focus:outline-none focus:border-fbc-sky transition-colors"
-          />
-        </div>
-      </div>
-
-      {/* Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
-        {filtered.map((s, i) => (
-          <SpeakerCard key={s.name} speaker={s} index={i} onClick={() => setSelected(s)} />
+      {/* Tabs */}
+      <div className="flex gap-2 mb-4 justify-center" role="tablist">
+        {([["2026", "2026 Speakers"], ["past", "Past Editions"]] as const).map(([val, label]) => (
+          <button
+            key={val}
+            role="tab"
+            aria-selected={tab === val}
+            onClick={() => setTab(val)}
+            className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${
+              tab === val
+                ? "bg-fbc-blue text-white shadow-[0_0_14px_rgba(42,157,244,0.4)]"
+                : "bg-fbc-card border border-fbc-border text-fbc-muted hover:text-fbc-white"
+            }`}
+          >
+            {label}
+          </button>
         ))}
       </div>
 
-      {filtered.length === 0 && (
-        <p className="text-center text-fbc-muted py-20">No speakers match your search.</p>
-      )}
-
-      {/* Modal */}
-      <AnimatePresence>
-        {selected && (
-          <SpeakerModal speaker={selected} onClose={() => setSelected(null)} />
-        )}
-      </AnimatePresence>
+      {/* Content */}
+      <div className="flex items-center justify-center">
+        <AnimatePresence mode="wait">
+          {tab === "2026" ? (
+            <motion.div
+              key="2026"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.2 }}
+              className="relative w-full"
+            >
+              {/* Blurred wheel behind overlay */}
+              <div className="pointer-events-none select-none" style={{ filter: "blur(4px)", opacity: 0.3 }}>
+                <SpeakerWheel speakers={allPast} />
+              </div>
+              {/* Coming soon overlay */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="bg-fbc-card/95 backdrop-blur-xl rounded-2xl px-8 py-10 text-center border border-fbc-border max-w-sm shadow-2xl">
+                  <div className="text-5xl mb-5">🚀</div>
+                  <h3 className="font-gigasans font-bold text-fbc-white text-2xl mb-3">
+                    Speakers coming soon
+                  </h3>
+                  <p className="text-fbc-muted text-sm leading-relaxed mb-6">
+                    We&apos;re finalising an incredible lineup of speakers for the 5th edition. Stay tuned.
+                  </p>
+                  <button
+                    onClick={() => setTab("past")}
+                    className="rounded-full px-6 py-3 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-sky hover:bg-fbc-sky/10 transition-all"
+                  >
+                    See past speakers
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="past"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.2 }}
+              className="w-full"
+            >
+              <SpeakerWheel speakers={allPast} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

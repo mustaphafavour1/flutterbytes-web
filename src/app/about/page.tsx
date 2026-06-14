@@ -53,7 +53,7 @@ export default async function AboutPage() {
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {globalStats.map((s) => (
-                <div key={s.label} className="text-center p-6 rounded-2xl bg-fbc-card border border-fbc-border">
+                <div key={s.label} className="text-center p-6 rounded-[999px] bg-fbc-card border border-fbc-border">
                   <div className="font-space font-bold text-4xl text-fbc-sky">{s.value}</div>
                   <div className="text-fbc-muted text-sm mt-1">{s.label}</div>
                 </div>

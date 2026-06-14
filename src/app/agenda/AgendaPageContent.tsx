@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ExternalLink } from "lucide-react";
 import type { AgendaSession } from "@/data/fallback-agenda";
 
 interface Props {
@@ -10,69 +9,59 @@ interface Props {
   pastSessions?: AgendaSession[];
 }
 
-function buildCalendarUrl(session: AgendaSession, day: "friday" | "saturday"): string {
-  const date = day === "friday" ? "20261030" : "20261031";
-  const [startRaw] = session.time.split("–");
-  const start = startRaw.replace(":", "");
-  const title = encodeURIComponent(session.session);
-  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${date}T${start.padStart(4, "0")}00/${date}T${start.padStart(4, "0")}00&location=Zone+Tech+Park,+Gbagada,+Lagos`;
-}
-
-function SessionRow({ session, day }: { session: AgendaSession; day: "friday" | "saturday" }) {
-  const [open, setOpen] = useState(false);
+/* ── Coming-soon overlay for upcoming day tabs ── */
+function AgendaComingSoon({ sessions }: { sessions: AgendaSession[] }) {
+  const ROWS = 4;
+  const perRow = Math.ceil(sessions.length / ROWS);
+  const rows = Array.from({ length: ROWS }, (_, r) =>
+    sessions.slice(r * perRow, (r + 1) * perRow)
+  );
 
   return (
-    <>
-      <tr
-        className="border-t border-fbc-border/50 hover:bg-fbc-blue/10 transition-colors cursor-pointer"
-        onClick={() => setOpen(!open)}
-        aria-expanded={open}
-      >
-        <td className="px-5 py-4 text-fbc-sky font-mono text-sm whitespace-nowrap">{session.time}</td>
-        <td className="px-5 py-4 text-fbc-white text-sm font-medium leading-snug">
-          <span className="flex items-center gap-2">
-            {session.session}
-            <ChevronDown
-              size={14}
-              className={`text-fbc-muted transition-transform ${open ? "rotate-180" : ""}`}
-              aria-hidden="true"
-            />
-          </span>
-        </td>
-        <td className="px-5 py-4 text-fbc-muted text-sm">{session.speaker}</td>
-        <td className="px-5 py-4">
-          <span className="text-xs bg-fbc-blue/15 text-fbc-sky border border-fbc-border rounded-full px-3 py-1 whitespace-nowrap">
-            {session.hall}
-          </span>
-        </td>
-        <td className="px-5 py-4 no-print">
-          <a
-            href={buildCalendarUrl(session, day)}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="text-fbc-muted hover:text-fbc-sky transition-colors inline-flex items-center gap-1 text-xs"
-            aria-label={`Add ${session.session} to Google Calendar`}
-          >
-            <ExternalLink size={12} />
-            <span className="hidden sm:inline">Calendar</span>
-          </a>
-        </td>
-      </tr>
-      {open && session.tags && session.tags.length > 0 && (
-        <tr className="bg-fbc-dark/60">
-          <td colSpan={5} className="px-5 py-3">
-            <div className="flex flex-wrap gap-2">
-              {session.tags.map((t) => (
-                <span key={t} className="text-xs rounded-full px-3 py-1 bg-fbc-blue/15 text-fbc-sky border border-fbc-border">
-                  {t}
-                </span>
-              ))}
-            </div>
-          </td>
-        </tr>
-      )}
-    </>
+    <div className="relative">
+      <div className="pointer-events-none select-none" style={{ filter: "blur(5px)", opacity: 0.25 }}>
+        <div className="overflow-x-hidden pb-2">
+          <div className="inline-flex flex-col gap-2" style={{ minWidth: "max-content" }}>
+            {rows.map((row, ri) => (
+              <div key={ri} className="flex gap-2">
+                {row.map((session, ci) => (
+                  <div
+                    key={ci}
+                    className="relative flex-shrink-0 rounded-xl"
+                    style={{
+                      width: 180,
+                      height: 90,
+                      border: "1px solid rgba(42,157,244,0.08)",
+                      background: "rgba(42,157,244,0.04)",
+                    }}
+                  >
+                    <div className="p-2.5 h-full flex flex-col justify-between">
+                      <p style={{ color: "rgba(148,163,184,0.5)", fontSize: 10, fontWeight: 500 }} className="line-clamp-2 leading-snug">{session.session}</p>
+                      <div style={{ opacity: 0, borderTop: "1px solid rgba(42,157,244,0.22)", paddingTop: 4 }}>
+                        <div className="flex items-center justify-between">
+                          <span style={{ fontSize: 9, color: "#38BDF8", fontWeight: 600 }}>{session.time}</span>
+                          <span style={{ fontSize: 9, color: "#94A3B8" }}>{session.hall}</span>
+                        </div>
+                      </div>
+                      <p style={{ fontSize: 9, color: "rgba(148,163,184,0.3)" }} className="truncate">{session.speaker.split(",")[0]}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="bg-fbc-card/95 backdrop-blur-xl rounded-2xl px-8 py-7 text-center border border-fbc-border max-w-xs shadow-2xl">
+          <div className="text-3xl mb-3">🛠️</div>
+          <h3 className="font-gigasans font-bold text-fbc-white text-lg mb-2">Agenda in the works</h3>
+          <p className="text-fbc-muted text-sm leading-relaxed">
+            We&apos;re curating the best sessions. Check back soon.
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -121,48 +110,31 @@ function PastSessionsGrid({ sessions }: { sessions: AgendaSession[] }) {
             {row.map((session, ci) => {
               const idx = ri * perRow + ci;
               const isHovered = hoveredIdx === idx;
-              const isNear = hoveredIdx !== null && Math.abs(hoveredIdx - idx) <= 1 && !isHovered;
               return (
-                <motion.div
+                <div
                   key={ci}
-                  className="relative flex-shrink-0 rounded-xl cursor-pointer overflow-hidden"
-                  style={{ width: 158, height: 70, border: "1px solid rgba(42,157,244,0.07)" }}
+                  className="relative flex-shrink-0 rounded-xl cursor-pointer"
+                  style={{
+                    width: 180,
+                    height: 90,
+                    border: `1px solid ${isHovered ? "rgba(42,157,244,0.35)" : "rgba(42,157,244,0.08)"}`,
+                    background: isHovered ? "rgba(42,157,244,0.16)" : "rgba(42,157,244,0.04)",
+                    transition: "border-color 0.18s, background 0.18s",
+                  }}
                   onMouseEnter={() => setHoveredIdx(idx)}
                   onMouseLeave={() => setHoveredIdx(null)}
-                  animate={{
-                    background: isHovered
-                      ? "rgba(42,157,244,0.28)"
-                      : isNear
-                      ? "rgba(42,157,244,0.16)"
-                      : "rgba(42,157,244,0.09)",
-                    borderColor: isHovered
-                      ? "rgba(42,157,244,0.50)"
-                      : "rgba(42,157,244,0.07)",
-                  }}
-                  transition={{ duration: 0.18 }}
                 >
                   <div className="p-2.5 h-full flex flex-col justify-between">
-                    <p className="text-fbc-white/80 text-[10px] font-medium leading-snug line-clamp-2">
-                      {session.session}
-                    </p>
-                    <p className="text-fbc-muted/50 text-[9px] truncate">{session.speaker.split(",")[0]}</p>
+                    <p style={{ color: isHovered ? "rgba(248,250,255,0.9)" : "rgba(148,163,184,0.5)", fontSize: 10, fontWeight: 500 }} className="line-clamp-2 leading-snug">{session.session}</p>
+                    <div style={{ opacity: isHovered ? 1 : 0, transition: "opacity 0.18s", borderTop: "1px solid rgba(42,157,244,0.22)", paddingTop: 4 }}>
+                      <div className="flex items-center justify-between">
+                        <span style={{ fontSize: 9, color: "#38BDF8", fontWeight: 600 }}>{session.time}</span>
+                        <span style={{ fontSize: 9, color: "#94A3B8" }}>{session.hall}</span>
+                      </div>
+                    </div>
+                    <p style={{ fontSize: 9, color: isHovered ? "rgba(148,163,184,0.7)" : "rgba(148,163,184,0.3)" }} className="truncate">{session.speaker.split(",")[0]}</p>
                   </div>
-                  <AnimatePresence>
-                    {isHovered && (
-                      <motion.div
-                        initial={{ y: "100%" }}
-                        animate={{ y: 0 }}
-                        exit={{ y: "100%" }}
-                        transition={{ duration: 0.16 }}
-                        className="absolute bottom-0 left-0 right-0 px-2.5 py-1.5 flex items-center justify-between"
-                        style={{ background: "rgba(42,157,244,0.50)" }}
-                      >
-                        <span className="text-white text-[10px] font-bold">{session.time}</span>
-                        <span className="text-white/90 text-[10px] font-semibold">{session.hall}</span>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
+                </div>
               );
             })}
           </div>
@@ -222,25 +194,8 @@ export default function AgendaPageContent({ friday, saturday, pastSessions }: Pr
               <PastSessionsGrid sessions={combinedPast} />
             </div>
           ) : (
-            <div className="rounded-3xl overflow-hidden border border-fbc-border bg-fbc-card/40 backdrop-blur">
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[640px]">
-                  <thead>
-                    <tr className="bg-fbc-blue/20">
-                      <th className="text-left px-5 py-4 text-fbc-sky text-xs font-semibold uppercase tracking-wider">Time</th>
-                      <th className="text-left px-5 py-4 text-fbc-sky text-xs font-semibold uppercase tracking-wider">Session</th>
-                      <th className="text-left px-5 py-4 text-fbc-sky text-xs font-semibold uppercase tracking-wider">Speaker</th>
-                      <th className="text-left px-5 py-4 text-fbc-sky text-xs font-semibold uppercase tracking-wider">Hall</th>
-                      <th className="text-left px-5 py-4 text-fbc-sky text-xs font-semibold uppercase tracking-wider no-print">+Cal</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(tab === "friday" ? friday : saturday).map((s, i) => (
-                      <SessionRow key={i} session={s} day={tab} />
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+            <div className="rounded-3xl overflow-hidden border border-fbc-border bg-fbc-card/40 backdrop-blur p-6">
+              <AgendaComingSoon sessions={combinedPast} />
             </div>
           )}
         </motion.div>

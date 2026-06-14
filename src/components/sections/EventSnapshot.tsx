@@ -37,12 +37,12 @@ export default function EventSnapshot() {
     <section
       id="event-info"
       className="relative overflow-hidden"
-      style={{ background: "linear-gradient(180deg, #050E1F 0%, #0A1628 100%)" }}
+      style={{ background: "linear-gradient(180deg, rgb(var(--color-navy)) 0%, rgb(var(--color-dark)) 100%)" }}
     >
       <div className="flex flex-col lg:flex-row" style={{ minHeight: "78vh" }}>
 
         {/* ── Left: event info ── */}
-        <div className="flex-1 px-4 sm:px-8 lg:px-16 py-16 sm:py-20 flex flex-col justify-between border-r border-white/[0.05]">
+        <div className="flex-1 px-4 sm:px-8 lg:px-16 py-16 sm:py-20 flex flex-col border-r border-white/[0.05]">
           <AnimateOnScroll>
             <div>
               <p className="font-mono text-[10px] uppercase tracking-widest text-fbc-muted/40 mb-8">
@@ -70,39 +70,42 @@ export default function EventSnapshot() {
 
               <div className="border-t border-white/[0.06] mb-4" />
 
-              {/* 2 × 3 info grid with hairline dividers */}
-              <div
-                className="grid grid-cols-3 gap-px mb-4"
-                style={{ background: "rgba(255,255,255,0.04)" }}
-              >
-                {INFO_CELLS.map((cell) => (
-                  <InfoCell key={cell.label} cell={cell} />
+              {/* 2 × 3 info grid — no fill, dividers via borders */}
+              <div className="grid grid-cols-3 mb-4 border border-white/[0.05] rounded-xl overflow-hidden">
+                {INFO_CELLS.map((cell, i) => (
+                  <div
+                    key={cell.label}
+                    style={{
+                      borderRight: i % 3 !== 2 ? "1px solid rgba(255,255,255,0.05)" : "none",
+                      borderBottom: i < 3 ? "1px solid rgba(255,255,255,0.05)" : "none",
+                    }}
+                  >
+                    <InfoCell cell={cell} />
+                  </div>
                 ))}
               </div>
 
               <div className="border-t border-white/[0.06] mb-6" />
 
-              {/* Countdown */}
+              {/* Countdown + ticket button on same row */}
               <div>
                 <p className="font-mono text-[9px] uppercase tracking-widest text-fbc-muted/40 mb-3">
                   Countdown
                 </p>
-                <Suspense fallback={<div className="h-12" />}>
-                  <CountdownTimer />
-                </Suspense>
+                <div className="flex items-center gap-4 flex-wrap">
+                  <div className="flex-1 min-w-0">
+                    <Suspense fallback={<div className="h-12" />}>
+                      <CountdownTimer />
+                    </Suspense>
+                  </div>
+                  <a
+                    href="#tickets"
+                    className="rounded-full px-5 py-2.5 font-gigasans font-semibold text-xs text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_16px_rgba(42,157,244,0.35)] whitespace-nowrap flex-shrink-0"
+                  >
+                    Pick up your ticket →
+                  </a>
+                </div>
               </div>
-            </div>
-          </AnimateOnScroll>
-
-          {/* Button pushed to bottom of left panel */}
-          <AnimateOnScroll delay={0.1}>
-            <div className="flex justify-end pt-8">
-              <a
-                href="#tickets"
-                className="rounded-full px-6 py-3 font-gigasans font-semibold text-sm text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_20px_rgba(42,157,244,0.35)]"
-              >
-                Pick up your ticket now →
-              </a>
             </div>
           </AnimateOnScroll>
         </div>

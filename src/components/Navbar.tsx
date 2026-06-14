@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import Image from "next/image";
+import { useTheme } from "next-themes";
 import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
@@ -12,22 +14,13 @@ const navLinks = [
 ];
 
 function Logo() {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const src = !mounted || resolvedTheme === "dark" ? "/logo-dark.png" : "/logo-light.png";
   return (
-    <a href="/" className="flex items-center gap-2.5 group" aria-label="FlutterBytes Conference Home">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect width="32" height="32" rx="8" fill="#2563EB" />
-        <rect x="9" y="5" width="2" height="22" rx="1" fill="white" />
-        <rect x="21" y="5" width="2" height="22" rx="1" fill="white" />
-        <rect x="5" y="10" width="22" height="2" rx="1" fill="white" />
-        <rect x="5" y="20" width="22" height="2" rx="1" fill="white" />
-      </svg>
-      <div className="font-space font-bold text-sm leading-tight">
-        <span className="text-fbc-sky">Flutter</span>
-        <span className="text-white dark:text-white text-gray-900">Bytes</span>
-        <div className="text-[9px] font-medium tracking-[0.25em] text-white/40 dark:text-white/40 uppercase">
-          Conference
-        </div>
-      </div>
+    <a href="/" className="flex items-center" aria-label="FlutterBytes Conference Home">
+      <Image src={src} alt="FlutterBytes Conference" width={140} height={36} className="h-9 w-auto" priority />
     </a>
   );
 }

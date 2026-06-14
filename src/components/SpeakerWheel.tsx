@@ -2,20 +2,12 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
-import AnimateOnScroll from "@/components/AnimateOnScroll";
 import type { Speaker } from "@/data/fallback-speakers";
-
-interface Props {
-  speakers: Speaker[];
-  pastSpeakers: Speaker[];
-}
 
 const SLOT     = 8;
 const INTERVAL = 5000; // ms per slot
 
-/* ── Spinning wheel ── */
-function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
+export default function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
   const [hoveredSlot, setHoveredSlot] = useState<number | null>(null);
   const [activeSlot, setActiveSlot]   = useState(0);
   const [setIdx, setSetIdx]           = useState(0);
@@ -199,8 +191,11 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
             </svg>
           </button>
 
-          <p className="text-fbc-muted/50 text-[11px] text-center" style={{ minWidth: 130 }}>
-            {hoveredSlot !== null ? "Hover paused" : `Wheel spins in ${secsLeft}s`}
+          <p className="text-fbc-muted/50 text-[11px] text-center whitespace-nowrap">
+            {hoveredSlot !== null
+              ? "Hover paused"
+              : `Wheel spins in ${secsLeft}s`
+            }
           </p>
 
           {/* CW button */}
@@ -227,111 +222,5 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
         )}
       </div>
     </div>
-  );
-}
-
-export default function SpeakersPreview({ speakers, pastSpeakers }: Props) {
-  const [tab, setTab] = useState<"2026" | "past">("past");
-  const allPast = pastSpeakers.length > 0 ? pastSpeakers : speakers;
-
-  return (
-    <section id="speakers" className="relative min-h-screen flex flex-col bg-fbc-navy overflow-hidden">
-      <div
-        className="absolute inset-0 pointer-events-none opacity-20"
-        style={{
-          backgroundImage: "radial-gradient(circle, rgba(42,157,244,0.08) 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
-        aria-hidden="true"
-      />
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 lg:pt-32 pb-6 w-full">
-        <AnimateOnScroll>
-          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-2 text-center">
-            FlutterBytes Speakers so far…
-          </h2>
-          <p className="text-fbc-muted text-sm mb-8 text-center max-w-xl mx-auto">
-            Engineers, founders, and Flutter enthusiasts who&apos;ve taken the stage across all editions.
-          </p>
-        </AnimateOnScroll>
-
-        {/* Tabs */}
-        <div className="flex gap-2 mb-4 justify-center" role="tablist">
-          {([["2026", "2026 Speakers"], ["past", "Past Editions"]] as const).map(([val, label]) => (
-            <button
-              key={val}
-              role="tab"
-              aria-selected={tab === val}
-              onClick={() => setTab(val)}
-              className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${
-                tab === val
-                  ? "bg-fbc-blue text-white shadow-[0_0_14px_rgba(42,157,244,0.4)]"
-                  : "bg-fbc-card border border-fbc-border text-fbc-muted hover:text-fbc-white"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10 flex-1 flex items-center justify-center px-4 pb-12">
-        <AnimatePresence mode="wait">
-          {tab === "2026" ? (
-            <motion.div
-              key="2026"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.2 }}
-              className="w-full relative"
-            >
-              {/* Wheel in background, dimmed */}
-              <div className="opacity-30 pointer-events-none select-none">
-                <SpeakerWheel speakers={allPast} />
-              </div>
-              {/* Coming-soon overlay */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-fbc-card/90 backdrop-blur-xl rounded-2xl px-8 py-8 text-center border border-fbc-border max-w-xs shadow-2xl">
-                  <div className="text-4xl mb-4">🚀</div>
-                  <h3 className="font-gigasans font-bold text-fbc-white text-xl mb-2">
-                    Speakers coming soon
-                  </h3>
-                  <p className="text-fbc-muted text-sm leading-relaxed mb-6">
-                    We&apos;re finalising an incredible lineup for the 5th edition. Stay tuned.
-                  </p>
-                  <a
-                    href="/apply-speak"
-                    className="rounded-full px-6 py-2.5 font-gigasans font-semibold text-sm text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_18px_rgba(42,157,244,0.4)] inline-block"
-                  >
-                    Apply to Speak →
-                  </a>
-                </div>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="past"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.2 }}
-              className="w-full"
-            >
-              <SpeakerWheel speakers={allPast} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      <div className="relative z-10 pb-16 text-center">
-        <Link
-          href="/speakers"
-          className="rounded-full px-7 py-3 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-sky hover:bg-fbc-sky/10 transition-all inline-flex items-center gap-2"
-        >
-          See all speakers →
-        </Link>
-      </div>
-    </section>
   );
 }

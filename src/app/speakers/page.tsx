@@ -1,4 +1,4 @@
-import { getSpeakers } from "@/lib/sheets";
+import { getSpeakers, getPastSpeakers } from "@/lib/sheets";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SpeakersPageContent from "./SpeakersPageContent";
@@ -11,7 +11,7 @@ export const metadata = {
 };
 
 export default async function SpeakersPage() {
-  const speakers = await getSpeakers();
+  const [speakers, pastSpeakers] = await Promise.all([getSpeakers(), getPastSpeakers()]);
   return (
     <>
       <Navbar />
@@ -35,24 +35,10 @@ export default async function SpeakersPage() {
             <p className="text-fbc-muted text-lg max-w-xl mb-6">
               Hand-picked engineers, founders and Flutter enthusiasts from across Africa and beyond who&apos;ve taken the FlutterBytes stage.
             </p>
-            {/* Apply to speak CTA */}
-            <div className="flex flex-col sm:flex-row gap-4 items-start">
-              <div>
-                <p className="text-fbc-muted text-sm mb-3">
-                  Want to be on this list next year?
-                </p>
-                <a
-                  href="mailto:speakers@flutterbytes.ng"
-                  className="rounded-full px-6 py-2.5 font-space font-semibold border border-fbc-sky/40 text-fbc-sky hover:bg-fbc-sky/10 transition-all inline-block text-sm"
-                >
-                  Apply to speak at the next edition →
-                </a>
-              </div>
-            </div>
           </div>
         </div>
 
-        <SpeakersPageContent speakers={speakers} />
+        <SpeakersPageContent speakers={speakers} pastSpeakers={pastSpeakers} />
       </main>
       <Footer />
     </>

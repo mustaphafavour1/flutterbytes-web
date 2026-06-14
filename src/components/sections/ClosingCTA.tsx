@@ -37,7 +37,7 @@ export default function ClosingCTA() {
       className="relative py-40 overflow-hidden"
       style={{
         background:
-          "linear-gradient(160deg, #050E1F 0%, #0A1628 40%, #0F1E38 70%, #050E1F 100%)",
+          "linear-gradient(160deg, rgb(var(--color-navy)) 0%, rgb(var(--color-dark)) 40%, rgb(var(--color-card)) 70%, rgb(var(--color-navy)) 100%)",
       }}
     >
       {/* Dense outline elements filling the lower portion */}

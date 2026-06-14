@@ -28,8 +28,8 @@ export default async function Home() {
       <Navbar />
       <main>
         <Hero />
-        <EventSnapshot />
         <FiveEditions />
+        <EventSnapshot />
         <AgendaPreview friday={friday} saturday={saturday} agendaVisible={agendaVisible} />
         <SpeakersPreview speakers={speakers} pastSpeakers={pastSpeakers} />
         <GallerySection />
