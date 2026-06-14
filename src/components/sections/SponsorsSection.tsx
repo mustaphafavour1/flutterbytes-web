@@ -35,7 +35,7 @@ function SponsorCard({ name, tier, fillIdx, myIdx }: {
   const color    = TIER_COLOR[tier] ?? "#94A3B8";
 
   return (
-    <div className="relative" style={{ width: 176, height: 84 }}>
+    <div className="relative w-36 sm:w-44" style={{ height: 84 }}>
       {/* Dimmed base */}
       <div
         className="absolute inset-0 rounded-[28px] flex items-center justify-center"
@@ -76,9 +76,8 @@ function SponsorCard({ name, tier, fillIdx, myIdx }: {
 function YourBrandCard() {
   return (
     <motion.div
-      className="relative rounded-[28px] flex items-center justify-center"
+      className="relative rounded-[28px] flex items-center justify-center w-36 sm:w-44"
       style={{
-        width: 176,
         height: 84,
         border: "1.5px dashed rgba(42,157,244,0.4)",
       }}
@@ -116,7 +115,7 @@ export default function SponsorsSection() {
   }, []);
 
   return (
-    <section id="sponsors" className="relative py-32 bg-fbc-dark overflow-hidden">
+    <section id="sponsors" className="relative py-16 sm:py-24 md:py-32 bg-fbc-dark overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateOnScroll>
           <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-2 text-center">

@@ -10,52 +10,52 @@ type Cell = { width: number; circle?: boolean };
 /* 4 layout strips — each defines a horizontal row of compact thumbnails */
 const LAYOUTS: Cell[][] = [
   [
-    { width: 64, circle: true },
-    { width: 128 },
-    { width: 64, circle: true },
-    { width: 96 },
-    { width: 64, circle: true },
-    { width: 192 },
-    { width: 64, circle: true },
-    { width: 96 },
-    { width: 64, circle: true },
-    { width: 128 },
+    { width: 88, circle: true },
+    { width: 148 },
+    { width: 88, circle: true },
+    { width: 112 },
+    { width: 88, circle: true },
+    { width: 216 },
+    { width: 88, circle: true },
+    { width: 112 },
+    { width: 88, circle: true },
+    { width: 148 },
   ],
   [
-    { width: 96 },
-    { width: 64, circle: true },
-    { width: 160 },
-    { width: 64, circle: true },
-    { width: 128 },
-    { width: 64, circle: true },
-    { width: 96 },
-    { width: 64, circle: true },
-    { width: 160 },
-    { width: 64, circle: true },
+    { width: 112 },
+    { width: 88, circle: true },
+    { width: 176 },
+    { width: 88, circle: true },
+    { width: 148 },
+    { width: 88, circle: true },
+    { width: 112 },
+    { width: 88, circle: true },
+    { width: 176 },
+    { width: 88, circle: true },
   ],
   [
-    { width: 64, circle: true },
-    { width: 64, circle: true },
-    { width: 160 },
-    { width: 64, circle: true },
-    { width: 64, circle: true },
-    { width: 128 },
-    { width: 96 },
-    { width: 64, circle: true },
-    { width: 192 },
-    { width: 64, circle: true },
+    { width: 88, circle: true },
+    { width: 88, circle: true },
+    { width: 176 },
+    { width: 88, circle: true },
+    { width: 88, circle: true },
+    { width: 148 },
+    { width: 112 },
+    { width: 88, circle: true },
+    { width: 216 },
+    { width: 88, circle: true },
   ],
   [
-    { width: 192 },
-    { width: 64, circle: true },
-    { width: 96 },
-    { width: 64, circle: true },
-    { width: 128 },
-    { width: 64, circle: true },
-    { width: 64, circle: true },
-    { width: 96 },
-    { width: 64, circle: true },
-    { width: 160 },
+    { width: 216 },
+    { width: 88, circle: true },
+    { width: 112 },
+    { width: 88, circle: true },
+    { width: 148 },
+    { width: 88, circle: true },
+    { width: 88, circle: true },
+    { width: 112 },
+    { width: 88, circle: true },
+    { width: 176 },
   ],
 ];
 
@@ -75,10 +75,11 @@ const GRADIENTS = [
 function PhotoCell({ src, gradient, width, circle }: {
   src?: string; gradient: string; width: number; circle?: boolean;
 }) {
+  const height = circle ? width : 96;
   return (
     <div
       className={`flex-shrink-0 overflow-hidden relative ${circle ? "rounded-full" : "rounded-2xl"}`}
-      style={{ width, height: 64 }}
+      style={{ width, height }}
     >
       {src ? (
         <Image src={src} alt="FlutterBytes event" fill className="object-cover" sizes={`${width}px`} />
@@ -116,7 +117,7 @@ export default function GallerySection() {
   const photos: string[] = [];
 
   return (
-    <section id="gallery" className="relative py-32 bg-fbc-navy overflow-hidden">
+    <section id="gallery" className="relative py-16 sm:py-24 md:py-32 bg-fbc-navy overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none opacity-15"
         style={{
@@ -139,14 +140,14 @@ export default function GallerySection() {
         </AnimateOnScroll>
 
         {/* Rotating gallery strip */}
-        <div className="relative" style={{ minHeight: 80 }}>
+        <div className="relative overflow-hidden" style={{ minHeight: 104 }}>
           <AnimatePresence mode="wait">
             <motion.div
               key={setIdx}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.5 }}
+              initial={{ opacity: 0, x: 80 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -80 }}
+              transition={{ duration: 0.45, ease: "easeInOut" }}
             >
               <GalleryStrip layout={LAYOUTS[setIdx]} photos={photos} />
             </motion.div>

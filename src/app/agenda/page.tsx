@@ -19,7 +19,7 @@ export default async function AgendaPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-fbc-light-bg dark:bg-fbc-navy pt-16">
+      <main className="min-h-screen bg-fbc-navy pt-16">
         {/* Hero */}
         <div
           className="relative py-20 bg-fbc-dark overflow-hidden"

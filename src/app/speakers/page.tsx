@@ -15,10 +15,10 @@ export default async function SpeakersPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-fbc-light-bg dark:bg-fbc-navy pt-16">
+      <main className="min-h-screen bg-fbc-navy pt-16">
         {/* Hero */}
         <div
-          className="relative py-20 bg-fbc-dark dark:bg-fbc-dark overflow-hidden"
+          className="relative py-20 bg-fbc-dark overflow-hidden"
           style={{
             backgroundImage: "radial-gradient(circle, rgba(37,99,235,0.12) 1px, transparent 1px)",
             backgroundSize: "32px 32px",
@@ -32,29 +32,27 @@ export default async function SpeakersPage() {
             <h1 className="font-space font-bold text-4xl md:text-6xl text-fbc-white mb-3 leading-tight">
               Meet the Speakers
             </h1>
-            <p className="text-fbc-muted text-lg max-w-xl">
-              Hand-picked engineers, founders and Flutter enthusiasts from across Africa and beyond.
+            <p className="text-fbc-muted text-lg max-w-xl mb-6">
+              Hand-picked engineers, founders and Flutter enthusiasts from across Africa and beyond who&apos;ve taken the FlutterBytes stage.
             </p>
+            {/* Apply to speak CTA */}
+            <div className="flex flex-col sm:flex-row gap-4 items-start">
+              <div>
+                <p className="text-fbc-muted text-sm mb-3">
+                  Want to be on this list next year?
+                </p>
+                <a
+                  href="mailto:speakers@flutterbytes.ng"
+                  className="rounded-full px-6 py-2.5 font-space font-semibold border border-fbc-sky/40 text-fbc-sky hover:bg-fbc-sky/10 transition-all inline-block text-sm"
+                >
+                  Apply to speak at the next edition →
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
         <SpeakersPageContent speakers={speakers} />
-
-        {/* Apply to speak CTA */}
-        <div className="py-20 text-center">
-          <h2 className="font-space font-bold text-2xl text-fbc-light-text dark:text-fbc-white mb-3">
-            Want to be on this list next year?
-          </h2>
-          <p className="text-fbc-light-sub dark:text-fbc-muted mb-6">
-            Applications for FlutterBytes 2027 speakers will open after this edition.
-          </p>
-          <a
-            href="mailto:speakers@flutterbytes.ng"
-            className="rounded-full px-8 py-3.5 font-space font-semibold border border-fbc-sky/40 text-fbc-sky hover:bg-fbc-sky/10 transition-all inline-block"
-          >
-            Apply to speak at the next edition →
-          </a>
-        </div>
       </main>
       <Footer />
     </>

@@ -24,7 +24,7 @@ const POSITIONS = [
   { x: 155, y: 230, r: 52 },
   { x: 845, y: 230, r: 52 },
   { x: 500, y: 490, r: 52 },
-  // Small (r=38): index 8-15
+  // Small (r=38): index 8-17
   { x: 100, y: 430, r: 38 },
   { x: 285, y: 535, r: 38 },
   { x: 715, y: 535, r: 38 },
@@ -33,6 +33,8 @@ const POSITIONS = [
   { x: 910, y: 120, r: 38 },
   { x: 375, y: 455, r: 38 },
   { x: 625, y: 455, r: 38 },
+  { x: 185, y: 310, r: 38 },
+  { x: 815, y: 310, r: 38 },
 ];
 
 const CONNECTIONS: [number, number][] = [
@@ -40,6 +42,7 @@ const CONNECTIONS: [number, number][] = [
   [3, 5], [4, 6], [5, 8], [5, 12], [6, 11], [6, 13], [7, 9], [7, 10],
   [8, 9], [10, 11], [3, 14], [4, 15], [14, 1], [15, 2], [14, 15],
   [0, 14], [0, 15],
+  [5, 16], [8, 16], [1, 16], [6, 17], [11, 17], [2, 17],
 ];
 
 /* Center of the canvas for the stacked starting position */
@@ -102,13 +105,13 @@ export default function CommitteeSection({ members }: Props) {
   };
 
   return (
-    <section id="committee" className="relative py-32 overflow-hidden">
+    <section id="committee" className="relative py-16 sm:py-24 md:py-32 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateOnScroll>
           <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-white mb-3 text-center">
             The Flutter Bytes
           </h2>
-          <p className="font-gigasans font-semibold text-xl md:text-2xl text-fbc-white/80 mb-3 text-center max-w-2xl mx-auto">
+          <p className="font-gigasans font-semibold text-base md:text-lg text-fbc-white/80 mb-3 text-center max-w-2xl mx-auto">
             The people with the highest commits to the FlutterBytes Conferences
           </p>
           <p className="text-fbc-muted text-base mb-14 text-center max-w-xl mx-auto">
@@ -117,6 +120,7 @@ export default function CommitteeSection({ members }: Props) {
         </AnimateOnScroll>
 
         {/* Web of circles */}
+        <div className="overflow-x-auto mx-auto">
         <div ref={containerRef} className="mx-auto overflow-x-auto" style={{ maxWidth: 1000 }}>
           <div className="relative mx-auto" style={{ width: 1000, height: 600 }}>
             {/* Connection lines — fade in after spread */}
@@ -218,6 +222,7 @@ export default function CommitteeSection({ members }: Props) {
               )}
             </AnimatePresence>
           </div>
+        </div>
         </div>
 
         {/* CTA buttons */}

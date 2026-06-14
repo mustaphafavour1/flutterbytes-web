@@ -83,16 +83,6 @@ function buildWavePath(pts: [number, number][]): string {
 
 const WAVE_PATH = buildWavePath(anchors);
 
-// ─── Flag icon SVG ───────────────────────────────────────────────────────────
-
-function FlagIcon({ color }: { color: string }) {
-  return (
-    <svg width="22" height="18" viewBox="0 0 22 18" className="mb-2" aria-hidden="true">
-      <rect x="0" y="0" width="2" height="18" rx="1" fill="rgba(148,163,184,0.5)" />
-      <path d="M2 1 L20 6.5 L2 12 Z" fill={color} fillOpacity={0.9} />
-    </svg>
-  );
-}
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
@@ -136,17 +126,16 @@ export default function FiveEditions() {
   }, []);
 
   return (
-    <section id="editions" style={{ backgroundColor: "#0A1628" }} className="py-32">
+    <section id="editions" style={{ backgroundColor: "#0A1628" }} className="py-16 sm:py-24 md:py-32">
       {/* Heading */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <AnimateOnScroll>
           <h2 className="font-gigasans font-black text-3xl md:text-5xl text-white leading-tight">
-            5 Years, 1 community, Continuous Growth &amp; Impact
+            <span className="block">5 Years, 1 Community:</span>
+            <span className="block text-fbc-sky">Continuous Growth and Impact</span>
           </h2>
-          <p className="text-fbc-muted text-base mt-3 max-w-2xl leading-relaxed">
-            It started as a simple WhatsApp group for Flutter developers in Nigeria.
-            When we announced our first-ever meetup, over 500 people showed up — and from that
-            moment, FlutterBytes became something much bigger than any of us imagined.
+          <p className="text-fbc-muted text-base mt-3 max-w-xl">
+            From a WhatsApp group for Flutter devs in Lagos to Africa&apos;s biggest Flutter conference — this is our story.
           </p>
         </AnimateOnScroll>
       </div>
@@ -222,10 +211,7 @@ export default function FiveEditions() {
             const poleBottom = isAbove ? anchorY : 330;
             const poleHeight = Math.abs(poleBottom - poleTop);
 
-            const flagBg     = ed.isCurrent ? "rgba(42,157,244,0.15)" : "rgba(15,30,56,0.85)";
-            const flagBorder = ed.isCurrent ? "1px solid rgba(42,157,244,0.4)" : "1px solid rgba(30,58,95,0.5)";
             const yearColor  = ed.isCurrent ? "#2A9DF4" : "rgba(148,163,184,0.35)";
-            const flagColor  = ed.isCurrent ? "#2A9DF4" : "#1E3A5F";
             const dotFill    = ed.isCurrent ? "#2A9DF4" : "#0A1628";
             const dotBorder  = ed.isCurrent ? "#2A9DF4" : "#1E3A5F";
             const transformOrigin = isAbove ? "top center" : "bottom center";
@@ -243,27 +229,46 @@ export default function FiveEditions() {
                     left: flagLeft,
                     top: flagTop,
                     width: 240,
-                    background: flagBg,
-                    border: flagBorder,
-                    backdropFilter: "blur(8px)",
-                    WebkitBackdropFilter: "blur(8px)",
-                    padding: "18px 20px",
-                    borderRadius: 16,
+                    background: "rgba(6,12,26,0.96)",
+                    border: ed.isCurrent ? "1px solid rgba(42,157,244,0.35)" : "1px solid rgba(18,36,66,0.9)",
+                    backdropFilter: "blur(12px)",
+                    WebkitBackdropFilter: "blur(12px)",
+                    borderRadius: 10,
+                    overflow: "hidden",
                     transformOrigin,
                   }}
                 >
-                  <FlagIcon color={flagColor} />
-                  <div className="font-gigasans font-black text-4xl leading-none" style={{ color: yearColor }}>
-                    {ed.year}
+                  {/* Terminal title bar */}
+                  <div style={{
+                    background: "rgba(4,9,20,0.9)",
+                    borderBottom: ed.isCurrent ? "1px solid rgba(42,157,244,0.18)" : "1px solid rgba(18,36,66,0.7)",
+                    padding: "7px 10px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 5,
+                  }}>
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: ed.isCurrent ? "#ff5f57" : "#1e2d44" }} />
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: ed.isCurrent ? "#febc2e" : "#18273d" }} />
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: ed.isCurrent ? "#28c840" : "#121e30" }} />
+                    <span style={{ marginLeft: 8, fontSize: 9, fontFamily: "monospace", color: "rgba(148,163,184,0.3)" }}>
+                      edition.dart
+                    </span>
                   </div>
-                  <div className="text-white/80 leading-snug mt-2" style={{ fontSize: 11 }}>
-                    {ed.theme}
-                  </div>
-                  <div className="my-2" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }} />
-                  <div className="text-fbc-muted" style={{ fontSize: 10, opacity: 0.5 }}>
-                    {ed.date}
-                    <br />
-                    {ed.attendees}
+                  {/* Terminal content */}
+                  <div style={{ padding: "10px 13px", fontFamily: "monospace" }}>
+                    <div style={{ color: "rgba(148,163,184,0.25)", fontSize: 9, marginBottom: 3 }}>
+                      ~/flutterbytes/{ed.year}
+                    </div>
+                    <div style={{ color: yearColor, fontSize: 28, fontWeight: 900, lineHeight: 1, letterSpacing: "-0.02em" }}>
+                      {ed.year}
+                    </div>
+                    <div style={{ color: "rgba(96,160,220,0.7)", fontSize: 10, marginTop: 6, lineHeight: 1.45 }}>
+                      {"// "}{ed.theme}
+                    </div>
+                    <div style={{ borderTop: "1px solid rgba(255,255,255,0.04)", marginTop: 8, paddingTop: 8 }}>
+                      <div style={{ color: "rgba(148,163,184,0.35)", fontSize: 9 }}>{"/* "}{ed.date}</div>
+                      <div style={{ color: "rgba(148,163,184,0.35)", fontSize: 9, marginTop: 2 }}>&nbsp;&nbsp;&nbsp;{ed.attendees}{" */"}</div>
+                    </div>
                   </div>
                 </motion.div>
 

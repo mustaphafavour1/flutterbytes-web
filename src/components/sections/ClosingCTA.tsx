@@ -119,27 +119,25 @@ export default function ClosingCTA() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            2 days is enough to transform your development journey…
+            Are you ready for the next level?
           </motion.h2>
-          <p className="text-fbc-muted text-lg md:text-xl mb-8 leading-relaxed">
-            Join 600+ Flutter developers in Lagos this October. Bring your
-            curiosity. Leave with your next project idea.
+          <p className="text-fbc-muted text-sm md:text-base mb-8 leading-relaxed max-w-md mx-auto">
+            Join 600+ Flutter Devs this October. Don&apos;t miss out on a rare opportunity for incredible growth.
           </p>
 
           {/* Activity chips */}
-          <div className="flex flex-wrap justify-center gap-2 mb-10">
+          <div className="flex flex-wrap justify-center gap-1.5 mb-10">
             {CHIPS.map((chip) => (
               <span
                 key={chip}
-                className="rounded-full px-4 py-1.5 text-sm font-medium border border-fbc-sky/25 text-fbc-sky/80"
-                style={{ background: "rgba(42,157,244,0.08)" }}
+                className="rounded-full px-3 py-0.5 text-[10px] font-medium border border-fbc-sky/20 text-fbc-sky/60"
               >
                 {chip}
               </span>
             ))}
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
               href="#tickets"
               className="rounded-full px-10 py-4 font-gigasans font-bold text-lg text-white bg-fbc-blue shadow-[0_0_30px_rgba(42,157,244,0.6)] hover:shadow-[0_0_50px_rgba(42,157,244,0.8)] hover:opacity-90 transition-all"
@@ -153,9 +151,6 @@ export default function ClosingCTA() {
               Apply to Speak →
             </a>
           </div>
-          <p className="text-fbc-muted/60 text-sm">
-            Free to apply as a speaker or volunteer.
-          </p>
         </AnimateOnScroll>
       </div>
     </section>

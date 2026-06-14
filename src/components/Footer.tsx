@@ -1,3 +1,5 @@
+"use client";
+import { motion } from "framer-motion";
 import { AtSign, Share2, Globe, Mail } from "lucide-react";
 
 const socialLinks = [
@@ -8,26 +10,41 @@ const socialLinks = [
 ];
 
 const linkCols = [
-  [
-    { label: "Apply to speak", href: "#" },
-    { label: "Apply to volunteer", href: "#" },
-    { label: "FlutterBytes Hackathon", href: "/hackathon" },
-  ],
-  [
-    { label: "Event Agenda", href: "/agenda" },
-    { label: "Gallery & Testimonials", href: "#gallery" },
-    { label: "Speakers", href: "/speakers" },
-    { label: "Organizing Committee", href: "/about#committee" },
-  ],
+  {
+    heading: "Participate",
+    links: [
+      { label: "Apply to speak", href: "#" },
+      { label: "Apply to volunteer", href: "#" },
+      { label: "FlutterBytes Hackathon", href: "/hackathon" },
+    ],
+  },
+  {
+    heading: "Explore",
+    links: [
+      { label: "Event Agenda", href: "/agenda" },
+      { label: "Gallery", href: "#gallery" },
+      { label: "Speakers", href: "/speakers" },
+      { label: "Organizing Committee", href: "/about#committee" },
+    ],
+  },
 ];
+
+const listVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.07, delayChildren: 0.2 } },
+};
+const linkVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" as const } },
+};
 
 export default function Footer() {
   return (
     <footer className="bg-fbc-navy border-t border-white/[0.06]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
+        <div className="flex flex-col md:flex-row items-start justify-between gap-12 mb-10">
           {/* Left — logo + tagline + social */}
-          <div>
+          <div className="md:max-w-xs">
             <div className="flex items-center gap-2.5 mb-4">
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
                 <rect width="32" height="32" rx="8" fill="#2563EB" />
@@ -44,9 +61,8 @@ export default function Footer() {
                 </div>
               </div>
             </div>
-            <p className="text-fbc-muted text-sm mb-5 leading-relaxed max-w-xs">
-              Africa&apos;s premier Flutter developer conference.
-              Building the future, one Flutter app at a time.
+            <p className="text-fbc-muted text-sm mb-5 leading-relaxed">
+              The Largest Community of Flutter Developers in Africa.
             </p>
             <div className="flex gap-2" role="list" aria-label="Social media links">
               {socialLinks.map(({ label, href, Icon }) => (
@@ -63,29 +79,41 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Link columns */}
-          {linkCols.map((col, ci) => (
-            <div key={ci}>
-              <ul className="space-y-3" role="list">
-                {col.map((l) => (
-                  <li key={l.label}>
-                    <a
-                      href={l.href}
-                      className="text-fbc-muted hover:text-fbc-white text-sm transition-colors"
-                    >
-                      {l.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {/* Link columns — far right */}
+          <div className="flex gap-12 md:gap-20">
+            {linkCols.map((col) => (
+              <div key={col.heading}>
+                <p className="font-mono text-[10px] uppercase tracking-widest text-fbc-muted/40 mb-4">
+                  {col.heading}
+                </p>
+                <motion.ul
+                  className="space-y-3"
+                  role="list"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  variants={listVariants}
+                >
+                  {col.links.map((l) => (
+                    <motion.li key={l.label} variants={linkVariants}>
+                      <a
+                        href={l.href}
+                        className="text-fbc-muted hover:text-fbc-white text-sm transition-colors"
+                      >
+                        {l.label}
+                      </a>
+                    </motion.li>
+                  ))}
+                </motion.ul>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="border-t border-white/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-fbc-muted/40 text-sm">&copy;2026 Copyrights FlutterBytes</p>
+          <p className="text-fbc-muted/40 text-sm">&copy; 2026 FlutterBytes Conference</p>
           <p className="text-fbc-muted/30 text-xs">
-            The Zone, Gbagada, Lagos, Nigeria &middot; Oct 30&ndash;31, 2026
+            Zone Tech Park, Gbagada, Lagos &middot; Oct 30&ndash;31, 2026
           </p>
         </div>
       </div>

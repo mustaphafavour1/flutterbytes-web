@@ -15,8 +15,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="bg-fbc-navy text-fbc-white antialiased">
-        <ThemeProvider attribute="class" forcedTheme="dark">
+      <body className="bg-white dark:bg-fbc-navy text-gray-900 dark:text-fbc-white antialiased">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <div className="noise-overlay" aria-hidden="true" />
           {children}
         </ThemeProvider>

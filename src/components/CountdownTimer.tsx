@@ -46,14 +46,14 @@ export default function CountdownTimer() {
 
   return (
     <div
-      className="flex items-end divide-x divide-white/[0.08]"
+      className="flex items-end divide-x divide-white/[0.08] overflow-x-auto"
       aria-label="Countdown to FlutterBytes 2026"
     >
-      <Unit value={time.months}  label="months" numClass="text-5xl" />
-      <Unit value={time.days}    label="days"   numClass="text-4xl" />
-      <Unit value={time.hours}   label="hrs"    numClass="text-3xl" />
-      <Unit value={time.minutes} label="min"    numClass="text-2xl" />
-      <Unit value={time.seconds} label="sec"    numClass="text-xl"  />
+      <Unit value={time.months}  label="months" numClass="text-3xl sm:text-5xl" />
+      <Unit value={time.days}    label="days"   numClass="text-2xl sm:text-4xl" />
+      <Unit value={time.hours}   label="hrs"    numClass="text-xl sm:text-3xl" />
+      <Unit value={time.minutes} label="min"    numClass="text-lg sm:text-2xl" />
+      <Unit value={time.seconds} label="sec"    numClass="text-base sm:text-xl" />
     </div>
   );
 }

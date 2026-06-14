@@ -6,8 +6,6 @@ import Image from "next/image";
 import SpeakerCard from "@/components/SpeakerCard";
 import type { Speaker } from "@/data/fallback-speakers";
 
-const ALL_TAGS = ["All", "AI", "Architecture", "Testing", "UI", "Community", "Leadership"];
-
 interface ModalProps {
   speaker: Speaker;
   onClose: () => void;
@@ -91,22 +89,20 @@ function SpeakerModal({ speaker, onClose }: ModalProps) {
 
 export default function SpeakersPageContent({ speakers }: { speakers: Speaker[] }) {
   const [search, setSearch] = useState("");
-  const [activeTag, setActiveTag] = useState("All");
   const [selected, setSelected] = useState<Speaker | null>(null);
 
   const filtered = speakers.filter((s) => {
-    const matchSearch =
+    return (
       !search ||
       s.name.toLowerCase().includes(search.toLowerCase()) ||
-      s.company.toLowerCase().includes(search.toLowerCase());
-    const matchTag = activeTag === "All" || (s.tags ?? []).includes(activeTag);
-    return matchSearch && matchTag;
+      s.company.toLowerCase().includes(search.toLowerCase())
+    );
   });
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-      {/* Search + filter */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-10">
+      {/* Search */}
+      <div className="flex mb-10">
         <div className="relative flex-1 max-w-sm">
           <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-fbc-muted" aria-hidden="true" />
           <input
@@ -116,21 +112,6 @@ export default function SpeakersPageContent({ speakers }: { speakers: Speaker[] 
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-3 rounded-full bg-fbc-card border border-fbc-border text-fbc-white placeholder:text-fbc-muted/50 text-sm focus:outline-none focus:border-fbc-sky transition-colors"
           />
-        </div>
-        <div className="flex gap-2 flex-wrap" role="group" aria-label="Filter by topic">
-          {ALL_TAGS.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => setActiveTag(tag)}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
-                activeTag === tag
-                  ? "bg-fbc-blue text-white"
-                  : "bg-fbc-card border border-fbc-border text-fbc-muted hover:text-fbc-white"
-              }`}
-            >
-              {tag}
-            </button>
-          ))}
         </div>
       </div>
 

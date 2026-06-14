@@ -82,7 +82,8 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
   const secsLeft = Math.ceil(msLeft / 1000);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full gap-6" style={{ minHeight: "min(90vh,680px)" }}>
+    <div className="flex flex-col items-center justify-center w-full gap-6" style={{ minHeight: "min(90vh,680px)", overflowX: "hidden" }}>
+      <div className="transform scale-[0.55] sm:scale-[0.75] md:scale-90 lg:scale-100 origin-top">
       <div className="relative" style={{ width: SIZE, height: SIZE }}>
         {/* Outer ring */}
         <div
@@ -181,6 +182,7 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
           </AnimatePresence>
         </div>
       </div>
+      </div>
 
       {/* Controls + countdown */}
       <div className="flex flex-col items-center gap-3">
@@ -245,7 +247,7 @@ export default function SpeakersPreview({ speakers, pastSpeakers }: Props) {
         }}
         aria-hidden="true"
       />
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-6 w-full">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 lg:pt-32 pb-6 w-full">
         <AnimateOnScroll>
           <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-2 text-center">
             FlutterBytes Speakers so far…

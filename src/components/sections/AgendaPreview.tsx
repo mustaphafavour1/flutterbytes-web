@@ -57,48 +57,43 @@ function AgendaGrid({ sessions }: { sessions: AgendaSession[] }) {
             {row.map((session, ci) => {
               const idx = ri * perRow + ci;
               const isHovered = hoveredIdx === idx;
-              const isNear = hoveredIdx !== null && Math.abs(hoveredIdx - idx) <= 1 && !isHovered;
               return (
-                <motion.div
+                <div
                   key={ci}
-                  className="relative flex-shrink-0 rounded-xl cursor-pointer overflow-hidden"
-                  style={{ width: 158, height: 70, border: "1px solid rgba(42,157,244,0.07)" }}
+                  className="relative flex-shrink-0 rounded-xl cursor-pointer"
+                  style={{
+                    width: 180,
+                    height: 90,
+                    border: `1px solid ${isHovered ? "rgba(42,157,244,0.35)" : "rgba(42,157,244,0.08)"}`,
+                    background: "rgba(42,157,244,0.07)",
+                    transition: "border-color 0.18s",
+                  }}
                   onMouseEnter={() => setHoveredIdx(idx)}
                   onMouseLeave={() => setHoveredIdx(null)}
-                  animate={{
-                    background: isHovered
-                      ? "rgba(42,157,244,0.28)"
-                      : isNear
-                      ? "rgba(42,157,244,0.16)"
-                      : "rgba(42,157,244,0.09)",
-                    borderColor: isHovered
-                      ? "rgba(42,157,244,0.50)"
-                      : "rgba(42,157,244,0.07)",
-                  }}
-                  transition={{ duration: 0.18 }}
                 >
                   <div className="p-2.5 h-full flex flex-col justify-between">
                     <p className="text-fbc-white/80 text-[10px] font-medium leading-snug line-clamp-2">
                       {session.session}
                     </p>
-                    <p className="text-fbc-muted/50 text-[9px] truncate">{session.speaker.split(",")[0]}</p>
+                    {/* Time + hall — always in layout, opacity toggles on hover so speaker stays at bottom */}
+                    <div
+                      style={{
+                        opacity: isHovered ? 1 : 0,
+                        transition: "opacity 0.18s",
+                        borderTop: "1px solid rgba(42,157,244,0.22)",
+                        paddingTop: 4,
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-fbc-sky font-semibold" style={{ fontSize: 9 }}>{session.time}</span>
+                        <span className="text-fbc-muted" style={{ fontSize: 9 }}>{session.hall}</span>
+                      </div>
+                    </div>
+                    <p className="text-fbc-muted/50 truncate" style={{ fontSize: 9 }}>
+                      {session.speaker.split(",")[0]}
+                    </p>
                   </div>
-                  <AnimatePresence>
-                    {isHovered && (
-                      <motion.div
-                        initial={{ y: "100%" }}
-                        animate={{ y: 0 }}
-                        exit={{ y: "100%" }}
-                        transition={{ duration: 0.16 }}
-                        className="absolute bottom-0 left-0 right-0 px-2.5 py-1.5 flex items-center justify-between"
-                        style={{ background: "rgba(42,157,244,0.50)" }}
-                      >
-                        <span className="text-white text-[10px] font-bold">{session.time}</span>
-                        <span className="text-white/90 text-[10px] font-semibold">{session.hall}</span>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
+                </div>
               );
             })}
           </div>
@@ -129,11 +124,11 @@ function AgendaComingSoon({ sessions }: { sessions: AgendaSession[] }) {
 }
 
 export default function AgendaPreview({ friday, saturday, agendaVisible }: Props) {
-  const [tab, setTab] = useState<"friday" | "saturday" | "past">("friday");
+  const [tab, setTab] = useState<"past" | "friday" | "saturday">("past");
   const sessions = tab === "friday" ? friday : tab === "saturday" ? saturday : [...friday, ...saturday];
 
   return (
-    <section id="agenda" className="relative py-32 bg-fbc-dark overflow-hidden">
+    <section id="agenda" className="relative py-16 sm:py-24 md:py-32 bg-fbc-dark overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none opacity-20"
         style={{
@@ -156,9 +151,9 @@ export default function AgendaPreview({ friday, saturday, agendaVisible }: Props
         <AnimateOnScroll delay={0.1}>
           <div className="flex gap-2 mb-6 justify-center" role="tablist">
             {([
+              ["past",     "Past Editions"],
               ["friday",   "Friday, Oct 30"],
               ["saturday", "Saturday, Oct 31"],
-              ["past",     "Past Editions"],
             ] as const).map(([val, label]) => (
               <button
                 key={val}

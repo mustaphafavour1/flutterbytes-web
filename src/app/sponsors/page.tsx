@@ -57,7 +57,7 @@ export default function SponsorsPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-fbc-light-bg dark:bg-fbc-navy pt-16">
+      <main className="min-h-screen bg-fbc-navy pt-16">
         {/* Hero */}
         <div
           className="relative py-24 bg-fbc-dark overflow-hidden"
@@ -71,7 +71,7 @@ export default function SponsorsPage() {
               Partner with FlutterBytes
             </h1>
             <p className="text-fbc-muted text-lg max-w-xl">
-              Reach 600+ Flutter developers, engineers, and tech leaders at Africa&apos;s premier mobile conference.
+              Reach 600+ Flutter developers, engineers, and tech leaders at our annual conference in Lagos.
             </p>
           </div>
         </div>
@@ -82,12 +82,12 @@ export default function SponsorsPage() {
         {/* Tier comparison table */}
         <div className="py-20 max-w-6xl mx-auto px-4 sm:px-6">
           <AnimateOnScroll>
-            <h2 className="font-space font-bold text-3xl dark:text-fbc-white text-fbc-light-text mb-8">
+            <h2 className="font-space font-bold text-3xl text-fbc-white mb-8">
               Sponsorship Packages
             </h2>
           </AnimateOnScroll>
           <AnimateOnScroll delay={0.1}>
-            <div className="rounded-3xl overflow-hidden border border-fbc-border bg-fbc-card/40 dark:bg-fbc-card/40 backdrop-blur">
+            <div className="rounded-3xl overflow-hidden border border-fbc-border bg-fbc-card/40 backdrop-blur">
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[640px]">
                   <thead>
@@ -141,7 +141,7 @@ export default function SponsorsPage() {
         {/* Testimonials */}
         <div className="py-12 pb-20 max-w-4xl mx-auto px-4 sm:px-6">
           <AnimateOnScroll>
-            <h2 className="font-space font-bold text-2xl dark:text-fbc-white text-fbc-light-text mb-8">
+            <h2 className="font-space font-bold text-2xl text-fbc-white mb-8">
               What past sponsors say
             </h2>
           </AnimateOnScroll>
@@ -161,8 +161,8 @@ export default function SponsorsPage() {
         {/* Contact CTA */}
         <div className="pb-24 max-w-2xl mx-auto px-4 sm:px-6 text-center">
           <AnimateOnScroll>
-            <h2 className="font-space font-bold text-2xl dark:text-fbc-white text-fbc-light-text mb-3">
-              Ready to partner?
+            <h2 className="font-space font-bold text-2xl text-fbc-white mb-3">
+              Ready to partner with us?
             </h2>
             <p className="text-fbc-muted mb-6">
               Reach out and we&apos;ll put together a custom package for your goals.

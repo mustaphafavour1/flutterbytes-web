@@ -276,7 +276,7 @@ const STATS = [
   { value: "35",   label: "Speakers" },
   { value: "600+", label: "Flutter Devs" },
   { value: "32",   label: "Sessions" },
-  { value: "2",    label: "Days" },
+  { value: "2",    label: "Full Days" },
 ];
 
 /* Arc positions — [L-outer, L-inner, R-inner, R-outer] — symmetric around center */
@@ -376,29 +376,19 @@ export default function Hero() {
         variants={container}
         initial="hidden"
         animate="visible"
-        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-32 pt-52 text-center"
+        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-16 pt-32 sm:pt-52 sm:py-32 text-center"
       >
         {/* File-tab badge */}
-        <motion.div variants={item} className="flex justify-center mb-4">
-          <div className="inline-flex items-center justify-between font-mono text-sm bg-fbc-card/90 border border-fbc-border rounded-full px-5 py-2.5 gap-8 min-w-[320px] max-w-lg">
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="w-2 h-2 rounded-full bg-fbc-sky/70 flex-shrink-0" />
-              <span className="text-fbc-white text-sm truncate">FlutterBytes2026.dart</span>
-              <span className="text-fbc-sky/80 animate-cursor-blink flex-shrink-0">|</span>
-            </div>
+        <motion.div variants={item} className="flex justify-center mb-8">
+          <div className="inline-flex items-center gap-3 font-mono text-sm bg-fbc-card/90 border border-fbc-border rounded-full px-5 py-2.5 min-w-0 w-full max-w-sm sm:w-auto">
+            <span className="w-2 h-2 rounded-full bg-fbc-sky/70 flex-shrink-0" />
+            <span className="text-fbc-white text-sm">FlutterBytes2026.dart</span>
+            <span className="text-fbc-sky/50 animate-cursor-blink flex-shrink-0">|</span>
             <span className="text-fbc-blue font-semibold whitespace-nowrap text-sm flex-shrink-0">
-              Oct 30–31, 2026
+              Friday &amp; Saturday, Oct 30–31, 2026
             </span>
           </div>
         </motion.div>
-
-        {/* Date line */}
-        <motion.p
-          variants={item}
-          className="font-mono text-fbc-muted/60 text-sm text-center mb-8"
-        >
-          Friday and Saturday, October 30th &amp; 31st, 2026
-        </motion.p>
 
         {/* Main heading */}
         <motion.h1
@@ -446,9 +436,9 @@ export default function Hero() {
         </motion.div>
       </motion.div>
 
-      {/* Arc stat chips */}
+      {/* Arc stat chips — hidden on small screens, visible md+ */}
       <div
-        className="absolute bottom-20 left-0 right-0 h-36 pointer-events-none"
+        className="absolute bottom-20 left-0 right-0 h-36 pointer-events-none hidden md:block"
         role="list"
         aria-label="Conference stats"
       >
@@ -468,6 +458,19 @@ export default function Hero() {
             </motion.div>
           );
         })}
+      </div>
+
+      {/* Mobile stat chips — simple flex row, visible on small screens only */}
+      <div
+        className="absolute bottom-16 left-0 right-0 flex flex-wrap justify-center gap-2 px-4 pointer-events-none md:hidden"
+        role="list"
+        aria-label="Conference stats"
+      >
+        {STATS.map((stat) => (
+          <div key={stat.label} role="listitem">
+            <StatChip stat={stat} />
+          </div>
+        ))}
       </div>
 
       {/* Scroll indicator */}
