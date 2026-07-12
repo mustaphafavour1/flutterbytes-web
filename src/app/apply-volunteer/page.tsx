@@ -13,9 +13,8 @@ export default function ApplyToVolunteerPage() {
       <main className="min-h-screen bg-fbc-navy pt-16">
         {/* Hero */}
         <div
-          className="relative py-24 overflow-hidden"
+          className="relative py-24 overflow-hidden bg-fbc-dark"
           style={{
-            background: "linear-gradient(180deg, #050E1F 0%, #0A1628 100%)",
             backgroundImage: "radial-gradient(circle, rgba(37,99,235,0.12) 1px, transparent 1px)",
             backgroundSize: "32px 32px",
           }}

@@ -31,8 +31,8 @@ export default function GalleryCard({ item, idx = 0 }: Props) {
         className={`${aspectClass} w-full rounded-2xl bg-gradient-to-br ${bg} flex flex-col items-center justify-center gap-2 relative overflow-hidden break-inside-avoid mb-4`}
       >
         <div className="absolute inset-0 bg-black/20" aria-hidden="true" />
-        <Camera size={28} className="text-white/30 relative z-10" />
-        <span className="text-white/40 text-xs relative z-10">FBC Photo</span>
+        <Camera size={28} className="text-fbc-white/30 relative z-10" />
+        <span className="text-fbc-white/40 text-xs relative z-10">FBC Photo</span>
       </div>
     );
   }

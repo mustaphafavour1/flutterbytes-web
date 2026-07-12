@@ -45,7 +45,7 @@ export async function getSpeakers(): Promise<Speaker[]> {
       bio: bio || undefined,
       tags: tags ? tags.split(',').map((t: string) => t.trim()) : [],
     }));
-  } catch { return fallbackSpeakers; }
+  } catch (e) { console.error('[sheets] getSpeakers error:', e); return fallbackSpeakers; }
 }
 
 export async function getAgenda(day: 'Friday' | 'Saturday'): Promise<AgendaSession[]> {
@@ -61,7 +61,7 @@ export async function getAgenda(day: 'Friday' | 'Saturday'): Promise<AgendaSessi
       hall: hall || '',
       tags: tags ? tags.split(',').map((t: string) => t.trim()) : [],
     }));
-  } catch { return day === 'Friday' ? fallbackFriday : fallbackSaturday; }
+  } catch (e) { console.error(`[sheets] getAgenda(${day}) error:`, e); return day === 'Friday' ? fallbackFriday : fallbackSaturday; }
 }
 
 export async function getCommittee(): Promise<CommitteeMember[]> {
@@ -77,7 +77,7 @@ export async function getCommittee(): Promise<CommitteeMember[]> {
       photo: convertDriveUrl(photo),
       bio: bio || undefined,
     }));
-  } catch { return fallbackCommittee; }
+  } catch (e) { console.error('[sheets] getCommittee error:', e); return fallbackCommittee; }
 }
 
 /**
@@ -97,7 +97,7 @@ export async function getAgendaVisible(): Promise<boolean> {
     const row = rows.find(([k]) => k?.toLowerCase().trim() === 'agenda_visible');
     const val = row?.[1]?.toLowerCase().trim() ?? '';
     return val === 'true' || val === 'yes' || val === '1';
-  } catch { return false; }
+  } catch (e) { console.error('[sheets] getAgendaVisible error:', e); return false; }
 }
 
 /**
@@ -105,7 +105,11 @@ export async function getAgendaVisible(): Promise<boolean> {
  * Columns: name, role, company, twitter, photo, bio, tags, edition (year)
  */
 export async function getPastSpeakers(): Promise<Speaker[]> {
-  if (!hasSheetsCreds()) return fallbackSpeakers;
+  if (!hasSheetsCreds()) {
+    console.log('[sheets] getPastSpeakers: missing env vars, using fallback');
+    return fallbackSpeakers;
+  }
+  console.log('[sheets] getPastSpeakers: fetching, spreadsheetId starts with', process.env.SPREADSHEET_ID?.slice(0, 8));
   try {
     const sheets = google.sheets({ version: 'v4', auth: getAuth() });
     const res = await sheets.spreadsheets.values.get({
@@ -113,6 +117,7 @@ export async function getPastSpeakers(): Promise<Speaker[]> {
       range: 'PastSpeakers!A2:H200',
     });
     const rows = res.data.values || [];
+    console.log('[sheets] getPastSpeakers: got', rows.length, 'rows');
     return rows.map(([name, role, company, twitter, photo, bio, tags]) => ({
       name: name || '',
       role: role || '',
@@ -122,7 +127,7 @@ export async function getPastSpeakers(): Promise<Speaker[]> {
       bio: bio || undefined,
       tags: tags ? tags.split(',').map((t: string) => t.trim()) : [],
     }));
-  } catch { return fallbackSpeakers; }
+  } catch (e) { console.error('[sheets] getPastSpeakers error:', e); return fallbackSpeakers; }
 }
 
 /**
@@ -148,5 +153,5 @@ export async function getGalleryPhotos(): Promise<string[][]> {
       }
     }
     return sets;
-  } catch { return empty; }
+  } catch (e) { console.error('[sheets] getGalleryPhotos error:', e); return empty; }
 }

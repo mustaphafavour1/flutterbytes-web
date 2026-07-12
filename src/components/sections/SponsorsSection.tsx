@@ -38,11 +38,7 @@ function SponsorCard({ name, tier, fillIdx, myIdx }: {
     <div className="relative w-36 sm:w-44" style={{ height: 84 }}>
       {/* Dimmed base */}
       <div
-        className="absolute inset-0 rounded-full flex items-center justify-center"
-        style={{
-          background: "rgba(15,30,56,0.7)",
-          border: "1px solid rgba(30,58,95,0.6)",
-        }}
+        className="absolute inset-0 rounded-full flex items-center justify-center bg-fbc-card/70 border border-fbc-border/60"
       >
         <span className="font-gigasans font-semibold text-sm text-fbc-muted/30 text-center px-3">
           {name}
