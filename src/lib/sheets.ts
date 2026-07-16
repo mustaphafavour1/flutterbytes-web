@@ -16,8 +16,16 @@ export function convertDriveUrl(url: string | undefined | null): string {
   return url;
 }
 
+function getSpreadsheetId(): string | undefined {
+  const raw = process.env.SPREADSHEET_ID;
+  if (!raw) return undefined;
+  // Accept full Google Sheets URL — extract just the ID part
+  const match = raw.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+  return match ? match[1] : raw;
+}
+
 function hasSheetsCreds(): boolean {
-  return !!(process.env.GOOGLE_SHEETS_CLIENT_EMAIL && process.env.GOOGLE_SHEETS_PRIVATE_KEY && process.env.SPREADSHEET_ID);
+  return !!(process.env.GOOGLE_SHEETS_CLIENT_EMAIL && process.env.GOOGLE_SHEETS_PRIVATE_KEY && getSpreadsheetId());
 }
 
 function getAuth() {
@@ -31,10 +39,13 @@ function getAuth() {
 }
 
 export async function getSpeakers(): Promise<Speaker[]> {
-  if (!hasSheetsCreds()) return fallbackSpeakers;
+  if (!hasSheetsCreds()) {
+    console.log('[sheets] getSpeakers: missing env vars, using fallback');
+    return fallbackSpeakers;
+  }
   try {
     const sheets = google.sheets({ version: 'v4', auth: getAuth() });
-    const res = await sheets.spreadsheets.values.get({ spreadsheetId: process.env.SPREADSHEET_ID, range: 'Speakers!A2:G100' });
+    const res = await sheets.spreadsheets.values.get({ spreadsheetId: getSpreadsheetId(), range: 'Speakers!A2:G100' });
     const rows = res.data.values || [];
     return rows.map(([name, role, company, twitter, photo, bio, tags]) => ({
       name: name || '',
@@ -52,7 +63,7 @@ export async function getAgenda(day: 'Friday' | 'Saturday'): Promise<AgendaSessi
   if (!hasSheetsCreds()) return day === 'Friday' ? fallbackFriday : fallbackSaturday;
   try {
     const sheets = google.sheets({ version: 'v4', auth: getAuth() });
-    const res = await sheets.spreadsheets.values.get({ spreadsheetId: process.env.SPREADSHEET_ID, range: `${day}!A2:E100` });
+    const res = await sheets.spreadsheets.values.get({ spreadsheetId: getSpreadsheetId(), range: `${day}!A2:E100` });
     const rows = res.data.values || [];
     return rows.map(([time, session, speaker, hall, tags]) => ({
       time: time || '',
@@ -68,7 +79,7 @@ export async function getCommittee(): Promise<CommitteeMember[]> {
   if (!hasSheetsCreds()) return fallbackCommittee;
   try {
     const sheets = google.sheets({ version: 'v4', auth: getAuth() });
-    const res = await sheets.spreadsheets.values.get({ spreadsheetId: process.env.SPREADSHEET_ID, range: 'Committee!A2:E100' });
+    const res = await sheets.spreadsheets.values.get({ spreadsheetId: getSpreadsheetId(), range: 'Committee!A2:E100' });
     const rows = res.data.values || [];
     return rows.map(([name, role, title, photo, bio]) => ({
       name: name || '',
@@ -90,7 +101,7 @@ export async function getAgendaVisible(): Promise<boolean> {
   try {
     const sheets = google.sheets({ version: 'v4', auth: getAuth() });
     const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.SPREADSHEET_ID,
+      spreadsheetId: getSpreadsheetId(),
       range: 'Settings!A1:B20',
     });
     const rows = res.data.values || [];
@@ -113,7 +124,7 @@ export async function getPastSpeakers(): Promise<Speaker[]> {
   try {
     const sheets = google.sheets({ version: 'v4', auth: getAuth() });
     const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.SPREADSHEET_ID,
+      spreadsheetId: getSpreadsheetId(),
       range: 'PastSpeakers!A2:H200',
     });
     const rows = res.data.values || [];
@@ -141,7 +152,7 @@ export async function getGalleryPhotos(): Promise<string[][]> {
   try {
     const sheets = google.sheets({ version: 'v4', auth: getAuth() });
     const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.SPREADSHEET_ID,
+      spreadsheetId: getSpreadsheetId(),
       range: 'Gallery!A2:C200',
     });
     const rows = res.data.values || [];
