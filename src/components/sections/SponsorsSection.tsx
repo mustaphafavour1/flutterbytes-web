@@ -57,21 +57,11 @@ function SponsorCard({ sponsor, fillIdx, myIdx }: { sponsor: Sponsor; fillIdx: n
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <div className="relative w-40 sm:w-44 rounded-[28px] bg-fbc-card border border-fbc-border overflow-hidden" style={{ height: 128 }}>
-        {/* Dimmed grayscale base */}
-        <div className="absolute inset-0 flex items-center justify-center p-5">
-          <Image
-            src={logoSrc}
-            alt={sponsor.name}
-            width={246}
-            height={182}
-            className="object-contain w-auto h-full"
-            style={{ filter: "grayscale(1)", opacity: 0.3 }}
-          />
-        </div>
-        {/* Full-colour logo, revealed bottom-to-top */}
+      <div className="relative w-40 sm:w-44 rounded-full bg-white border border-fbc-border overflow-hidden" style={{ height: 88 }}>
+        {/* Container background fills bottom-to-top: white -> #D0EFFF */}
         <motion.div
-          className="absolute inset-0 flex items-center justify-center p-5"
+          className="absolute inset-0"
+          style={{ background: "#D0EFFF" }}
           animate={{
             clipPath: revealed
               ? "inset(0% 0 0% 0)"
@@ -80,19 +70,21 @@ function SponsorCard({ sponsor, fillIdx, myIdx }: { sponsor: Sponsor; fillIdx: n
               : "inset(100% 0 0% 0)",
           }}
           transition={{ duration: 0.55, ease: "easeInOut" }}
-        >
+        />
+        {/* Logo sits on top of the fill */}
+        <div className="absolute inset-0 flex items-center justify-center px-6 py-3.5">
           <Image
             src={logoSrc}
-            alt=""
+            alt={sponsor.name}
             width={246}
             height={182}
             className="object-contain w-auto h-full"
           />
-        </motion.div>
+        </div>
       </div>
       {/* Tier label (only when present); reserve the line so chips align */}
       <span
-        className="text-[11px] font-semibold uppercase tracking-wide h-4 leading-4"
+        className="text-[9px] font-semibold uppercase tracking-wide h-3 leading-3"
         style={{ color: tierColor }}
       >
         {tierLabel}
@@ -108,18 +100,18 @@ function YourBrandCard() {
       className="flex flex-col items-center gap-2 transition-transform hover:-translate-y-1"
     >
       <motion.div
-        className="w-40 sm:w-44 rounded-[28px] flex flex-col items-center justify-center gap-1"
-        style={{ height: 128, border: "1.5px dashed rgba(42,157,244,0.4)" }}
+        className="w-40 sm:w-44 rounded-full flex flex-col items-center justify-center gap-0.5"
+        style={{ height: 88, border: "1.5px dashed rgba(42,157,244,0.4)" }}
         animate={{
           borderColor: ["rgba(42,157,244,0.2)", "rgba(42,157,244,0.7)", "rgba(42,157,244,0.2)"],
           boxShadow: ["0 0 0 rgba(42,157,244,0)", "0 0 16px rgba(42,157,244,0.3)", "0 0 0 rgba(42,157,244,0)"],
         }}
         transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
       >
-        <span className="text-fbc-sky text-2xl leading-none">+</span>
-        <span className="text-fbc-white text-sm font-semibold">Your Brand</span>
+        <span className="text-fbc-sky text-xl leading-none">+</span>
+        <span className="text-fbc-white text-xs font-semibold">Your Brand</span>
       </motion.div>
-      <span className="text-fbc-muted/60 text-[11px] uppercase tracking-wide h-4 leading-4">Become a sponsor</span>
+      <span className="text-fbc-muted/60 text-[9px] uppercase tracking-wide h-3 leading-3">Become a sponsor</span>
     </a>
   );
 }
@@ -173,16 +165,16 @@ export default function SponsorsSection() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
-                href="mailto:sponsors@flutterbytes.ng"
+                href="mailto:contact.flutterbytes@gmail.com"
                 className="rounded-full px-6 py-2.5 font-gigasans font-semibold text-sm text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_18px_rgba(42,157,244,0.4)] inline-flex items-center justify-center gap-2"
               >
                 <Mail size={14} /> Send us a mail →
               </a>
               <a
-                href="/sponsors"
+                href="mailto:contact.flutterbytes@gmail.com?subject=Sponsorship%20Deck%20Request&body=Hello%20FlutterBytes%20team%2C%20I%27d%20love%20to%20sponsor%20the%20next%20edition."
                 className="rounded-full px-6 py-2.5 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-sky hover:bg-fbc-sky/10 transition-all inline-flex items-center justify-center gap-2"
               >
-                View sponsorship packages →
+                Request sponsorship deck →
               </a>
             </div>
           </div>
