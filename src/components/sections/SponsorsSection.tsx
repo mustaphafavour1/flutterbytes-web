@@ -1,8 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Mail } from "lucide-react";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
+import { sponsorLogo } from "@/lib/slug";
 
 const SPONSORS = [
   { name: "Flutter",             tier: "platinum" },
@@ -27,44 +29,45 @@ const TIER_COLOR: Record<string, string> = {
   bronze:   "#B87333",
 };
 
-function SponsorCard({ name, tier, fillIdx, myIdx }: {
-  name: string; tier: string; fillIdx: number; myIdx: number;
-}) {
-  const isActive = myIdx === fillIdx;
-  const isFilled = myIdx < fillIdx;
-  const color    = TIER_COLOR[tier] ?? "#94A3B8";
+/**
+ * Sponsor pill: real logo on top, brand name + tier label underneath.
+ * Drop each logo into /public/sponsors/ named `<brand-name>.png`
+ * (e.g. flutter.png, built-by-invertase.png). Until a logo is uploaded,
+ * an initials monogram shows in its place.
+ */
+function SponsorCard({ name, tier }: { name: string; tier: string }) {
+  const [logoOk, setLogoOk] = useState(true);
+  const color     = TIER_COLOR[tier] ?? "#94A3B8";
+  const tierLabel = `${tier.charAt(0).toUpperCase()}${tier.slice(1)} Sponsor`;
+  const initials  = name.replace(/[^a-zA-Z ]/g, "").split(" ").filter(Boolean).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 
   return (
-    <div className="relative w-36 sm:w-44" style={{ height: 84 }}>
-      {/* Dimmed base */}
-      <div
-        className="absolute inset-0 rounded-full flex items-center justify-center bg-fbc-card/70 border border-fbc-border/60"
-      >
-        <span className="font-gigasans font-semibold text-sm text-fbc-muted/30 text-center px-3">
-          {name}
-        </span>
+    <div
+      className="w-40 sm:w-48 rounded-[32px] bg-fbc-card border border-fbc-border flex flex-col items-center justify-center gap-2.5 px-4 py-5"
+      style={{ minHeight: 168 }}
+    >
+      <div className="h-12 flex items-center justify-center w-full">
+        {logoOk ? (
+          <Image
+            src={sponsorLogo(name)}
+            alt={`${name} logo`}
+            width={150}
+            height={48}
+            className="object-contain h-12 w-auto max-w-[85%]"
+            onError={() => setLogoOk(false)}
+          />
+        ) : (
+          <div className="w-12 h-12 rounded-full bg-fbc-navy border border-fbc-border flex items-center justify-center">
+            <span className="font-gigasans font-bold text-fbc-sky text-sm">{initials}</span>
+          </div>
+        )}
       </div>
-
-      {/* Fill overlay — uses clipPath so it doesn't cause layout reflow */}
-      <motion.div
-        className="absolute inset-0 rounded-full flex items-center justify-center"
-        style={{ background: "rgba(255,255,255,0.97)" }}
-        animate={{
-          clipPath: isFilled
-            ? "inset(0% 0 0% 0 round 9999px)"
-            : isActive
-            ? ["inset(100% 0 0% 0 round 9999px)", "inset(0% 0 0% 0 round 9999px)"]
-            : "inset(100% 0 0% 0 round 9999px)",
-        }}
-        transition={{ duration: 0.55, ease: "easeInOut" }}
-      >
-        <span
-          className="font-gigasans font-bold text-sm text-center px-3 leading-tight"
-          style={{ color }}
-        >
-          {name}
-        </span>
-      </motion.div>
+      <span className="font-gigasans font-semibold text-fbc-white text-sm text-center leading-tight">
+        {name}
+      </span>
+      <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color }}>
+        {tierLabel}
+      </span>
     </div>
   );
 }
@@ -72,9 +75,9 @@ function SponsorCard({ name, tier, fillIdx, myIdx }: {
 function YourBrandCard() {
   return (
     <motion.div
-      className="relative rounded-full flex items-center justify-center w-36 sm:w-44"
+      className="w-40 sm:w-48 rounded-[32px] flex flex-col items-center justify-center gap-1.5 px-4 py-5"
       style={{
-        height: 84,
+        minHeight: 168,
         border: "1.5px dashed rgba(42,157,244,0.4)",
       }}
       animate={{
@@ -91,25 +94,14 @@ function YourBrandCard() {
       }}
       transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
     >
-      <span className="text-fbc-muted/50 text-sm font-medium">Your Brand</span>
+      <span className="text-fbc-sky text-2xl">+</span>
+      <span className="text-fbc-white text-sm font-semibold text-center">Your Brand</span>
+      <span className="text-fbc-muted/60 text-[10px] uppercase tracking-wide">Become a sponsor</span>
     </motion.div>
   );
 }
 
 export default function SponsorsSection() {
-  const [fillIdx, setFillIdx] = useState(-1);
-
-  /* Slower cycle — 3000ms per sponsor */
-  useEffect(() => {
-    const id = setInterval(() => {
-      setFillIdx((prev) => {
-        if (prev >= SPONSORS.length - 1) return -1;
-        return prev + 1;
-      });
-    }, 3000);
-    return () => clearInterval(id);
-  }, []);
-
   return (
     <section id="sponsors" className="relative py-16 sm:py-24 md:py-32 bg-fbc-dark overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -126,14 +118,8 @@ export default function SponsorsSection() {
         {/* Sponsor grid */}
         <AnimateOnScroll delay={0.1}>
           <div className="flex flex-wrap gap-4 justify-center mb-6">
-            {SPONSORS.map((s, i) => (
-              <SponsorCard
-                key={s.name}
-                name={s.name}
-                tier={s.tier}
-                fillIdx={fillIdx}
-                myIdx={i}
-              />
+            {SPONSORS.map((s) => (
+              <SponsorCard key={s.name} name={s.name} tier={s.tier} />
             ))}
             <YourBrandCard />
           </div>

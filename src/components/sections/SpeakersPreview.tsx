@@ -22,7 +22,9 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
   const [wheelDeg, setWheelDeg]       = useState(0);
   const [spinDir, setSpinDir]         = useState<-1 | 1>(-1); // -1=ccw (default), 1=cw
   const [msLeft, setMsLeft]           = useState(INTERVAL);
+  const [failed, setFailed]           = useState<Set<string>>(new Set());
   const lastTickRef                   = useRef<number>(Date.now());
+  const markFailed = (name: string) => setFailed((prev) => new Set(prev).add(name));
 
   const totalSets  = Math.ceil(speakers.length / SLOT);
   const currentSet = Array.from({ length: SLOT }, (_, i) =>
@@ -128,13 +130,14 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
                 onMouseEnter={() => setHoveredSlot(i)}
                 onMouseLeave={() => setHoveredSlot(null)}
               >
-                {speaker.photo && !speaker.photo.includes("ui-avatars") ? (
+                {speaker.photo && !speaker.photo.includes("ui-avatars") && !failed.has(speaker.name) ? (
                   <Image
                     src={speaker.photo}
                     alt={speaker.name}
                     fill
                     className="object-cover"
                     sizes={`${SMALL_R * 2}px`}
+                    onError={() => markFailed(speaker.name)}
                   />
                 ) : (
                   <div className="w-full h-full bg-fbc-card flex items-center justify-center">
@@ -162,8 +165,8 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
                 <p className="font-gigasans font-bold text-fbc-white text-lg leading-tight mb-1">
                   {active.name}
                 </p>
-                <p className="text-fbc-muted text-xs">{active.role}</p>
-                <p className="text-fbc-blue text-xs font-medium mt-0.5">{active.company}</p>
+                {active.role && <p className="text-fbc-muted text-xs">{active.role}</p>}
+                {active.company && <p className="text-fbc-blue text-xs font-medium mt-0.5">{active.company}</p>}
                 {active.tags && active.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-3 justify-center">
                     {active.tags.slice(0, 2).map((t) => (

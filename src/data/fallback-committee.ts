@@ -1,3 +1,5 @@
+import { committeePhoto } from "@/lib/slug";
+
 export interface CommitteeMember {
   name: string;
   role: string;
@@ -6,21 +8,37 @@ export interface CommitteeMember {
   bio?: string;
 }
 
+/**
+ * Organizing team.
+ *
+ * Photos: drop each person's picture into /public/committee/ named
+ * `<firstname-lastname>.jpg` (e.g. jamiu-okanlawon.jpg). The filename is derived
+ * automatically from the name. Until uploaded, an initials avatar shows.
+ *
+ * Edit the names/roles below to match your real team.
+ */
+const member = (name: string, role: string, title?: string): CommitteeMember => ({
+  name,
+  role,
+  title,
+  photo: committeePhoto(name),
+});
+
 export const fallbackCommittee: CommitteeMember[] = [
-  { name: "Jamiu Okanlawon", role: "Convener", title: "FlutterBytes Conference" },
-  { name: "David Adegoke", role: "Co-Convener / Organizing Committee Lead", title: "FlutterBytes Conference" },
-  { name: "Mariam Hamzat BusyBee", role: "Co-Convener / PowerHouse", title: "FlutterBytes Conference" },
-  { name: "Taiwo Adeyemi", role: "Head of Design", title: "Creative Team" },
-  { name: "Funmi Okafor", role: "Head of Logistics", title: "Operations Team" },
-  { name: "Emeka Nwachukwu", role: "Head of Sponsorship", title: "Business Team" },
-  { name: "Aisha Mohammed", role: "Head of Marketing", title: "Marketing Team" },
-  { name: "Tunde Adeleke", role: "Head of Volunteers", title: "Community Team" },
-  { name: "Blessing Okonkwo", role: "Content Lead", title: "Content Team" },
-  { name: "Kelechi Eze", role: "Technical Lead", title: "Tech Team" },
-  { name: "Sade Williams", role: "Speaker Liaison", title: "Program Team" },
-  { name: "Obinna Chukwu", role: "Photography Lead", title: "Media Team" },
-  { name: "Fatima Yusuf", role: "Social Media Manager", title: "Marketing Team" },
-  { name: "Chidi Okoye", role: "Venue Manager", title: "Operations Team" },
-  { name: "Ngozi Igwe", role: "Registration Lead", title: "Operations Team" },
-  { name: "Babatunde Olatunji", role: "Security Lead", title: "Operations Team" },
+  member("Jamiu Okanlawon", "Convener", "FlutterBytes Conference"),
+  member("David Adegoke", "Co-Convener / Organizing Committee Lead", "FlutterBytes Conference"),
+  member("Mariam Hamzat BusyBee", "Co-Convener / PowerHouse", "FlutterBytes Conference"),
+  member("Taiwo Adeyemi", "Head of Design", "Creative Team"),
+  member("Funmi Okafor", "Head of Logistics", "Operations Team"),
+  member("Emeka Nwachukwu", "Head of Sponsorship", "Business Team"),
+  member("Aisha Mohammed", "Head of Marketing", "Marketing Team"),
+  member("Tunde Adeleke", "Head of Volunteers", "Community Team"),
+  member("Blessing Okonkwo", "Content Lead", "Content Team"),
+  member("Kelechi Eze", "Technical Lead", "Tech Team"),
+  member("Sade Williams", "Speaker Liaison", "Program Team"),
+  member("Obinna Chukwu", "Photography Lead", "Media Team"),
+  member("Fatima Yusuf", "Social Media Manager", "Marketing Team"),
+  member("Chidi Okoye", "Venue Manager", "Operations Team"),
+  member("Ngozi Igwe", "Registration Lead", "Operations Team"),
+  member("Babatunde Olatunji", "Security Lead", "Operations Team"),
 ];

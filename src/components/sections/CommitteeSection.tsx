@@ -56,6 +56,8 @@ export default function CommitteeSection({ members }: Props) {
   const [inView, setInView]       = useState(false);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [activeIdx, setActiveIdx] = useState(0);
+  const [failed, setFailed]       = useState<Set<string>>(new Set());
+  const markFailed = (name: string) => setFailed((prev) => new Set(prev).add(name));
   const containerRef              = useRef<HTMLDivElement>(null);
   const intervalRef               = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -185,13 +187,14 @@ export default function CommitteeSection({ members }: Props) {
                   onMouseLeave={() => setHoveredIdx(null)}
                   onClick={() => setActiveIdx(i)}
                 >
-                  {member.photo && !member.photo.includes("ui-avatars") ? (
+                  {member.photo && !member.photo.includes("ui-avatars") && !failed.has(member.name) ? (
                     <Image
                       src={member.photo}
                       alt={member.name}
                       fill
                       className="object-cover"
                       sizes={`${diameter}px`}
+                      onError={() => markFailed(member.name)}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-fbc-card">
