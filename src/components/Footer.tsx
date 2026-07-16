@@ -48,7 +48,7 @@ const linkCols = [
     heading: "Explore",
     links: [
       { label: "Event Agenda", href: "/agenda" },
-      { label: "Gallery", href: "#gallery" },
+      { label: "Gallery", href: "/gallery" },
       { label: "Speakers", href: "/speakers" },
       { label: "Organizing Committee", href: "/about#committee" },
     ],

@@ -90,13 +90,17 @@ function PhotoCell({ src, gradient, width, height: heightProp, circle }: {
   );
 }
 
-function GalleryStrip({ layout, photos }: { layout: Cell[]; photos: string[] }) {
+function pick(photos: string[], i: number): string | undefined {
+  return photos.length ? photos[i % photos.length] : undefined;
+}
+
+function GalleryStrip({ layout, photos, offset = 0 }: { layout: Cell[]; photos: string[]; offset?: number }) {
   return (
     <div className="flex gap-3 items-center justify-center flex-wrap">
       {layout.map((cell, i) => (
         <PhotoCell
           key={i}
-          src={photos[i]}
+          src={pick(photos, offset + i)}
           gradient={GRADIENTS[i % GRADIENTS.length]}
           width={cell.width}
           circle={cell.circle}
@@ -120,7 +124,7 @@ function MobileGallery({ photos }: { photos: string[] }) {
               return (
                 <PhotoCell
                   key={ci}
-                  src={photos[ci]}
+                  src={pick(photos, ri * layout.length + ci)}
                   gradient={GRADIENTS[ci % GRADIENTS.length]}
                   width={mw}
                   height={mh}
@@ -135,15 +139,13 @@ function MobileGallery({ photos }: { photos: string[] }) {
   );
 }
 
-export default function GallerySection() {
+export default function GallerySection({ photos = [] }: { photos?: string[] }) {
   const [setIdx, setSetIdx] = useState(0);
 
   useEffect(() => {
     const id = setInterval(() => setSetIdx((i) => (i + 1) % LAYOUTS.length), 5000);
     return () => clearInterval(id);
   }, []);
-
-  const photos: string[] = [];
 
   return (
     <section id="gallery" className="relative py-16 sm:py-24 md:py-32 bg-fbc-navy overflow-hidden">
@@ -184,7 +186,7 @@ export default function GallerySection() {
                 exit={{ opacity: 0, x: -80 }}
                 transition={{ duration: 0.45, ease: "easeInOut" }}
               >
-                <GalleryStrip layout={LAYOUTS[setIdx]} photos={photos} />
+                <GalleryStrip layout={LAYOUTS[setIdx]} photos={photos} offset={setIdx * LAYOUTS[setIdx].length} />
               </motion.div>
             </AnimatePresence>
           </div>
@@ -207,10 +209,10 @@ export default function GallerySection() {
         <AnimateOnScroll delay={0.1}>
           <div className="text-center">
             <Link
-              href="#"
+              href="/gallery"
               className="rounded-full px-7 py-3 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-sky hover:bg-fbc-sky/10 transition-all inline-flex items-center gap-2"
             >
-              See full photo wall →
+              See full gallery →
             </Link>
           </div>
         </AnimateOnScroll>

@@ -69,16 +69,17 @@ function SponsorCard({ sponsor, fillIdx, myIdx }: { sponsor: Sponsor; fillIdx: n
               ? ["inset(100% 0 0% 0)", "inset(0% 0 0% 0)"]
               : "inset(100% 0 0% 0)",
           }}
-          transition={{ duration: 0.55, ease: "easeInOut" }}
+          transition={{ duration: 0.79, ease: "easeInOut" }}
         />
-        {/* Logo sits on top of the fill */}
-        <div className="absolute inset-0 flex items-center justify-center px-6 py-3.5">
+        {/* Logo sits on top of the fill; scaled up to fill the container's whitespace */}
+        <div className="absolute inset-0 flex items-center justify-center px-4 py-2">
           <Image
             src={logoSrc}
             alt={sponsor.name}
             width={246}
             height={182}
             className="object-contain w-auto h-full"
+            style={{ transform: "scale(1.3)" }}
           />
         </div>
       </div>
@@ -123,7 +124,7 @@ export default function SponsorsSection() {
   useEffect(() => {
     const id = setInterval(() => {
       setFillIdx((prev) => (prev >= SPONSORS.length - 1 ? -1 : prev + 1));
-    }, 800);
+    }, 1140);
     return () => clearInterval(id);
   }, []);
 
@@ -140,13 +141,17 @@ export default function SponsorsSection() {
           </p>
         </AnimateOnScroll>
 
-        {/* Sponsor grid */}
+        {/* Sponsor grid — 5 / 6 / (4 + Your Brand) rows, each centered */}
         <AnimateOnScroll delay={0.1}>
-          <div className="flex flex-wrap gap-x-4 gap-y-6 justify-center mb-6">
-            {SPONSORS.map((s, i) => (
-              <SponsorCard key={s.name} sponsor={s} fillIdx={fillIdx} myIdx={i} />
+          <div className="flex flex-col items-center gap-y-6 mb-6">
+            {([[0, 5], [5, 11], [11, 15]] as const).map(([start, end], r) => (
+              <div key={r} className="flex flex-wrap justify-center gap-x-4 gap-y-6">
+                {SPONSORS.slice(start, end).map((s, i) => (
+                  <SponsorCard key={s.name} sponsor={s} fillIdx={fillIdx} myIdx={start + i} />
+                ))}
+                {r === 2 && <YourBrandCard />}
+              </div>
             ))}
-            <YourBrandCard />
           </div>
         </AnimateOnScroll>
 

@@ -10,6 +10,7 @@ import SponsorsSection from "@/components/sections/SponsorsSection";
 import CommitteeSection from "@/components/sections/CommitteeSection";
 import ClosingCTA from "@/components/sections/ClosingCTA";
 import { getSpeakers, getAgenda, getCommittee, getAgendaVisible, getPastSpeakers } from "@/lib/sheets";
+import { getGalleryImages } from "@/lib/gallery-photos";
 
 export const revalidate = 60;
 
@@ -22,6 +23,7 @@ export default async function Home() {
     getAgendaVisible(),
     getPastSpeakers(),
   ]);
+  const galleryPhotos = getGalleryImages();
 
   return (
     <>
@@ -32,7 +34,7 @@ export default async function Home() {
         <EventSnapshot />
         <AgendaPreview friday={friday} saturday={saturday} agendaVisible={agendaVisible} />
         <SpeakersPreview speakers={speakers} pastSpeakers={pastSpeakers} />
-        <GallerySection />
+        <GallerySection photos={galleryPhotos} />
         <SponsorsSection />
         <CommitteeSection members={committee} />
         <ClosingCTA />
