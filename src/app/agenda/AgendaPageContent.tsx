@@ -189,7 +189,7 @@ export default function AgendaPageContent({ friday, saturday, pastSessions }: Pr
           {tab === "past" ? (
             <div className="rounded-3xl overflow-hidden border border-fbc-border bg-fbc-card/40 backdrop-blur p-6">
               <p className="text-fbc-muted text-sm mb-6">
-                A combined view of all sessions from past FlutterBytes editions.
+                A combined view of some sessions from past FlutterBytes editions.
               </p>
               <PastSessionsGrid sessions={combinedPast} />
             </div>
