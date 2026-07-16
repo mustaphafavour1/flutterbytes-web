@@ -301,7 +301,9 @@ export default function SpeakersPreview({ speakers, pastSpeakers }: Props) {
                     We&apos;re finalising an incredible lineup for the 5th edition. Stay tuned.
                   </p>
                   <a
-                    href="/apply-speak"
+                    href="https://sessionize.com/flutterbytes-conference-2026/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="rounded-full px-6 py-2.5 font-gigasans font-semibold text-sm text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_18px_rgba(42,157,244,0.4)] inline-block"
                   >
                     Apply to Speak →

@@ -88,7 +88,7 @@ function AgendaGrid({ sessions }: { sessions: AgendaSession[] }) {
                       }}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-fbc-sky font-semibold" style={{ fontSize: 10 }}>{session.time}</span>
+                        <span className="text-fbc-sky font-semibold" style={{ fontSize: 10 }}>{session.type ?? session.time}</span>
                         <span className="text-fbc-muted" style={{ fontSize: 10 }}>{session.hall}</span>
                       </div>
                     </div>

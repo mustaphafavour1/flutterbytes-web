@@ -145,7 +145,9 @@ export default function ClosingCTA() {
               Get Tickets →
             </a>
             <a
-              href="#speak"
+              href="https://sessionize.com/flutterbytes-conference-2026/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="rounded-full px-10 py-4 font-gigasans font-semibold text-lg border border-fbc-sky/40 text-fbc-sky hover:bg-fbc-sky/10 transition-all"
             >
               Apply to Speak →

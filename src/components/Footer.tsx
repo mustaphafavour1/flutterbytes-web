@@ -38,7 +38,7 @@ const linkCols = [
   {
     heading: "Participate",
     links: [
-      { label: "Apply to speak", href: "/apply-speak" },
+      { label: "Apply to speak", href: "https://sessionize.com/flutterbytes-conference-2026/" },
       { label: "Apply to volunteer", href: "/apply-volunteer" },
       { label: "Product showcase", href: "/product-showcase" },
       { label: "FlutterBytes Hackathon", href: "/hackathon" },
@@ -121,16 +121,20 @@ export default function Footer() {
                   viewport={{ once: true }}
                   variants={listVariants}
                 >
-                  {col.links.map((l) => (
-                    <motion.li key={l.label} variants={linkVariants}>
-                      <a
-                        href={l.href}
-                        className="text-fbc-muted hover:text-fbc-white text-sm transition-colors"
-                      >
-                        {l.label}
-                      </a>
-                    </motion.li>
-                  ))}
+                  {col.links.map((l) => {
+                    const isExternal = l.href.startsWith("http");
+                    return (
+                      <motion.li key={l.label} variants={linkVariants}>
+                        <a
+                          href={l.href}
+                          {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                          className="text-fbc-muted hover:text-fbc-white text-sm transition-colors"
+                        >
+                          {l.label}
+                        </a>
+                      </motion.li>
+                    );
+                  })}
                 </motion.ul>
               </div>
             ))}

@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AgendaPageContent from "./AgendaPageContent";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export const metadata = {
   title: "Event Agenda — FlutterBytes Conference 2026",

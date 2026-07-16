@@ -39,7 +39,7 @@ function AgendaComingSoon({ sessions }: { sessions: AgendaSession[] }) {
                       <p style={{ color: "rgb(var(--color-muted) / 0.6)", fontSize: 10, fontWeight: 500 }} className="line-clamp-2 leading-snug">{session.session}</p>
                       <div style={{ opacity: 0, borderTop: "1px solid rgba(42,157,244,0.22)", paddingTop: 4 }}>
                         <div className="flex items-center justify-between">
-                          <span style={{ fontSize: 9, color: "#38BDF8", fontWeight: 600 }}>{session.time}</span>
+                          <span style={{ fontSize: 9, color: "#38BDF8", fontWeight: 600 }}>{session.type ?? session.time}</span>
                           <span style={{ fontSize: 9, color: "rgb(var(--color-muted))" }}>{session.hall}</span>
                         </div>
                       </div>
@@ -128,7 +128,7 @@ function PastSessionsGrid({ sessions }: { sessions: AgendaSession[] }) {
                     <p style={{ color: isHovered ? "rgb(var(--color-white) / 0.9)" : "rgb(var(--color-muted) / 0.6)", fontSize: 10, fontWeight: 500 }} className="line-clamp-2 leading-snug">{session.session}</p>
                     <div style={{ opacity: isHovered ? 1 : 0, transition: "opacity 0.18s", borderTop: "1px solid rgba(42,157,244,0.22)", paddingTop: 4 }}>
                       <div className="flex items-center justify-between">
-                        <span style={{ fontSize: 9, color: "#38BDF8", fontWeight: 600 }}>{session.time}</span>
+                        <span style={{ fontSize: 9, color: "#38BDF8", fontWeight: 600 }}>{session.type ?? session.time}</span>
                         <span style={{ fontSize: 9, color: "rgb(var(--color-muted))" }}>{session.hall}</span>
                       </div>
                     </div>

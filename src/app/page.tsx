@@ -11,7 +11,7 @@ import CommitteeSection from "@/components/sections/CommitteeSection";
 import ClosingCTA from "@/components/sections/ClosingCTA";
 import { getSpeakers, getAgenda, getCommittee, getAgendaVisible, getPastSpeakers } from "@/lib/sheets";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export default async function Home() {
   const [speakers, friday, saturday, committee, agendaVisible, pastSpeakers] = await Promise.all([

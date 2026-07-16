@@ -38,15 +38,47 @@ function getAuth() {
   });
 }
 
+const normalizeTab = (s: string) => s.toLowerCase().replace(/[\s_-]/g, '');
+
+/** List all tab (worksheet) titles in the spreadsheet. */
+async function getSheetTitles(): Promise<string[]> {
+  const sheets = google.sheets({ version: 'v4', auth: getAuth() });
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: getSpreadsheetId() });
+  return (meta.data.sheets || []).map((s) => s.properties?.title || '').filter(Boolean);
+}
+
+/**
+ * Read rows from the first tab whose title matches one of `candidates`
+ * (case-insensitive, ignoring spaces/underscores/hyphens). This makes data
+ * loading resilient to a tab being named e.g. "Past Speakers" instead of
+ * "PastSpeakers". Throws (with the list of available tabs) if none match.
+ */
+async function fetchTabRows(candidates: string[], a1Range: string): Promise<string[][]> {
+  const sheets = google.sheets({ version: 'v4', auth: getAuth() });
+  const titles = await getSheetTitles();
+  const wanted = candidates.map(normalizeTab);
+  const match = titles.find((t) => wanted.includes(normalizeTab(t)));
+  if (!match) {
+    throw new Error(
+      `No tab matched [${candidates.join(', ')}]. Available tabs: [${titles.join(', ')}]`
+    );
+  }
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: getSpreadsheetId(),
+    range: `'${match}'!${a1Range}`,
+  });
+  return res.data.values || [];
+}
+
 export async function getSpeakers(): Promise<Speaker[]> {
   if (!hasSheetsCreds()) {
     console.log('[sheets] getSpeakers: missing env vars, using fallback');
     return fallbackSpeakers;
   }
   try {
-    const sheets = google.sheets({ version: 'v4', auth: getAuth() });
-    const res = await sheets.spreadsheets.values.get({ spreadsheetId: getSpreadsheetId(), range: 'Speakers!A2:G100' });
-    const rows = res.data.values || [];
+    const rows = await fetchTabRows(['Speakers', 'Speaker', '2026 Speakers'], 'A2:G100');
+    console.log('[sheets] getSpeakers: got', rows.length, 'rows');
+    if (rows.length === 0) return fallbackSpeakers;
     return rows.map(([name, role, company, twitter, photo, bio, tags]) => ({
       name: name || '',
       role: role || '',
@@ -62,14 +94,14 @@ export async function getSpeakers(): Promise<Speaker[]> {
 export async function getAgenda(day: 'Friday' | 'Saturday'): Promise<AgendaSession[]> {
   if (!hasSheetsCreds()) return day === 'Friday' ? fallbackFriday : fallbackSaturday;
   try {
-    const sheets = google.sheets({ version: 'v4', auth: getAuth() });
-    const res = await sheets.spreadsheets.values.get({ spreadsheetId: getSpreadsheetId(), range: `${day}!A2:E100` });
-    const rows = res.data.values || [];
-    return rows.map(([time, session, speaker, hall, tags]) => ({
+    const rows = await fetchTabRows([day], 'A2:F100');
+    if (rows.length === 0) return day === 'Friday' ? fallbackFriday : fallbackSaturday;
+    return rows.map(([time, session, speaker, hall, type, tags]) => ({
       time: time || '',
       session: session || '',
       speaker: speaker || '',
       hall: hall || '',
+      type: type || undefined,
       tags: tags ? tags.split(',').map((t: string) => t.trim()) : [],
     }));
   } catch (e) { console.error(`[sheets] getAgenda(${day}) error:`, e); return day === 'Friday' ? fallbackFriday : fallbackSaturday; }
@@ -78,9 +110,8 @@ export async function getAgenda(day: 'Friday' | 'Saturday'): Promise<AgendaSessi
 export async function getCommittee(): Promise<CommitteeMember[]> {
   if (!hasSheetsCreds()) return fallbackCommittee;
   try {
-    const sheets = google.sheets({ version: 'v4', auth: getAuth() });
-    const res = await sheets.spreadsheets.values.get({ spreadsheetId: getSpreadsheetId(), range: 'Committee!A2:E100' });
-    const rows = res.data.values || [];
+    const rows = await fetchTabRows(['Committee'], 'A2:E100');
+    if (rows.length === 0) return fallbackCommittee;
     return rows.map(([name, role, title, photo, bio]) => ({
       name: name || '',
       role: role || '',
@@ -99,12 +130,7 @@ export async function getCommittee(): Promise<CommitteeMember[]> {
 export async function getAgendaVisible(): Promise<boolean> {
   if (!hasSheetsCreds()) return false;
   try {
-    const sheets = google.sheets({ version: 'v4', auth: getAuth() });
-    const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: getSpreadsheetId(),
-      range: 'Settings!A1:B20',
-    });
-    const rows = res.data.values || [];
+    const rows = await fetchTabRows(['Settings'], 'A1:B20');
     const row = rows.find(([k]) => k?.toLowerCase().trim() === 'agenda_visible');
     const val = row?.[1]?.toLowerCase().trim() ?? '';
     return val === 'true' || val === 'yes' || val === '1';
@@ -120,15 +146,13 @@ export async function getPastSpeakers(): Promise<Speaker[]> {
     console.log('[sheets] getPastSpeakers: missing env vars, using fallback');
     return fallbackSpeakers;
   }
-  console.log('[sheets] getPastSpeakers: fetching, spreadsheetId starts with', process.env.SPREADSHEET_ID?.slice(0, 8));
   try {
-    const sheets = google.sheets({ version: 'v4', auth: getAuth() });
-    const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: getSpreadsheetId(),
-      range: 'PastSpeakers!A2:H200',
-    });
-    const rows = res.data.values || [];
+    const rows = await fetchTabRows(
+      ['PastSpeakers', 'Past Speakers', 'Past Editions', 'Past Edition Speakers'],
+      'A2:H200'
+    );
     console.log('[sheets] getPastSpeakers: got', rows.length, 'rows');
+    if (rows.length === 0) return fallbackSpeakers;
     return rows.map(([name, role, company, twitter, photo, bio, tags]) => ({
       name: name || '',
       role: role || '',
@@ -150,12 +174,7 @@ export async function getGalleryPhotos(): Promise<string[][]> {
   const empty: string[][] = [[], [], [], []];
   if (!hasSheetsCreds()) return empty;
   try {
-    const sheets = google.sheets({ version: 'v4', auth: getAuth() });
-    const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: getSpreadsheetId(),
-      range: 'Gallery!A2:C200',
-    });
-    const rows = res.data.values || [];
+    const rows = await fetchTabRows(['Gallery'], 'A2:C200');
     const sets: string[][] = [[], [], [], []];
     for (const [set, src] of rows) {
       const idx = parseInt(set, 10) - 1;
@@ -165,4 +184,54 @@ export async function getGalleryPhotos(): Promise<string[][]> {
     }
     return sets;
   } catch (e) { console.error('[sheets] getGalleryPhotos error:', e); return empty; }
+}
+
+/**
+ * Live diagnostics for the /api/debug/sheets route. Never throws — returns a
+ * plain object describing exactly what the server sees, with no secrets leaked.
+ */
+export async function getSheetsDiagnostics(): Promise<Record<string, unknown>> {
+  const rawId = process.env.SPREADSHEET_ID;
+  const resolvedId = getSpreadsheetId();
+  const base: Record<string, unknown> = {
+    clientEmailPresent: !!process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
+    clientEmail: process.env.GOOGLE_SHEETS_CLIENT_EMAIL
+      ? process.env.GOOGLE_SHEETS_CLIENT_EMAIL
+      : null,
+    privateKeyPresent: !!process.env.GOOGLE_SHEETS_PRIVATE_KEY,
+    privateKeyLength: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.length ?? 0,
+    privateKeyLooksEscaped: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.includes('\\n') ?? false,
+    spreadsheetIdPresent: !!rawId,
+    spreadsheetIdWasUrl: rawId ? rawId !== resolvedId : false,
+    spreadsheetIdPreview: resolvedId ? `${resolvedId.slice(0, 6)}…${resolvedId.slice(-4)}` : null,
+    hasAllCreds: hasSheetsCreds(),
+  };
+  if (!hasSheetsCreds()) {
+    base.result = 'MISSING_CREDS — one or more env vars are not set at runtime';
+    return base;
+  }
+  try {
+    const titles = await getSheetTitles();
+    base.availableTabs = titles;
+    const counts: Record<string, number> = {};
+    for (const [key, cands, range] of [
+      ['Speakers', ['Speakers', 'Speaker', '2026 Speakers'], 'A2:G100'],
+      ['PastSpeakers', ['PastSpeakers', 'Past Speakers', 'Past Editions'], 'A2:H200'],
+      ['Committee', ['Committee'], 'A2:E100'],
+    ] as const) {
+      try {
+        const rows = await fetchTabRows(cands as unknown as string[], range);
+        counts[key] = rows.length;
+      } catch (e) {
+        counts[key] = -1;
+        base[`${key}Error`] = (e as Error).message;
+      }
+    }
+    base.rowCounts = counts;
+    base.result = 'OK — spreadsheet reachable';
+  } catch (e) {
+    base.result = 'AUTH_OR_ACCESS_ERROR';
+    base.error = (e as Error).message;
+  }
+  return base;
 }
