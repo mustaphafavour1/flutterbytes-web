@@ -13,6 +13,5 @@ export function slugify(name: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-export const speakerPhoto = (name: string) => `/speakers/${slugify(name)}.jpg`;
 export const committeePhoto = (name: string) => `/committee/${slugify(name)}.jpg`;
 export const sponsorLogo = (name: string) => `/sponsors/${slugify(name)}.png`;

@@ -1,4 +1,5 @@
 import { google } from 'googleapis';
+import { resolvePastSpeakers } from '@/lib/speaker-photos';
 import { fallbackSpeakers, type Speaker } from '@/data/fallback-speakers';
 import { fallbackFriday, fallbackSaturday, type AgendaSession } from '@/data/fallback-agenda';
 import { fallbackCommittee, type CommitteeMember } from '@/data/fallback-committee';
@@ -144,7 +145,7 @@ export async function getAgendaVisible(): Promise<boolean> {
 export async function getPastSpeakers(): Promise<Speaker[]> {
   if (!hasSheetsCreds()) {
     console.log('[sheets] getPastSpeakers: missing env vars, using fallback');
-    return fallbackSpeakers;
+    return resolvePastSpeakers(fallbackSpeakers);
   }
   try {
     const rows = await fetchTabRows(
@@ -152,8 +153,8 @@ export async function getPastSpeakers(): Promise<Speaker[]> {
       'A2:H200'
     );
     console.log('[sheets] getPastSpeakers: got', rows.length, 'rows');
-    if (rows.length === 0) return fallbackSpeakers;
-    return rows.map(([name, role, company, twitter, photo, bio, tags]) => ({
+    if (rows.length === 0) return resolvePastSpeakers(fallbackSpeakers);
+    return resolvePastSpeakers(rows.map(([name, role, company, twitter, photo, bio, tags]) => ({
       name: name || '',
       role: role || '',
       company: company || '',
@@ -161,8 +162,8 @@ export async function getPastSpeakers(): Promise<Speaker[]> {
       photo: convertDriveUrl(photo),
       bio: bio || undefined,
       tags: tags ? tags.split(',').map((t: string) => t.trim()) : [],
-    }));
-  } catch (e) { console.error('[sheets] getPastSpeakers error:', e); return fallbackSpeakers; }
+    })));
+  } catch (e) { console.error('[sheets] getPastSpeakers error:', e); return resolvePastSpeakers(fallbackSpeakers); }
 }
 
 /**

@@ -75,6 +75,10 @@ export default function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
 
   const secsLeft = Math.ceil(msLeft / 1000);
 
+  /* Which speakers the current ring represents, for the "Showing X–Y of N" label */
+  const rangeStart = totalSets > 0 ? (setIdx % totalSets) * SLOT : 0;
+  const rangeEnd   = Math.min(rangeStart + SLOT, speakers.length);
+
   return (
     <div className="flex flex-col items-center justify-center w-full gap-6" style={{ minHeight: "min(90vh,680px)", overflow: "hidden" }}>
       <div className="transform scale-[0.55] sm:scale-[0.75] md:scale-90 lg:scale-100 origin-top">
@@ -181,6 +185,11 @@ export default function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
 
       {/* Controls + countdown */}
       <div className="flex flex-col items-center gap-3">
+        {speakers.length > SLOT && (
+          <p className="text-fbc-sky/70 text-xs font-medium">
+            Showing {rangeStart + 1}–{rangeEnd} of {speakers.length} speakers
+          </p>
+        )}
         <div className="flex items-center gap-4">
           {/* CCW button */}
           <button

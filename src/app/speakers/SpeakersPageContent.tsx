@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SpeakerWheel from "@/components/SpeakerWheel";
+import SpeakerGrid from "@/components/SpeakerGrid";
 import type { Speaker } from "@/data/fallback-speakers";
 
 interface Props {
@@ -83,6 +84,20 @@ export default function SpeakersPageContent({ speakers, pastSpeakers }: Props) {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Full grid — see every speaker without spinning */}
+      {tab === "past" && allPast.length > 0 && (
+        <div className="mt-20">
+          <div className="flex items-center gap-4 mb-10">
+            <div className="h-px flex-1 bg-fbc-border/60" />
+            <p className="text-fbc-muted text-sm whitespace-nowrap">
+              All {allPast.length} past speakers
+            </p>
+            <div className="h-px flex-1 bg-fbc-border/60" />
+          </div>
+          <SpeakerGrid speakers={allPast} />
+        </div>
+      )}
     </div>
   );
 }

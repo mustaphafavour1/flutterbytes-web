@@ -1,5 +1,3 @@
-import { speakerPhoto } from "@/lib/slug";
-
 export interface Speaker {
   name: string;
   role: string;
@@ -11,54 +9,47 @@ export interface Speaker {
 }
 
 /**
- * Real FlutterBytes speakers (from the submitted sessions list).
+ * Real past FlutterBytes speakers, with role + company.
  *
- * Photos: drop each person's picture into /public/speakers/ named
- * `<firstname-lastname>.jpg` (e.g. odinachi-david.jpg). The filename is derived
- * automatically from the name, so no code change is needed once the file exists.
- * Until a photo is uploaded, the speaker shows an initials avatar.
- *
- * `role` = job title. The sessions CSV did not include job titles, so these are
- * left blank for now — fill each one in and it appears on the speaker card.
+ * Photos are NOT listed here — they resolve automatically from files in
+ * /public/past-speakers/ (see src/lib/speaker-photos.ts). Drop in a picture
+ * named `<firstname-lastname>.jpg` (or .png/.webp) and it appears; prefix with
+ * `N-` to control order. Until a photo exists, an initials avatar shows.
  */
-const speaker = (name: string, tag: string, role = ""): Speaker => ({
+const speaker = (name: string, role: string, company: string, tag: string): Speaker => ({
   name,
   role,
-  company: "",
-  photo: speakerPhoto(name),
+  company,
   tags: tag ? [tag] : [],
 });
 
 export const fallbackSpeakers: Speaker[] = [
-  speaker("Odinachi David", "Monetization"),
-  speaker("Kudus Rufai", "Real-Time UX"),
-  speaker("Atuoha Anthony", "Architecture"),
-  speaker("Sebastine Odeh", "Testing"),
-  speaker("Sasha Denisov", "AI"),
-  speaker("Festus Olusegun", "Code Quality"),
-  speaker("Agalaba Ifeanyi", "AI"),
-  speaker("Mrinal Jain", "Multiplatform"),
-  speaker("Nikki Eke", "UX"),
-  speaker("Chima Precious", "Dart"),
-  speaker("Ayomiposi Fabiyi", "Games"),
-  speaker("David Oluwabusayo", "Wellbeing"),
-  speaker("Glory Olaifa", "Native"),
-  speaker("Emmanuel Akinfulubi", "AI"),
-  speaker("Caleb Jesusegun", "Tooling"),
-  speaker("Jesutoni Aderibigbe", "Testing"),
-  speaker("Sodiq Eniola", "UI"),
-  speaker("Temitayo Olakunle", "Product"),
-  speaker("Yunwen Eric", "UI"),
-  speaker("Michael Ogundipe", "Performance"),
-  speaker("Samuel Adekunle", "Backend"),
-  speaker("Hassan Bahati", "AI"),
-  speaker("Ayodeji Michael", "AI"),
-  speaker("Ajayi Ayodele", "AI"),
-  speaker("Samuel Mayowa", "Web"),
-  speaker("Anuoluwapo Famakinwa", "Architecture"),
-  speaker("Daniel Modupe Asaboro", "Web3"),
-  speaker("Adewale Adeosun", "Security"),
-  speaker("Blessing Wisdom", "HealthTech"),
-  speaker("Samuel Abada", "Design Systems"),
-  speaker("Viktor Lidholt", "Backend"),
+  speaker("Odinachi David", "Mobile Engineer", "HealaTech", "Monetization"),
+  speaker("Kudus Rufai", "Mobile Engineer", "Sterling Bank", "Real-Time UX"),
+  speaker("Sebastine Odeh", "Senior Mobile Engineer", "Aku Fintech", "Testing"),
+  speaker("Sasha Denisov", "Chief Software Engineer · Flutter GDE", "EPAM", "AI"),
+  speaker("Festus Olusegun", "Software Engineer", "Traid", "Code Quality"),
+  speaker("Agalaba Ifeanyi", "Founder & Software Engineer", "VenbrinoDevs", "AI"),
+  speaker("Nikki Eke", "Mobile Engineer", "Fertitude", "UX"),
+  speaker("Chima Precious", "Software Engineer", "Invertase", "Dart"),
+  speaker("Ayomiposi Fabiyi", "Flutter Developer", "", "Games"),
+  speaker("David Oluwabusayo", "Chief Technical Officer", "Paperless", "Wellbeing"),
+  speaker("Glory Olaifa", "Flutter Ogbomoso Lead Organiser", "", "Native"),
+  speaker("Emmanuel Akinfulubi", "AI Developer", "Abeytrust Tech Solution", "AI"),
+  speaker("Caleb Jesusegun", "Mobile Developer", "Civic24", "Tooling"),
+  speaker("Jesutoni Aderibigbe", "Mobile Engineer", "Kwikpay Credit", "Testing"),
+  speaker("Sodiq Eniola", "Software Engineer", "Deveote", "UI"),
+  speaker("Temitayo Olakunle", "Co-founder & Mobile Engineer", "Ruut CSM", "Product"),
+  speaker("Michael Ogundipe", "Flutter Developer", "Converge Group", "Performance"),
+  speaker("Samuel Adekunle", "Software Engineer", "1app", "Backend"),
+  speaker("Hassan Bahati", "Developer", "Invertase", "AI"),
+  speaker("Ayodeji Michael", "Mobile Engineer", "", "AI"),
+  speaker("Ajayi Ayodele", "Mobile App Developer", "Bizconnect24", "AI"),
+  speaker("Samuel Mayowa", "Flutter Engineer", "Tutero", "Web"),
+  speaker("Anuoluwapo Famakinwa", "Mobile Engineer", "MyCoverGenius", "Architecture"),
+  speaker("Daniel Modupe Asaboro", "Software Engineering Intern", "Banana Dispatch", "Web3"),
+  speaker("Adewale Adeosun", "Mobile Lead Engineer", "Vesti", "Security"),
+  speaker("Blessing Wisdom", "Software Engineer", "University of Calabar", "HealthTech"),
+  speaker("Samuel Abada", "Google Developer Expert · Flutter & Dart", "Yousend", "Design Systems"),
+  speaker("Viktor Lidholt", "Founder & CTO", "Serverpod", "Backend"),
 ];
