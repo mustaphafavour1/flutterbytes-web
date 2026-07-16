@@ -1,6 +1,6 @@
 # Past speaker photos
 
-Drop each past speaker's picture in **this** folder (`public/past-speakers/`).
+Drop each past speaker's picture in **this** folder (`public/past_speakers/`).
 
 ## Naming
 

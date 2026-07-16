@@ -12,7 +12,7 @@ export interface Speaker {
  * Real past FlutterBytes speakers, with role + company.
  *
  * Photos are NOT listed here — they resolve automatically from files in
- * /public/past-speakers/ (see src/lib/speaker-photos.ts). Drop in a picture
+ * /public/past_speakers/ (see src/lib/speaker-photos.ts). Drop in a picture
  * named `<firstname-lastname>.jpg` (or .png/.webp) and it appears; prefix with
  * `N-` to control order. Until a photo exists, an initials avatar shows.
  */

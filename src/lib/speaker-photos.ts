@@ -6,7 +6,7 @@ import type { Speaker } from "@/data/fallback-speakers";
 const IMG_RE = /^(?:(\d+)-)?(.+)\.(png|jpe?g|webp|avif|gif)$/i;
 
 /**
- * Match each speaker to an image file in /public/past-speakers.
+ * Match each speaker to an image file in /public/past_speakers.
  *
  * Filenames:
  *   - are the person's name, lowercase-hyphenated  → `odinachi-david.jpg`
@@ -22,7 +22,7 @@ const IMG_RE = /^(?:(\d+)-)?(.+)\.(png|jpe?g|webp|avif|gif)$/i;
 export function resolvePastSpeakers(speakers: Speaker[]): Speaker[] {
   let files: string[] = [];
   try {
-    files = fs.readdirSync(path.join(process.cwd(), "public", "past-speakers"));
+    files = fs.readdirSync(path.join(process.cwd(), "public", "past_speakers"));
   } catch {
     return speakers; // folder missing / unreadable — everyone falls back to initials
   }
@@ -42,7 +42,7 @@ export function resolvePastSpeakers(speakers: Speaker[]): Speaker[] {
     .map((s, idx) => {
       const hit = bySlug.get(slugify(s.name));
       return {
-        speaker: { ...s, photo: hit ? `/past-speakers/${hit.file}` : s.photo },
+        speaker: { ...s, photo: hit ? `/past_speakers/${hit.file}` : s.photo },
         order: hit ? hit.order : Number.POSITIVE_INFINITY,
         idx,
       };
