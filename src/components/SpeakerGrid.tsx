@@ -13,7 +13,7 @@ function SpeakerAvatar({ s }: { s: Speaker }) {
     .toUpperCase();
 
   return (
-    <div className="flex flex-col items-center text-center gap-2.5">
+    <div className="flex flex-col items-center text-center gap-2.5 w-32 sm:w-36">
       <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-fbc-border bg-fbc-card">
         {ok && s.photo ? (
           <Image
@@ -41,7 +41,7 @@ function SpeakerAvatar({ s }: { s: Speaker }) {
 
 export default function SpeakerGrid({ speakers }: { speakers: Speaker[] }) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-8">
+    <div className="flex flex-wrap justify-center gap-x-6 gap-y-10">
       {speakers.map((s) => (
         <SpeakerAvatar key={s.name} s={s} />
       ))}

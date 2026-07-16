@@ -87,7 +87,7 @@ export default function SpeakersPageContent({ speakers, pastSpeakers }: Props) {
 
       {/* Full grid — see every speaker without spinning */}
       {tab === "past" && allPast.length > 0 && (
-        <div className="mt-20">
+        <div className="mt-40 md:mt-60">
           <div className="flex items-center gap-4 mb-10">
             <div className="h-px flex-1 bg-fbc-border/60" />
             <p className="text-fbc-muted text-sm whitespace-nowrap">

@@ -1,25 +1,33 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Mail } from "lucide-react";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
-import { sponsorLogo } from "@/lib/slug";
 
-const SPONSORS = [
-  { name: "Flutter",             tier: "platinum" },
-  { name: "Google",              tier: "platinum" },
-  { name: "Zapp!",               tier: "gold" },
-  { name: "Built by Invertase",  tier: "gold" },
-  { name: "Codemagic",           tier: "gold" },
-  { name: "Native Teams",        tier: "silver" },
-  { name: "Cake Wallet",         tier: "silver" },
-  { name: "FlutterFlow",         tier: "silver" },
-  { name: "aptLearn",            tier: "silver" },
-  { name: "Very Good Ventures",  tier: "silver" },
-  { name: "GenZ Techies",        tier: "bronze" },
-  { name: "Industrial Flutter",  tier: "bronze" },
-  { name: "Shuttlers",           tier: "bronze" },
+/**
+ * Sponsors — logos live in /public/sponsors/ (246×182 rectangles).
+ * Tiered sponsors are listed first; the tier label shows only when present.
+ * Each chip links to the sponsor's website.
+ */
+type Sponsor = { name: string; logo: string; website: string; tier?: string };
+
+const SPONSORS: Sponsor[] = [
+  { name: "Google",             logo: "google.png",             website: "https://www.google.com",       tier: "platinum" },
+  { name: "Serverpod",          logo: "serverpod.png",          website: "https://serverpod.dev/",        tier: "gold" },
+  { name: "Cake Wallet",        logo: "cake-wallet.png",        website: "https://cakewallet.com/",       tier: "silver" },
+  { name: "Codemagic",          logo: "codemagic.png",          website: "https://codemagic.io/start/",   tier: "bronze" },
+  { name: "Shorebird",          logo: "shorebird.png",          website: "https://shorebird.dev/",        tier: "bronze" },
+  { name: "Flutter",            logo: "flutter.png",            website: "https://flutter.dev/" },
+  { name: "Invertase",          logo: "invertase.png",          website: "https://invertase.io/" },
+  { name: "FlutterFlow",        logo: "flutter-flow.png",       website: "https://flutterflow.io/" },
+  { name: "Very Good Ventures", logo: "very-good-ventures.png", website: "https://verygood.ventures/" },
+  { name: "Native Teams",       logo: "native-teams.png",       website: "https://nativeteams.com/" },
+  { name: "Zapp!",              logo: "zapp.png",               website: "https://zapp.run/" },
+  { name: "aptLearn",           logo: "aptlearn.png",           website: "https://aptlearn.io/" },
+  { name: "GenZ Techies",       logo: "genz-techies.png",       website: "https://genztechies.com/" },
+  { name: "Industrial Flutter", logo: "industrial-flutter.png", website: "https://www.industrialflutter.com/" },
+  { name: "Shuttlers",          logo: "shuttlers.png",          website: "https://www.shuttlers.ng/" },
 ];
 
 const TIER_COLOR: Record<string, string> = {
@@ -29,79 +37,104 @@ const TIER_COLOR: Record<string, string> = {
   bronze:   "#B87333",
 };
 
-/**
- * Sponsor pill: real logo on top, brand name + tier label underneath.
- * Drop each logo into /public/sponsors/ named `<brand-name>.png`
- * (e.g. flutter.png, built-by-invertase.png). Until a logo is uploaded,
- * an initials monogram shows in its place.
- */
-function SponsorCard({ name, tier }: { name: string; tier: string }) {
-  const [logoOk, setLogoOk] = useState(true);
-  const color     = TIER_COLOR[tier] ?? "#94A3B8";
-  const tierLabel = `${tier.charAt(0).toUpperCase()}${tier.slice(1)} Sponsor`;
-  const initials  = name.replace(/[^a-zA-Z ]/g, "").split(" ").filter(Boolean).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+function SponsorCard({ sponsor, fillIdx, myIdx }: { sponsor: Sponsor; fillIdx: number; myIdx: number }) {
+  const [hover, setHover]   = useState(false);
+  const isActive = myIdx === fillIdx;
+  const isFilled = myIdx < fillIdx;
+  const revealed = isFilled || hover;
+
+  const tierLabel = sponsor.tier ? `${sponsor.tier.charAt(0).toUpperCase()}${sponsor.tier.slice(1)} Sponsor` : null;
+  const tierColor = sponsor.tier ? TIER_COLOR[sponsor.tier] : undefined;
+  const logoSrc   = `/sponsors/${sponsor.logo}`;
 
   return (
-    <div
-      className="w-40 sm:w-48 rounded-[32px] bg-fbc-card border border-fbc-border flex flex-col items-center justify-center gap-2.5 px-4 py-5"
-      style={{ minHeight: 168 }}
+    <a
+      href={sponsor.website}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${sponsor.name} — visit website`}
+      className="flex flex-col items-center gap-2 transition-transform hover:-translate-y-1"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
     >
-      <div className="h-12 flex items-center justify-center w-full">
-        {logoOk ? (
+      <div className="relative w-40 sm:w-44 rounded-[28px] bg-fbc-card border border-fbc-border overflow-hidden" style={{ height: 128 }}>
+        {/* Dimmed grayscale base */}
+        <div className="absolute inset-0 flex items-center justify-center p-5">
           <Image
-            src={sponsorLogo(name)}
-            alt={`${name} logo`}
-            width={150}
-            height={48}
-            className="object-contain h-12 w-auto max-w-[85%]"
-            onError={() => setLogoOk(false)}
+            src={logoSrc}
+            alt={sponsor.name}
+            width={246}
+            height={182}
+            className="object-contain w-auto h-full"
+            style={{ filter: "grayscale(1)", opacity: 0.3 }}
           />
-        ) : (
-          <div className="w-12 h-12 rounded-full bg-fbc-navy border border-fbc-border flex items-center justify-center">
-            <span className="font-gigasans font-bold text-fbc-sky text-sm">{initials}</span>
-          </div>
-        )}
+        </div>
+        {/* Full-colour logo, revealed bottom-to-top */}
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center p-5"
+          animate={{
+            clipPath: revealed
+              ? "inset(0% 0 0% 0)"
+              : isActive
+              ? ["inset(100% 0 0% 0)", "inset(0% 0 0% 0)"]
+              : "inset(100% 0 0% 0)",
+          }}
+          transition={{ duration: 0.55, ease: "easeInOut" }}
+        >
+          <Image
+            src={logoSrc}
+            alt=""
+            width={246}
+            height={182}
+            className="object-contain w-auto h-full"
+          />
+        </motion.div>
       </div>
-      <span className="font-gigasans font-semibold text-fbc-white text-sm text-center leading-tight">
-        {name}
-      </span>
-      <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color }}>
+      {/* Tier label (only when present); reserve the line so chips align */}
+      <span
+        className="text-[11px] font-semibold uppercase tracking-wide h-4 leading-4"
+        style={{ color: tierColor }}
+      >
         {tierLabel}
       </span>
-    </div>
+    </a>
   );
 }
 
 function YourBrandCard() {
   return (
-    <motion.div
-      className="w-40 sm:w-48 rounded-[32px] flex flex-col items-center justify-center gap-1.5 px-4 py-5"
-      style={{
-        minHeight: 168,
-        border: "1.5px dashed rgba(42,157,244,0.4)",
-      }}
-      animate={{
-        borderColor: [
-          "rgba(42,157,244,0.2)",
-          "rgba(42,157,244,0.7)",
-          "rgba(42,157,244,0.2)",
-        ],
-        boxShadow: [
-          "0 0 0 rgba(42,157,244,0)",
-          "0 0 16px rgba(42,157,244,0.3)",
-          "0 0 0 rgba(42,157,244,0)",
-        ],
-      }}
-      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+    <a
+      href="/sponsors"
+      className="flex flex-col items-center gap-2 transition-transform hover:-translate-y-1"
     >
-      <span className="text-fbc-sky text-2xl">+</span>
-      <span className="text-fbc-white text-sm font-semibold text-center">Your Brand</span>
-      <span className="text-fbc-muted/60 text-[10px] uppercase tracking-wide">Become a sponsor</span>
-    </motion.div>
+      <motion.div
+        className="w-40 sm:w-44 rounded-[28px] flex flex-col items-center justify-center gap-1"
+        style={{ height: 128, border: "1.5px dashed rgba(42,157,244,0.4)" }}
+        animate={{
+          borderColor: ["rgba(42,157,244,0.2)", "rgba(42,157,244,0.7)", "rgba(42,157,244,0.2)"],
+          boxShadow: ["0 0 0 rgba(42,157,244,0)", "0 0 16px rgba(42,157,244,0.3)", "0 0 0 rgba(42,157,244,0)"],
+        }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <span className="text-fbc-sky text-2xl leading-none">+</span>
+        <span className="text-fbc-white text-sm font-semibold">Your Brand</span>
+      </motion.div>
+      <span className="text-fbc-muted/60 text-[11px] uppercase tracking-wide h-4 leading-4">Become a sponsor</span>
+    </a>
   );
 }
 
 export default function SponsorsSection() {
+  const [fillIdx, setFillIdx] = useState(-1);
+
+  /* Sequential fill wave — each chip fills bottom-to-top, then resets */
+  useEffect(() => {
+    const id = setInterval(() => {
+      setFillIdx((prev) => (prev >= SPONSORS.length - 1 ? -1 : prev + 1));
+    }, 800);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <section id="sponsors" className="relative py-16 sm:py-24 md:py-32 bg-fbc-dark overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -117,9 +150,9 @@ export default function SponsorsSection() {
 
         {/* Sponsor grid */}
         <AnimateOnScroll delay={0.1}>
-          <div className="flex flex-wrap gap-4 justify-center mb-6">
-            {SPONSORS.map((s) => (
-              <SponsorCard key={s.name} name={s.name} tier={s.tier} />
+          <div className="flex flex-wrap gap-x-4 gap-y-6 justify-center mb-6">
+            {SPONSORS.map((s, i) => (
+              <SponsorCard key={s.name} sponsor={s} fillIdx={fillIdx} myIdx={i} />
             ))}
             <YourBrandCard />
           </div>
