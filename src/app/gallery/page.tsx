@@ -1,9 +1,9 @@
-import Image from "next/image";
 import { ExternalLink, Images, PlayCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
-import { getGalleryImages } from "@/lib/gallery-photos";
+import GalleryShowcase from "@/components/GalleryShowcase";
+import { getGalleryImages, getTestimonialImages } from "@/lib/gallery-photos";
 
 export const revalidate = 60;
 
@@ -23,7 +23,8 @@ const EDITIONS: Edition[] = [
   {
     year: "2025",
     items: [
-      { label: "Day 2 — Photo album", href: "https://drive.google.com/drive/folders/17qwsr1d8RqRydXp9fI2aczEKV-NvQ4FL", kind: "photos" },
+      { label: "Part 1 — Photo album", href: "https://drive.google.com/drive/folders/1zZHEjbKyH3pxV6D87WYFdJxkzakzmDqJ", kind: "photos" },
+      { label: "Part 2 — Photo album", href: "https://drive.google.com/drive/folders/17qwsr1d8RqRydXp9fI2aczEKV-NvQ4FL", kind: "photos" },
     ],
   },
   {
@@ -49,6 +50,7 @@ const EDITIONS: Edition[] = [
 
 export default function GalleryPage() {
   const photos = getGalleryImages();
+  const testimonials = getTestimonialImages();
 
   return (
     <>
@@ -73,28 +75,10 @@ export default function GalleryPage() {
           </div>
         </div>
 
-        {/* Curated highlights */}
-        {photos.length > 0 && (
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
-            <AnimateOnScroll>
-              <h2 className="font-space font-bold text-2xl text-fbc-white mb-8">Highlights</h2>
-            </AnimateOnScroll>
-            <div className="columns-2 sm:columns-3 lg:columns-4 gap-4 [column-fill:_balance]">
-              {photos.map((src, i) => (
-                <div key={src} className="mb-4 break-inside-avoid overflow-hidden rounded-2xl border border-fbc-border">
-                  <Image
-                    src={src}
-                    alt={`FlutterBytes highlight ${i + 1}`}
-                    width={500}
-                    height={500}
-                    className="w-full h-auto object-cover"
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Testimonials + photos, tabbed (testimonials default) */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+          <GalleryShowcase images={photos} testimonials={testimonials} />
+        </div>
 
         {/* Full albums by edition */}
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16 pb-28">

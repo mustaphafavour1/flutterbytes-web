@@ -57,7 +57,7 @@ function SponsorCard({ sponsor, fillIdx, myIdx }: { sponsor: Sponsor; fillIdx: n
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <div className="relative w-40 sm:w-44 rounded-full bg-white border border-fbc-border overflow-hidden" style={{ height: 88 }}>
+      <div className="relative w-36 sm:w-40 rounded-full bg-white border border-fbc-border overflow-hidden" style={{ height: 88 }}>
         {/* Container background fills bottom-to-top: white -> #D0EFFF */}
         <motion.div
           className="absolute inset-0"
@@ -101,7 +101,7 @@ function YourBrandCard() {
       className="flex flex-col items-center gap-2 transition-transform hover:-translate-y-1"
     >
       <motion.div
-        className="w-40 sm:w-44 rounded-full flex flex-col items-center justify-center gap-0.5"
+        className="w-36 sm:w-40 rounded-full flex flex-col items-center justify-center gap-0.5"
         style={{ height: 88, border: "1.5px dashed rgba(42,157,244,0.4)" }}
         animate={{
           borderColor: ["rgba(42,157,244,0.2)", "rgba(42,157,244,0.7)", "rgba(42,157,244,0.2)"],
@@ -158,7 +158,7 @@ export default function SponsorsSection() {
         {/* Become a sponsor */}
         <AnimateOnScroll delay={0.2}>
           <div className="mt-16 text-center">
-            <div className="border-t border-white/[0.05] mb-10" />
+            <div className="border-t border-fbc-border/50 mb-10" />
             <p className="font-mono text-[10px] uppercase tracking-widest text-fbc-muted/40 mb-4">
               Partner with us
             </p>

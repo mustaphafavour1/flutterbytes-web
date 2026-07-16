@@ -51,7 +51,7 @@ export default function Navbar() {
             </div>
 
             {/* Center pill nav — desktop only, truly centered */}
-            <div className="hidden lg:flex items-center bg-fbc-card/60 backdrop-blur border border-white/10 rounded-full px-2 py-1 gap-0.5">
+            <div className="hidden lg:flex items-center bg-fbc-card/60 backdrop-blur border border-fbc-border rounded-full px-2 py-1 gap-0.5">
               {navLinks.map((link) => (
                 <a
                   key={link.href}
@@ -113,7 +113,7 @@ export default function Navbar() {
                   initial={{ x: -20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.05 + i * 0.06 }}
-                  className="text-xl font-space font-semibold text-fbc-white/80 hover:text-fbc-sky py-4 border-b border-white/5 transition-colors"
+                  className="text-xl font-space font-semibold text-fbc-white/80 hover:text-fbc-sky py-4 border-b border-fbc-border transition-colors"
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}

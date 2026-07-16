@@ -74,7 +74,7 @@ function AgendaGrid({ sessions }: { sessions: AgendaSession[] }) {
                   <div className="p-3.5 h-full flex flex-col justify-between">
                     <p
                       className="text-[11px] font-medium leading-snug line-clamp-3"
-                      style={{ color: isHovered ? "rgba(248,250,255,0.9)" : "rgba(148,163,184,0.5)", transition: "color 0.18s" }}
+                      style={{ color: isHovered ? "rgb(var(--color-white) / 0.9)" : "rgb(var(--color-muted) / 0.5)", transition: "color 0.18s" }}
                     >
                       {session.session}
                     </p>
@@ -94,7 +94,7 @@ function AgendaGrid({ sessions }: { sessions: AgendaSession[] }) {
                     </div>
                     <p
                       className="truncate"
-                      style={{ fontSize: 10, color: isHovered ? "rgba(148,163,184,0.75)" : "rgba(148,163,184,0.3)", transition: "color 0.18s" }}
+                      style={{ fontSize: 10, color: isHovered ? "rgb(var(--color-muted) / 0.85)" : "rgb(var(--color-muted) / 0.4)", transition: "color 0.18s" }}
                     >
                       {session.speaker.split(",")[0]}
                     </p>

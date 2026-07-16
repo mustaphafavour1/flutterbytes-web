@@ -11,7 +11,7 @@ export default function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <div className="w-9 h-9 rounded-full border border-white/10" aria-hidden="true" />
+      <div className="w-9 h-9 rounded-full border border-fbc-border" aria-hidden="true" />
     );
   }
 
@@ -20,7 +20,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="w-9 h-9 rounded-full border border-white/10 dark:border-white/10 flex items-center justify-center text-fbc-muted hover:text-fbc-sky hover:border-fbc-sky/40 transition-all"
+      className="w-9 h-9 rounded-full border border-fbc-border dark:border-fbc-border flex items-center justify-center text-fbc-muted hover:text-fbc-sky hover:border-fbc-sky/40 transition-all"
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
       {isDark ? <Sun size={15} /> : <Moon size={15} />}

@@ -42,7 +42,7 @@ export default function EventSnapshot() {
       <div className="flex flex-col lg:flex-row" style={{ minHeight: "78vh" }}>
 
         {/* ── Left: event info ── */}
-        <div className="flex-1 px-4 sm:px-8 lg:px-16 py-16 sm:py-20 flex flex-col border-r border-white/[0.05]">
+        <div className="flex-1 px-4 sm:px-8 lg:px-16 py-16 sm:py-20 flex flex-col border-r border-fbc-border/60">
           <AnimateOnScroll>
             <div>
               <p className="font-mono text-[10px] uppercase tracking-widest text-fbc-muted/40 mb-8">
@@ -68,16 +68,16 @@ export default function EventSnapshot() {
                 </div>
               </div>
 
-              <div className="border-t border-white/[0.06] mb-4" />
+              <div className="border-t border-fbc-border/50 mb-4" />
 
               {/* 2 × 3 info grid — no fill, dividers via borders */}
-              <div className="grid grid-cols-3 mb-4 border border-white/[0.05] rounded-xl overflow-hidden">
+              <div className="grid grid-cols-3 mb-4 border border-fbc-border/50 rounded-xl overflow-hidden">
                 {INFO_CELLS.map((cell, i) => (
                   <div
                     key={cell.label}
                     style={{
-                      borderRight: i % 3 !== 2 ? "1px solid rgba(255,255,255,0.05)" : "none",
-                      borderBottom: i < 3 ? "1px solid rgba(255,255,255,0.05)" : "none",
+                      borderRight: i % 3 !== 2 ? "1px solid rgb(var(--color-border) / 0.5)" : "none",
+                      borderBottom: i < 3 ? "1px solid rgb(var(--color-border) / 0.5)" : "none",
                     }}
                   >
                     <InfoCell cell={cell} />
@@ -85,7 +85,7 @@ export default function EventSnapshot() {
                 ))}
               </div>
 
-              <div className="border-t border-white/[0.06] mb-6" />
+              <div className="border-t border-fbc-border/50 mb-6" />
 
               {/* Countdown + ticket button on same row */}
               <div>
@@ -120,7 +120,7 @@ export default function EventSnapshot() {
             allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
           />
-          <div className="absolute bottom-5 left-5 bg-fbc-navy/92 backdrop-blur-md rounded-xl px-4 py-3 border border-white/[0.08] flex items-start gap-2.5 max-w-[220px] shadow-lg">
+          <div className="absolute bottom-5 left-5 bg-fbc-navy/92 backdrop-blur-md rounded-xl px-4 py-3 border border-fbc-border/60 flex items-start gap-2.5 max-w-[220px] shadow-lg">
             <MapPin size={13} className="text-fbc-sky mt-0.5 flex-shrink-0" />
             <div>
               <p className="text-fbc-white text-xs font-semibold">Zone Tech Park</p>

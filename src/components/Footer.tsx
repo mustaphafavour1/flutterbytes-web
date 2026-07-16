@@ -143,9 +143,7 @@ export default function Footer() {
 
         <div className="border-t border-fbc-border/20 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-fbc-muted/40 text-sm">&copy; 2026 FlutterBytes Conference</p>
-          <p className="text-fbc-muted/30 text-xs">
-            Zone Tech Park, Gbagada, Lagos &middot; Oct 30&ndash;31, 2026
-          </p>
+          <p className="text-fbc-sky/70 text-xs font-medium">Becoming Flutter AI Engineer</p>
         </div>
       </div>
     </footer>
