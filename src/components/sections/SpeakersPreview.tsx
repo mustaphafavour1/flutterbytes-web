@@ -162,7 +162,7 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
                 className="text-center"
               >
                 <div className="w-6 h-0.5 mx-auto mb-3 rounded-full" style={{ background: "#2A9DF4" }} />
-                <p className="font-gigasans font-bold text-fbc-white text-lg leading-tight mb-1">
+                <p className="font-gigasans font-bold text-fbc-white text-2xl md:text-lg leading-tight mb-1">
                   {active.name}
                 </p>
                 {active.role && <p className="text-fbc-muted text-xs">{active.role}</p>}

@@ -1,18 +1,22 @@
-import { Rocket } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import NotifyForm from "@/components/NotifyForm";
 
-export default function HackathonPage() {
+export const metadata = {
+  title: "Product Showcase — FlutterBytes Conference 2026",
+  description: "Showcase your Flutter product at FlutterBytes Conference 2026. Details coming soon.",
+};
+
+export default function ProductShowcasePage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-fbc-navy flex items-center justify-center pt-16">
+      <main className="relative min-h-screen flex items-center justify-center pt-16 sec-plain overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            backgroundImage:
-              "radial-gradient(circle, rgba(37,99,235,0.12) 1px, transparent 1px)",
+            backgroundImage: "radial-gradient(circle, rgba(37,99,235,0.12) 1px, transparent 1px)",
             backgroundSize: "32px 32px",
           }}
           aria-hidden="true"
@@ -22,7 +26,7 @@ export default function HackathonPage() {
         <div className="relative z-10 max-w-2xl mx-auto px-6 py-24 text-center">
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 rounded-2xl bg-fbc-blue/20 border border-fbc-border flex items-center justify-center">
-              <Rocket size={28} className="text-fbc-blue" />
+              <Sparkles size={28} className="text-fbc-blue" />
             </div>
           </div>
 
@@ -31,19 +35,16 @@ export default function HackathonPage() {
           </span>
 
           <h1 className="font-space font-bold text-4xl md:text-6xl text-fbc-white mb-4 leading-tight">
-            FlutterBytes
-            <br />
-            <span className="text-fbc-blue">Hackathon 2026</span>
+            Product <span className="text-fbc-blue">Showcase</span>
           </h1>
 
           <p className="text-fbc-muted text-lg mb-3 leading-relaxed">
-            Build something in Flutter. AI bonus points. More details dropping soon.
+            Show off what you&apos;ve built with Flutter to 600+ developers and industry leaders. Details dropping soon.
           </p>
           <p className="text-fbc-muted/60 text-sm mb-10">
             October 30–31, 2026 · The Zone, Gbagada, Lagos
           </p>
 
-          {/* Get notified */}
           <div className="rounded-2xl bg-fbc-card border border-fbc-border p-6 text-left">
             <p className="text-fbc-white font-space font-semibold mb-4 text-center">
               Get notified when details drop

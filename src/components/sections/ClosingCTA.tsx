@@ -60,18 +60,12 @@ export default function ClosingCTA() {
             ))}
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href="#tickets"
-              className="rounded-full px-10 py-4 font-gigasans font-bold text-lg text-white bg-fbc-blue shadow-[0_0_30px_rgba(42,157,244,0.6)] hover:shadow-[0_0_50px_rgba(42,157,244,0.8)] hover:opacity-90 transition-all"
-            >
-              Get Tickets →
-            </a>
+          <div className="flex items-center justify-center">
             <a
               href="https://sessionize.com/flutterbytes-conference-2026/"
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full px-10 py-4 font-gigasans font-semibold text-lg border border-fbc-sky/40 text-fbc-blue hover:bg-fbc-sky/10 transition-all"
+              className="rounded-full px-10 py-4 font-gigasans font-bold text-lg text-white bg-fbc-blue shadow-[0_0_30px_rgba(42,157,244,0.6)] hover:shadow-[0_0_50px_rgba(42,157,244,0.8)] hover:bg-fbc-glow transition-all"
             >
               Apply to Speak →
             </a>

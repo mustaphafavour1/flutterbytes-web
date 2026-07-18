@@ -6,19 +6,18 @@ import { Mail } from "lucide-react";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 
 /**
- * Sponsors — logos live in /public/sponsors/ (246×182 rectangles).
- * Tiered sponsors are listed first; the tier label shows only when present.
- * Each chip links to the sponsor's website.
+ * Sponsors — transparent logos live in /public/sponsors/ and sit on white chips.
+ * Flutter is the lone headline sponsor (first row); everyone else follows below.
  */
 type Sponsor = { name: string; logo: string; website: string; tier?: string };
 
 const SPONSORS: Sponsor[] = [
-  { name: "Google",             logo: "google.png",             website: "https://www.google.com",       tier: "platinum" },
-  { name: "Serverpod",          logo: "serverpod.png",          website: "https://serverpod.dev/",        tier: "gold" },
-  { name: "Cake Wallet",        logo: "cake-wallet.png",        website: "https://cakewallet.com/",       tier: "silver" },
-  { name: "Codemagic",          logo: "codemagic.png",          website: "https://codemagic.io/start/",   tier: "bronze" },
-  { name: "Shorebird",          logo: "shorebird.png",          website: "https://shorebird.dev/",        tier: "bronze" },
-  { name: "Flutter",            logo: "flutter.png",            website: "https://flutter.dev/" },
+  { name: "Flutter",            logo: "flutter.png",            website: "https://flutter.dev/",              tier: "headline" },
+  { name: "Google",             logo: "google.png",             website: "https://www.google.com" },
+  { name: "Serverpod",          logo: "serverpod.png",          website: "https://serverpod.dev/" },
+  { name: "Cake Wallet",        logo: "cake-wallet.png",        website: "https://cakewallet.com/" },
+  { name: "Codemagic",          logo: "codemagic.png",          website: "https://codemagic.io/start/" },
+  { name: "Shorebird",          logo: "shorebird.png",          website: "https://shorebird.dev/" },
   { name: "Invertase",          logo: "invertase.png",          website: "https://invertase.io/" },
   { name: "FlutterFlow",        logo: "flutter-flow.png",       website: "https://flutterflow.io/" },
   { name: "Very Good Ventures", logo: "very-good-ventures.png", website: "https://verygood.ventures/" },
@@ -30,22 +29,21 @@ const SPONSORS: Sponsor[] = [
   { name: "Shuttlers",          logo: "shuttlers.png",          website: "https://www.shuttlers.ng/" },
 ];
 
-const TIER_COLOR: Record<string, string> = {
-  platinum: "#E5C07B",
-  gold:     "#F0C040",
-  silver:   "#94A3B8",
-  bronze:   "#B87333",
-};
+const GMAIL_DECK =
+  "https://mail.google.com/mail/?view=cm&fs=1&to=contact.flutterbytes@gmail.com&su=Sponsorship%20Deck%20Request&body=Hello%20FlutterBytes%20team%2C%20I%27d%20love%20to%20sponsor%20the%20next%20edition.";
 
-function SponsorCard({ sponsor, fillIdx, myIdx }: { sponsor: Sponsor; fillIdx: number; myIdx: number }) {
-  const [hover, setHover]   = useState(false);
+function SponsorCard({ sponsor, fillIdx, myIdx, headline = false }: {
+  sponsor: Sponsor; fillIdx: number; myIdx: number; headline?: boolean;
+}) {
+  const [hover, setHover] = useState(false);
   const isActive = myIdx === fillIdx;
   const isFilled = myIdx < fillIdx;
   const revealed = isFilled || hover;
 
   const tierLabel = sponsor.tier ? `${sponsor.tier.charAt(0).toUpperCase()}${sponsor.tier.slice(1)} Sponsor` : null;
-  const tierColor = sponsor.tier ? TIER_COLOR[sponsor.tier] : undefined;
-  const logoSrc   = `/sponsors/${sponsor.logo}`;
+  const logoSrc = `/sponsors/${sponsor.logo}`;
+  const width = headline ? "w-56 sm:w-64" : "w-36 sm:w-40";
+  const height = headline ? 116 : 88;
 
   return (
     <a
@@ -57,11 +55,15 @@ function SponsorCard({ sponsor, fillIdx, myIdx }: { sponsor: Sponsor; fillIdx: n
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <div className="relative w-36 sm:w-40 rounded-full bg-white border border-fbc-border overflow-hidden" style={{ height: 88 }}>
-        {/* Container background fills bottom-to-top: white -> #D0EFFF */}
+      <div
+        className={`relative ${width} rounded-full border border-fbc-border overflow-hidden`}
+        style={{ height, background: "#ffffff" }}
+      >
+        {/* White -> #D0EFFF fill, rising bottom-to-top */}
         <motion.div
           className="absolute inset-0"
           style={{ background: "#D0EFFF" }}
+          initial={{ clipPath: "inset(100% 0 0% 0)" }}
           animate={{
             clipPath: revealed
               ? "inset(0% 0 0% 0)"
@@ -71,7 +73,7 @@ function SponsorCard({ sponsor, fillIdx, myIdx }: { sponsor: Sponsor; fillIdx: n
           }}
           transition={{ duration: 0.79, ease: "easeInOut" }}
         />
-        {/* Logo sits on top of the fill; scaled up to fill the container's whitespace */}
+        {/* Logo on top of the fill */}
         <div className="absolute inset-0 flex items-center justify-center px-4 py-2">
           <Image
             src={logoSrc}
@@ -83,10 +85,10 @@ function SponsorCard({ sponsor, fillIdx, myIdx }: { sponsor: Sponsor; fillIdx: n
           />
         </div>
       </div>
-      {/* Tier label (only when present); reserve the line so chips align */}
+      {/* Tier label (only the headline sponsor has one) */}
       <span
-        className="text-[9px] font-semibold uppercase tracking-wide h-3 leading-3"
-        style={{ color: tierColor }}
+        className={`${headline ? "text-xs" : "text-[9px]"} font-semibold uppercase tracking-wide h-4 leading-4`}
+        style={{ color: headline ? "#E5C07B" : undefined }}
       >
         {tierLabel}
       </span>
@@ -96,10 +98,7 @@ function SponsorCard({ sponsor, fillIdx, myIdx }: { sponsor: Sponsor; fillIdx: n
 
 function YourBrandCard() {
   return (
-    <a
-      href="/sponsors"
-      className="flex flex-col items-center gap-2 transition-transform hover:-translate-y-1"
-    >
+    <a href="/sponsors" className="flex flex-col items-center gap-2 transition-transform hover:-translate-y-1">
       <motion.div
         className="w-36 sm:w-40 rounded-full flex flex-col items-center justify-center gap-0.5"
         style={{ height: 88, border: "1.5px dashed rgba(42,157,244,0.4)" }}
@@ -112,7 +111,7 @@ function YourBrandCard() {
         <span className="text-fbc-blue text-xl leading-none">+</span>
         <span className="text-fbc-white text-xs font-semibold">Your Brand</span>
       </motion.div>
-      <span className="text-fbc-muted/60 text-[9px] uppercase tracking-wide h-3 leading-3">Become a sponsor</span>
+      <span className="text-fbc-muted/60 text-[9px] uppercase tracking-wide h-4 leading-4">Become a sponsor</span>
     </a>
   );
 }
@@ -120,13 +119,15 @@ function YourBrandCard() {
 export default function SponsorsSection() {
   const [fillIdx, setFillIdx] = useState(-1);
 
-  /* Sequential fill wave — each chip fills bottom-to-top, then resets */
   useEffect(() => {
     const id = setInterval(() => {
       setFillIdx((prev) => (prev >= SPONSORS.length - 1 ? -1 : prev + 1));
     }, 1140);
     return () => clearInterval(id);
   }, []);
+
+  const headline = SPONSORS[0];
+  const rest = SPONSORS.slice(1);
 
   return (
     <section id="sponsors" className="relative py-16 sm:py-24 md:py-32 sec-bg-2 overflow-hidden">
@@ -141,17 +142,16 @@ export default function SponsorsSection() {
           </p>
         </AnimateOnScroll>
 
-        {/* Sponsor grid — 5 / 6 / (4 + Your Brand) rows, each centered */}
+        {/* Headline sponsor alone, then everyone else */}
         <AnimateOnScroll delay={0.1}>
-          <div className="flex flex-col items-center gap-y-6 mb-6">
-            {([[0, 5], [5, 11], [11, 15]] as const).map(([start, end], r) => (
-              <div key={r} className="flex flex-wrap justify-center gap-x-4 gap-y-6">
-                {SPONSORS.slice(start, end).map((s, i) => (
-                  <SponsorCard key={s.name} sponsor={s} fillIdx={fillIdx} myIdx={start + i} />
-                ))}
-                {r === 2 && <YourBrandCard />}
-              </div>
-            ))}
+          <div className="flex flex-col items-center gap-y-10 mb-6">
+            <SponsorCard sponsor={headline} fillIdx={fillIdx} myIdx={0} headline />
+            <div className="flex flex-wrap justify-center gap-x-4 gap-y-6">
+              {rest.map((s, i) => (
+                <SponsorCard key={s.name} sponsor={s} fillIdx={fillIdx} myIdx={i + 1} />
+              ))}
+              <YourBrandCard />
+            </div>
           </div>
         </AnimateOnScroll>
 
@@ -170,7 +170,9 @@ export default function SponsorsSection() {
             </p>
             <div className="flex justify-center">
               <a
-                href="mailto:contact.flutterbytes@gmail.com?subject=Sponsorship Deck Request&body=Hello FlutterBytes team, I'd love to sponsor the next edition."
+                href={GMAIL_DECK}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-full px-6 py-2.5 font-gigasans font-semibold text-sm text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_18px_rgba(42,157,244,0.4)] inline-flex items-center justify-center gap-2"
               >
                 <Mail size={14} /> Request sponsorship deck →

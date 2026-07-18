@@ -67,10 +67,12 @@ export default function Navbar() {
             <div className="flex-1 flex items-center justify-end gap-3">
               {/* Desktop: Get Tickets then ThemeToggle */}
               <a
-                href="/#tickets"
+                href="https://sessionize.com/flutterbytes-conference-2026/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="hidden lg:inline-flex rounded-full px-5 py-2.5 text-sm font-semibold text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_20px_rgba(37,99,235,0.5)] hover:shadow-[0_0_30px_rgba(96,165,250,0.6)]"
               >
-                Get Tickets
+                Apply to Speak
               </a>
               <div className="hidden lg:block">
                 <ThemeToggle />
@@ -121,11 +123,13 @@ export default function Navbar() {
               ))}
               <div className="pt-6 flex flex-col gap-3">
                 <a
-                  href="/#tickets"
+                  href="https://sessionize.com/flutterbytes-conference-2026/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="rounded-full px-6 py-4 text-center font-semibold text-white bg-fbc-blue shadow-[0_0_20px_rgba(37,99,235,0.5)]"
                   onClick={() => setMobileOpen(false)}
                 >
-                  Get Tickets
+                  Apply to Speak
                 </a>
                 <div className="flex justify-center pt-2">
                   <ThemeToggle />

@@ -46,7 +46,9 @@ export default function SponsorsPage() {
             </p>
             <div className="flex justify-center">
               <a
-                href="mailto:contact.flutterbytes@gmail.com?subject=Sponsorship Deck Request&body=Hello FlutterBytes team, I'd love to sponsor the next edition."
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=contact.flutterbytes@gmail.com&su=Sponsorship%20Deck%20Request&body=Hello%20FlutterBytes%20team%2C%20I%27d%20love%20to%20sponsor%20the%20next%20edition."
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-full px-6 py-3 font-space font-semibold text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)] inline-flex items-center justify-center gap-2"
               >
                 <Mail size={16} /> Request sponsorship deck →
