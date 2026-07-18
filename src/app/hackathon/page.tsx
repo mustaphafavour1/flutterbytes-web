@@ -48,7 +48,7 @@ export default function HackathonPage() {
             <p className="text-fbc-white font-space font-semibold mb-4 text-center">
               Get notified when details drop
             </p>
-            <NotifyForm />
+            <NotifyForm category="Hackathon" />
           </div>
         </div>
       </main>

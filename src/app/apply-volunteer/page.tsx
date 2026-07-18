@@ -49,7 +49,7 @@ export default function ApplyToVolunteerPage() {
             <p className="text-fbc-white font-space font-semibold mb-4 text-center">
               Get notified when applications open
             </p>
-            <NotifyForm />
+            <NotifyForm category="Apply to Volunteer" />
           </div>
         </div>
       </main>
