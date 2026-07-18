@@ -9,7 +9,7 @@ const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mon
 
 export const metadata: Metadata = {
   title: "FlutterBytes Conference 2026 — Becoming A Flutter AI Engineer",
-  description: "Africa's premier Flutter conference returns for its 5th edition. Two days of AI-powered sessions, workshops, and community. October 30–31, 2026 | Lagos, Nigeria.",
+  description: "Join us at FlutterBytes Conference to gain technical knowledge and network with like minds. 2-day event: Friday and Saturday, October 30th & 31st, 2026.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
