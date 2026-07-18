@@ -396,9 +396,9 @@ export default function Hero() {
           className="font-gigasans font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05] tracking-tight mb-6"
           aria-label="Becoming A Flutter AI Engineer"
         >
-          <span className="block text-fbc-white">Becoming A</span>
+          <span className="block text-fbc-white">Becoming</span>
           <span className="block text-fbc-white mt-1">
-            Flu<AnimatedLetters letters="tt" icon={currentPair.tt} showIcon={showIcon} />er
+            A Flu<AnimatedLetters letters="tt" icon={currentPair.tt} showIcon={showIcon} />er
           </span>
           <span className="block text-fbc-white mt-1">
             AI Engin<AnimatedLetters letters="ee" icon={currentPair.ee} showIcon={showIcon} />r
