@@ -1,5 +1,6 @@
 import { google } from 'googleapis';
 import { resolvePastSpeakers } from '@/lib/speaker-photos';
+import { resolveCommittee } from '@/lib/committee-photos';
 import { fallbackSpeakers, type Speaker } from '@/data/fallback-speakers';
 import { fallbackFriday, fallbackSaturday, type AgendaSession } from '@/data/fallback-agenda';
 import { fallbackCommittee, type CommitteeMember } from '@/data/fallback-committee';
@@ -109,18 +110,18 @@ export async function getAgenda(day: 'Friday' | 'Saturday'): Promise<AgendaSessi
 }
 
 export async function getCommittee(): Promise<CommitteeMember[]> {
-  if (!hasSheetsCreds()) return fallbackCommittee;
+  if (!hasSheetsCreds()) return resolveCommittee(fallbackCommittee);
   try {
     const rows = await fetchTabRows(['Committee'], 'A2:E100');
-    if (rows.length === 0) return fallbackCommittee;
-    return rows.map(([name, role, title, photo, bio]) => ({
+    if (rows.length === 0) return resolveCommittee(fallbackCommittee);
+    return resolveCommittee(rows.map(([name, role, title, photo, bio]) => ({
       name: name || '',
       role: role || '',
       title: title || undefined,
       photo: convertDriveUrl(photo),
       bio: bio || undefined,
-    }));
-  } catch (e) { console.error('[sheets] getCommittee error:', e); return fallbackCommittee; }
+    })));
+  } catch (e) { console.error('[sheets] getCommittee error:', e); return resolveCommittee(fallbackCommittee); }
 }
 
 /**

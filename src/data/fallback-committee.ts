@@ -1,44 +1,36 @@
-import { committeePhoto } from "@/lib/slug";
-
 export interface CommitteeMember {
   name: string;
   role: string;
   title?: string;
   photo?: string;
+  /** Optional filename base in /public/committee (defaults to slug of name). */
+  photoBase?: string;
   bio?: string;
 }
 
 /**
- * Organizing team.
- *
- * Photos: drop each person's picture into /public/committee/ named
- * `<firstname-lastname>.jpg` (e.g. jamiu-okanlawon.jpg). The filename is derived
- * automatically from the name. Until uploaded, an initials avatar shows.
- *
- * Edit the names/roles below to match your real team.
+ * Organizing team. Photos live in /public/committee/ (any extension) and resolve
+ * automatically by name (see src/lib/committee-photos.ts); set `photoBase` when
+ * the uploaded filename differs from the person's name.
  */
-const member = (name: string, role: string, title?: string): CommitteeMember => ({
+const member = (name: string, role: string, photoBase?: string): CommitteeMember => ({
   name,
   role,
-  title,
-  photo: committeePhoto(name),
+  photoBase,
 });
 
 export const fallbackCommittee: CommitteeMember[] = [
-  member("Jamiu Okanlawon", "Convener", "FlutterBytes Conference"),
-  member("David Adegoke", "Co-Convener / Organizing Committee Lead", "FlutterBytes Conference"),
-  member("Mariam Hamzat BusyBee", "Co-Convener / PowerHouse", "FlutterBytes Conference"),
-  member("Taiwo Adeyemi", "Head of Design", "Creative Team"),
-  member("Funmi Okafor", "Head of Logistics", "Operations Team"),
-  member("Emeka Nwachukwu", "Head of Sponsorship", "Business Team"),
-  member("Aisha Mohammed", "Head of Marketing", "Marketing Team"),
-  member("Tunde Adeleke", "Head of Volunteers", "Community Team"),
-  member("Blessing Okonkwo", "Content Lead", "Content Team"),
-  member("Kelechi Eze", "Technical Lead", "Tech Team"),
-  member("Sade Williams", "Speaker Liaison", "Program Team"),
-  member("Obinna Chukwu", "Photography Lead", "Media Team"),
-  member("Fatima Yusuf", "Social Media Manager", "Marketing Team"),
-  member("Chidi Okoye", "Venue Manager", "Operations Team"),
-  member("Ngozi Igwe", "Registration Lead", "Operations Team"),
-  member("Babatunde Olatunji", "Security Lead", "Operations Team"),
+  member("Jamiu Okanlawon", "Convener"),
+  member("David Adegoke", "Co-Convener / Organizing Committee Lead"),
+  member("Mariam Hamzat (BusyBee)", "Co-Convener / PowerHouse", "mariam-hamzat"),
+  member("Rebecca Saka", "Program Team Lead"),
+  member("Olamilekan Akinjobi", "Project Team Lead"),
+  member("Favour Mustapha", "Design Team Lead"),
+  member("Peter Nathaniel", "Infrastructure Team Lead"),
+  member("Damilola Alimi", "Volunteer Team Lead"),
+  member("Emmanuella Ijeoma Ogbonna", "Content / PR", "emmanuella-ijeoma"),
+  member("Christopher Nwosu-Madueke", "Hackathon Co-ordinator"),
+  member("Kendi J", "FlutterBytes Ladies Community Co-ordinator"),
+  member("Shalom Adebola", "Host"),
+  member("Bamigboye TiOluwani", "Co-Host"),
 ];

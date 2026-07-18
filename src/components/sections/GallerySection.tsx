@@ -1,8 +1,9 @@
 import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import GalleryShowcase from "@/components/GalleryShowcase";
+import type { ResponsiveImage } from "@/lib/gallery-photos";
 
-export default function GallerySection({ photos = [], testimonials = [] }: { photos?: string[]; testimonials?: string[] }) {
+export default function GallerySection({ years = [], testimonials = [] }: { years?: ResponsiveImage[]; testimonials?: ResponsiveImage[] }) {
   return (
     <section id="gallery" className="relative py-16 sm:py-24 md:py-32 bg-fbc-navy overflow-hidden">
       <div
@@ -27,7 +28,7 @@ export default function GallerySection({ photos = [], testimonials = [] }: { pho
         </AnimateOnScroll>
 
         <AnimateOnScroll delay={0.05}>
-          <GalleryShowcase images={photos} testimonials={testimonials} />
+          <GalleryShowcase years={years} testimonials={testimonials} />
         </AnimateOnScroll>
 
         <AnimateOnScroll delay={0.1}>

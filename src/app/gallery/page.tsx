@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import GalleryShowcase from "@/components/GalleryShowcase";
-import { getGalleryImages, getTestimonialImages } from "@/lib/gallery-photos";
+import { getGalleryYears, getTestimonialPairs } from "@/lib/gallery-photos";
 
 export const revalidate = 60;
 
@@ -32,25 +32,28 @@ const EDITIONS: Edition[] = [
     items: [
       { label: "Part 1 — Photo album", href: "https://drive.google.com/drive/folders/1onB3VCrRjKdOi4ymzb8_Pdv5i9VDKzQs", kind: "photos" },
       { label: "Part 2 — Photo album", href: "https://drive.google.com/drive/folders/1kowq1qPEwTzY9XxfPYcBlrVXvdjcRCTv", kind: "photos" },
+      { label: "Livestream on YouTube", href: "https://www.youtube.com/live/-xD5zcRgJH8", kind: "youtube" },
     ],
   },
   {
     year: "2023",
     items: [
       { label: "Photo album", href: "https://drive.google.com/drive/folders/1ZJtcPiSPNKjkc1V7fxbgl7Jmjy3vOYCc", kind: "photos" },
+      { label: "Livestream on YouTube", href: "https://www.youtube.com/watch?v=Yc3wAKyx2JI", kind: "youtube" },
     ],
   },
   {
     year: "2022",
     items: [
       { label: "Photo album", href: "https://photos.google.com/share/AF1QipPh_Hlefl03GloblxUzmlvhXjrE9O_6X33Ldrbc8tbjQrrRS_THOVW2Xa9rUXM1TA?key=T1JIelpJVDlvLUZ5OVpLaTNaRkhfUVFkanZtbkVB", kind: "photos" },
+      { label: "Livestream on YouTube", href: "https://www.youtube.com/watch?v=Nh4v140n4sk", kind: "youtube" },
     ],
   },
 ];
 
 export default function GalleryPage() {
-  const photos = getGalleryImages();
-  const testimonials = getTestimonialImages();
+  const years = getGalleryYears();
+  const testimonials = getTestimonialPairs();
 
   return (
     <>
@@ -77,7 +80,7 @@ export default function GalleryPage() {
 
         {/* Testimonials + photos, tabbed (testimonials default) */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
-          <GalleryShowcase images={photos} testimonials={testimonials} />
+          <GalleryShowcase years={years} testimonials={testimonials} />
         </div>
 
         {/* Full albums by edition */}

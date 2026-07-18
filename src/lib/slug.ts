@@ -12,6 +12,3 @@ export function slugify(name: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
-
-export const committeePhoto = (name: string) => `/committee/${slugify(name)}.jpg`;
-export const sponsorLogo = (name: string) => `/sponsors/${slugify(name)}.png`;
