@@ -394,9 +394,9 @@ export default function Hero() {
         <motion.h1
           variants={item}
           className="font-gigasans font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05] tracking-tight mb-6"
-          aria-label="Becoming Flutter AI Engineer"
+          aria-label="Becoming A Flutter AI Engineer"
         >
-          <span className="block text-fbc-white">Becoming</span>
+          <span className="block text-fbc-white">Becoming A</span>
           <span className="block text-fbc-white mt-1">
             Flu<AnimatedLetters letters="tt" icon={currentPair.tt} showIcon={showIcon} />er
           </span>
