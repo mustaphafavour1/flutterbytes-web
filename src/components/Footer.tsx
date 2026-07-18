@@ -98,7 +98,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   role="listitem"
                   aria-label={label}
-                  className="w-9 h-9 rounded-full border border-fbc-border flex items-center justify-center text-fbc-muted hover:text-fbc-sky hover:border-fbc-sky/40 transition-all"
+                  className="w-9 h-9 rounded-full border border-fbc-border flex items-center justify-center text-fbc-muted hover:text-fbc-blue hover:border-fbc-sky/40 transition-all"
                 >
                   <Icon />
                 </a>
@@ -128,7 +128,7 @@ export default function Footer() {
                         <a
                           href={l.href}
                           {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                          className="text-fbc-muted hover:text-fbc-white text-sm transition-colors"
+                          className="text-fbc-muted hover:text-fbc-white text-xs transition-colors"
                         >
                           {l.label}
                         </a>
@@ -143,7 +143,7 @@ export default function Footer() {
 
         <div className="border-t border-fbc-border/20 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-fbc-muted/40 text-sm">&copy; 2026 FlutterBytes Conference</p>
-          <p className="text-fbc-sky/70 text-xs font-medium">Becoming Flutter AI Engineer</p>
+          <p className="text-fbc-blue/70 text-xs font-medium">Becoming Flutter AI Engineer</p>
         </div>
       </div>
     </footer>

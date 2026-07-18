@@ -30,7 +30,7 @@ export default async function AgendaPage() {
         >
           <div className="absolute top-0 right-1/4 w-80 h-80 rounded-full bg-fbc-sky/10 blur-[80px] pointer-events-none" aria-hidden="true" />
           <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
-            <span className="inline-block font-mono text-xs uppercase tracking-widest text-fbc-sky border border-fbc-border rounded-full px-3 py-1 mb-4">
+            <span className="inline-block font-mono text-xs uppercase tracking-widest text-fbc-blue border border-fbc-border rounded-full px-3 py-1 mb-4">
               October 30–31, 2026
             </span>
             <h1 className="font-space font-bold text-4xl md:text-6xl text-fbc-white mb-3">

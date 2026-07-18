@@ -98,7 +98,7 @@ export default function GalleryPage() {
               <AnimateOnScroll key={ed.year} delay={idx * 0.05}>
                 <div className="rounded-3xl border border-fbc-border bg-fbc-card/50 backdrop-blur p-6 h-full">
                   <div className="flex items-baseline justify-between mb-4">
-                    <h3 className="font-space font-bold text-3xl text-fbc-sky">{ed.year}</h3>
+                    <h3 className="font-space font-bold text-3xl text-fbc-blue">{ed.year}</h3>
                     <span className="text-fbc-muted/50 text-xs uppercase tracking-widest">Edition</span>
                   </div>
                   <ul className="space-y-2.5">
@@ -111,12 +111,12 @@ export default function GalleryPage() {
                           className="group flex items-center gap-3 rounded-xl border border-fbc-border/60 hover:border-fbc-sky/40 bg-fbc-navy/40 hover:bg-fbc-sky/5 px-4 py-3 transition-all"
                         >
                           {item.kind === "youtube" ? (
-                            <PlayCircle size={16} className="text-fbc-sky flex-shrink-0" />
+                            <PlayCircle size={16} className="text-fbc-blue flex-shrink-0" />
                           ) : (
-                            <Images size={16} className="text-fbc-sky flex-shrink-0" />
+                            <Images size={16} className="text-fbc-blue flex-shrink-0" />
                           )}
                           <span className="text-fbc-white text-sm flex-1">{item.label}</span>
-                          <ExternalLink size={14} className="text-fbc-muted group-hover:text-fbc-sky transition-colors flex-shrink-0" />
+                          <ExternalLink size={14} className="text-fbc-muted group-hover:text-fbc-blue transition-colors flex-shrink-0" />
                         </a>
                       </li>
                     ))}

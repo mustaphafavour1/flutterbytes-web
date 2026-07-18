@@ -260,7 +260,7 @@ function AnimatedLetters({
             style={{ filter: "drop-shadow(0 0 14px rgba(56,189,248,1))" }}
           >
             <Icon
-              className="text-fbc-sky"
+              className="text-fbc-blue"
               style={{ width: "0.9em", height: "0.9em" }}
               aria-hidden="true"
             />
@@ -297,7 +297,7 @@ function StatChip({ stat }: { stat: typeof STATS[0] }) {
   return (
     <div className="relative flex items-center bg-fbc-card/50 backdrop-blur-md border border-fbc-border/40 rounded-full overflow-visible" style={{ boxShadow: "var(--stat-chip-shadow)" }}>
       <span
-        className="font-gigasans font-black text-fbc-sky leading-none px-3 flex-shrink-0"
+        className="font-gigasans font-black text-fbc-blue leading-none px-3 flex-shrink-0"
         style={{ fontSize: "1.5rem", marginTop: -7, marginBottom: -7 }}
       >
         {stat.value}
@@ -383,7 +383,7 @@ export default function Hero() {
           <div className="inline-flex items-center gap-2 font-mono text-xs bg-fbc-card/90 border border-fbc-border rounded-full px-4 py-2">
             <span className="w-1.5 h-1.5 rounded-full bg-fbc-sky/70 flex-shrink-0" />
             <span className="text-fbc-white">FlutterBytes2026.dart</span>
-            <span className="text-fbc-sky/50 animate-cursor-blink flex-shrink-0">|</span>
+            <span className="text-fbc-blue/50 animate-cursor-blink flex-shrink-0">|</span>
             <span className="text-fbc-blue font-semibold flex-shrink-0">
               <span className="hidden sm:inline">Friday &amp; Saturday, </span>Oct 30–31, 2026
             </span>
@@ -426,7 +426,7 @@ export default function Hero() {
           </a>
           <a
             href="/agenda"
-            className="rounded-full px-8 py-3.5 font-gigasans font-semibold border border-fbc-sky/40 text-fbc-sky hover:bg-fbc-sky/10 transition-all"
+            className="rounded-full px-8 py-3.5 font-gigasans font-semibold border border-fbc-sky/40 text-fbc-blue hover:bg-fbc-sky/10 transition-all"
           >
             View Agenda
           </a>

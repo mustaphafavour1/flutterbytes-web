@@ -7,7 +7,7 @@ import { useTheme } from "next-themes";
 import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
-  { label: "Be a sponsor", href: "#sponsors" },
+  { label: "Be a sponsor", href: "/#sponsors" },
   { label: "Event Agenda", href: "/agenda" },
   { label: "Speakers", href: "/speakers" },
   { label: "About us", href: "/about" },
@@ -67,7 +67,7 @@ export default function Navbar() {
             <div className="flex-1 flex items-center justify-end gap-3">
               {/* Desktop: Get Tickets then ThemeToggle */}
               <a
-                href="#tickets"
+                href="/#tickets"
                 className="hidden lg:inline-flex rounded-full px-5 py-2.5 text-sm font-semibold text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_20px_rgba(37,99,235,0.5)] hover:shadow-[0_0_30px_rgba(96,165,250,0.6)]"
               >
                 Get Tickets
@@ -113,7 +113,7 @@ export default function Navbar() {
                   initial={{ x: -20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.05 + i * 0.06 }}
-                  className="text-xl font-space font-semibold text-fbc-white/80 hover:text-fbc-sky py-4 border-b border-fbc-border transition-colors"
+                  className="text-xl font-space font-semibold text-fbc-white/80 hover:text-fbc-blue py-4 border-b border-fbc-border transition-colors"
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}
@@ -121,7 +121,7 @@ export default function Navbar() {
               ))}
               <div className="pt-6 flex flex-col gap-3">
                 <a
-                  href="#tickets"
+                  href="/#tickets"
                   className="rounded-full px-6 py-4 text-center font-semibold text-white bg-fbc-blue shadow-[0_0_20px_rgba(37,99,235,0.5)]"
                   onClick={() => setMobileOpen(false)}
                 >

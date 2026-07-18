@@ -28,7 +28,7 @@ function calc(): TimeLeft {
 function Unit({ value, label, numClass }: { value: number; label: string; numClass: string }) {
   return (
     <div className="flex flex-col items-center px-2 text-center">
-      <span className={`font-gigasans font-thin text-fbc-sky tabular-nums leading-none ${numClass}`}>
+      <span className={`font-gigasans font-thin text-fbc-blue tabular-nums leading-none ${numClass}`}>
         {String(value).padStart(2, "0")}
       </span>
       <span className="text-fbc-muted/60 text-[9px] uppercase tracking-wider mt-1">{label}</span>

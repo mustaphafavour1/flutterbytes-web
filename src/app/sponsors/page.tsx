@@ -53,7 +53,7 @@ export default function SponsorsPage() {
               </a>
               <a
                 href="mailto:contact.flutterbytes@gmail.com?subject=Sponsorship%20Deck%20Request&body=Hello%20FlutterBytes%20team%2C%20I%27d%20love%20to%20sponsor%20the%20next%20edition."
-                className="rounded-full px-6 py-3 font-space font-semibold border border-fbc-sky/40 text-fbc-sky hover:bg-fbc-sky/10 transition-all inline-flex items-center justify-center gap-2"
+                className="rounded-full px-6 py-3 font-space font-semibold border border-fbc-sky/40 text-fbc-blue hover:bg-fbc-sky/10 transition-all inline-flex items-center justify-center gap-2"
               >
                 <Mail size={16} /> Request sponsorship deck →
               </a>

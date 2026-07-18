@@ -3,25 +3,6 @@
 import { motion } from "framer-motion";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 
-type ElementDef = {
-  id: number;
-  type: "circle" | "rod";
-  x: number;
-  size: number;
-  delay: number;
-  finalYPercent: number;
-};
-
-/* 70 elements, denser and filling the lower portion */
-const ELEMENTS: ElementDef[] = Array.from({ length: 70 }, (_, i) => ({
-  id: i,
-  type: (i % 3 === 0 ? "circle" : "rod") as "circle" | "rod",
-  x: 1 + Math.floor((i * 23) % 97),
-  size: 5 + (i * 5) % 18,
-  delay: (i * 0.10) % 2.6,
-  finalYPercent: 70 + (i * 7) % 29,
-}));
-
 const CHIPS = [
   "Live Workshops",
   "Networking Sessions",
@@ -33,65 +14,7 @@ const CHIPS = [
 
 export default function ClosingCTA() {
   return (
-    <section
-      className="relative py-40 overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(160deg, rgb(var(--color-navy)) 0%, rgb(var(--color-dark)) 40%, rgb(var(--color-card)) 70%, rgb(var(--color-navy)) 100%)",
-      }}
-    >
-      {/* Dense outline elements filling the lower portion */}
-      <div
-        className="absolute inset-0 pointer-events-none overflow-hidden"
-        aria-hidden="true"
-      >
-        {ELEMENTS.map((el) => (
-          <motion.div
-            key={el.id}
-            className="absolute"
-            style={{ left: `${el.x}%`, top: 0 }}
-            initial={{ y: -80, opacity: 0 }}
-            animate={{ y: `${el.finalYPercent}vh`, opacity: 1 }}
-            transition={{
-              delay: el.delay,
-              duration: 1.8,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          >
-            {el.type === "circle" ? (
-              <svg width={el.size * 2} height={el.size * 2}>
-                <circle
-                  cx={el.size}
-                  cy={el.size}
-                  r={el.size - 2}
-                  stroke="rgba(30,58,95,0.65)"
-                  strokeWidth="1.5"
-                  fill="none"
-                />
-              </svg>
-            ) : (
-              <svg
-                width={Math.round(el.size * 0.8) + 4}
-                height={el.size + 30}
-                style={{
-                  transform: `rotate(${((el.id * 25) % 140) - 70}deg)`,
-                }}
-              >
-                <rect
-                  x="1"
-                  y="1"
-                  width={Math.round(el.size * 0.8)}
-                  height={el.size + 28}
-                  rx="6"
-                  stroke="rgba(30,58,95,0.65)"
-                  strokeWidth="1.5"
-                  fill="none"
-                />
-              </svg>
-            )}
-          </motion.div>
-        ))}
-      </div>
+    <section className="relative py-40 overflow-hidden sec-bg-1">
 
       {/* Pulsing blue dot at top center */}
       <motion.div
@@ -130,7 +53,7 @@ export default function ClosingCTA() {
             {CHIPS.map((chip) => (
               <span
                 key={chip}
-                className="rounded-full px-3 py-0.5 text-[10px] font-medium border border-fbc-sky/20 text-fbc-sky/60"
+                className="rounded-full px-3 py-0.5 text-[10px] font-medium border border-fbc-sky/20 text-fbc-blue/60"
               >
                 {chip}
               </span>
@@ -148,7 +71,7 @@ export default function ClosingCTA() {
               href="https://sessionize.com/flutterbytes-conference-2026/"
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full px-10 py-4 font-gigasans font-semibold text-lg border border-fbc-sky/40 text-fbc-sky hover:bg-fbc-sky/10 transition-all"
+              className="rounded-full px-10 py-4 font-gigasans font-semibold text-lg border border-fbc-sky/40 text-fbc-blue hover:bg-fbc-sky/10 transition-all"
             >
               Apply to Speak →
             </a>

@@ -109,7 +109,7 @@ function YourBrandCard() {
         }}
         transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
       >
-        <span className="text-fbc-sky text-xl leading-none">+</span>
+        <span className="text-fbc-blue text-xl leading-none">+</span>
         <span className="text-fbc-white text-xs font-semibold">Your Brand</span>
       </motion.div>
       <span className="text-fbc-muted/60 text-[9px] uppercase tracking-wide h-3 leading-3">Become a sponsor</span>
@@ -129,7 +129,7 @@ export default function SponsorsSection() {
   }, []);
 
   return (
-    <section id="sponsors" className="relative py-16 sm:py-24 md:py-32 bg-fbc-dark overflow-hidden">
+    <section id="sponsors" className="relative py-16 sm:py-24 md:py-32 sec-bg-2 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateOnScroll>
           <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-2 text-center">
@@ -177,7 +177,7 @@ export default function SponsorsSection() {
               </a>
               <a
                 href="mailto:contact.flutterbytes@gmail.com?subject=Sponsorship%20Deck%20Request&body=Hello%20FlutterBytes%20team%2C%20I%27d%20love%20to%20sponsor%20the%20next%20edition."
-                className="rounded-full px-6 py-2.5 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-sky hover:bg-fbc-sky/10 transition-all inline-flex items-center justify-center gap-2"
+                className="rounded-full px-6 py-2.5 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-blue hover:bg-fbc-sky/10 transition-all inline-flex items-center justify-center gap-2"
               >
                 Request sponsorship deck →
               </a>

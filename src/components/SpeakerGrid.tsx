@@ -26,7 +26,7 @@ function SpeakerAvatar({ s }: { s: Speaker }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <span className="font-gigasans font-bold text-fbc-sky/70 text-lg">{initials}</span>
+            <span className="font-gigasans font-bold text-fbc-blue/70 text-lg">{initials}</span>
           </div>
         )}
       </div>

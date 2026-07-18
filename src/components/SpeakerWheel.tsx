@@ -137,7 +137,7 @@ export default function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
                   />
                 ) : (
                   <div className="w-full h-full bg-fbc-card flex items-center justify-center">
-                    <span className="font-gigasans font-bold text-sm text-fbc-sky/70">{initials}</span>
+                    <span className="font-gigasans font-bold text-sm text-fbc-blue/70">{initials}</span>
                   </div>
                 )}
               </motion.div>
@@ -186,7 +186,7 @@ export default function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
       {/* Controls + countdown */}
       <div className="flex flex-col items-center gap-3">
         {speakers.length > SLOT && (
-          <p className="text-fbc-sky/70 text-xs font-medium">
+          <p className="text-fbc-blue/70 text-xs font-medium">
             Showing {rangeStart + 1}–{rangeEnd} of {speakers.length} speakers
           </p>
         )}
@@ -194,7 +194,7 @@ export default function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
           {/* CCW button */}
           <button
             onClick={() => manualSpin(-1)}
-            className="w-10 h-10 rounded-full border border-fbc-border text-fbc-muted hover:text-fbc-sky hover:border-fbc-sky/50 transition-all flex items-center justify-center"
+            className="w-10 h-10 rounded-full border border-fbc-border text-fbc-muted hover:text-fbc-blue hover:border-fbc-sky/50 transition-all flex items-center justify-center"
             aria-label="Spin counter-clockwise"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -213,7 +213,7 @@ export default function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
           {/* CW button */}
           <button
             onClick={() => manualSpin(1)}
-            className="w-10 h-10 rounded-full border border-fbc-border text-fbc-muted hover:text-fbc-sky hover:border-fbc-sky/50 transition-all flex items-center justify-center"
+            className="w-10 h-10 rounded-full border border-fbc-border text-fbc-muted hover:text-fbc-blue hover:border-fbc-sky/50 transition-all flex items-center justify-center"
             aria-label="Spin clockwise"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

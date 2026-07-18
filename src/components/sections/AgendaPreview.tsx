@@ -28,30 +28,47 @@ function AgendaGrid({ sessions }: { sessions: AgendaSession[] }) {
     if (!el) return;
     let rafId: number;
     let paused = false;
+    let visible = false;
     let resumeId: ReturnType<typeof setTimeout>;
     const pause = () => {
       paused = true;
       clearTimeout(resumeId);
       resumeId = setTimeout(() => { paused = false; }, 2000);
     };
+    // Only auto-scroll while the strip is in view
+    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; }, { threshold: 0.1 });
+    io.observe(el);
     const tick = () => {
-      if (!paused) el.scrollLeft += 0.5;
+      if (!paused && visible) el.scrollLeft += 0.5;
       rafId = requestAnimationFrame(tick);
     };
     el.addEventListener("wheel", pause, { passive: true });
+    el.addEventListener("touchstart", pause, { passive: true });
     el.addEventListener("mousedown", pause, { passive: true });
     rafId = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(rafId);
       clearTimeout(resumeId);
+      io.disconnect();
       el.removeEventListener("wheel", pause);
+      el.removeEventListener("touchstart", pause);
       el.removeEventListener("mousedown", pause);
     };
   }, []);
 
   return (
-    <div ref={scrollRef} className="overflow-x-auto scrollbar-hide pb-2">
-      <div className="flex flex-col gap-2 w-max mx-auto">
+    <div
+      ref={scrollRef}
+      className="overflow-x-auto scrollbar-hide pb-2"
+      style={{ width: "100vw", marginLeft: "calc(50% - 50vw)" }}
+    >
+      <div
+        className="flex flex-col gap-2 w-max"
+        style={{
+          paddingLeft: "max(1rem, calc((100vw - 80rem) / 2 + 2rem))",
+          paddingRight: "max(1rem, calc((100vw - 80rem) / 2 + 2rem))",
+        }}
+      >
         {rows.map((row, ri) => (
           <div key={ri} className="flex gap-2">
             {row.map((session, ci) => {
@@ -88,7 +105,7 @@ function AgendaGrid({ sessions }: { sessions: AgendaSession[] }) {
                       }}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-fbc-sky font-semibold" style={{ fontSize: 10 }}>{session.type ?? session.time}</span>
+                        <span className="text-fbc-blue font-semibold" style={{ fontSize: 10 }}>{session.type ?? session.time}</span>
                         <span className="text-fbc-muted" style={{ fontSize: 10 }}>{session.hall}</span>
                       </div>
                     </div>
@@ -134,7 +151,7 @@ export default function AgendaPreview({ friday, saturday, agendaVisible }: Props
   const sessions = tab === "friday" ? friday : tab === "saturday" ? saturday : [...friday, ...saturday];
 
   return (
-    <section id="agenda" className="relative py-16 sm:py-24 md:py-32 sec-bg-1 overflow-hidden">
+    <section id="agenda" className="relative py-16 sm:py-24 md:py-32 sec-bg-2 overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none opacity-20"
         style={{
@@ -201,7 +218,7 @@ export default function AgendaPreview({ friday, saturday, agendaVisible }: Props
           <div className="mt-8 text-center">
             <Link
               href="/agenda"
-              className="rounded-full px-7 py-3 font-gigasans font-semibold border border-fbc-sky/30 text-fbc-sky hover:bg-fbc-sky/10 transition-all text-sm inline-flex items-center gap-2"
+              className="rounded-full px-7 py-3 font-gigasans font-semibold border border-fbc-sky/30 text-fbc-blue hover:bg-fbc-sky/10 transition-all text-sm inline-flex items-center gap-2"
             >
               View full agenda →
             </Link>

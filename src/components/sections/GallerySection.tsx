@@ -19,7 +19,7 @@ export default function GallerySection({ years = [], testimonials = [] }: { year
           <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-2 text-center">
             What happens at FlutterBytes
           </h2>
-          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-sky mb-3 text-center">
+          <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-blue mb-3 text-center">
             doesn&apos;t end at FlutterBytes
           </h2>
           <p className="text-fbc-muted text-sm mb-10 text-center max-w-xl mx-auto">
@@ -35,7 +35,7 @@ export default function GallerySection({ years = [], testimonials = [] }: { year
           <div className="text-center mt-10">
             <Link
               href="/gallery"
-              className="rounded-full px-7 py-3 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-sky hover:bg-fbc-sky/10 transition-all inline-flex items-center gap-2"
+              className="rounded-full px-7 py-3 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-blue hover:bg-fbc-sky/10 transition-all inline-flex items-center gap-2"
             >
               See full gallery →
             </Link>

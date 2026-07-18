@@ -24,7 +24,7 @@ function InfoCell({ cell }: { cell: typeof INFO_CELLS[0] }) {
       }}
       transition={{ duration: 0.2 }}
     >
-      <div className="font-gigasans font-semibold text-3xl sm:text-4xl text-fbc-sky leading-none tracking-tight">
+      <div className="font-gigasans font-semibold text-3xl sm:text-4xl text-fbc-blue leading-none tracking-tight">
         {cell.num}
       </div>
       <div className="text-fbc-muted text-xs font-medium mt-1">{cell.label}</div>
@@ -36,8 +36,7 @@ export default function EventSnapshot() {
   return (
     <section
       id="event-info"
-      className="relative overflow-hidden"
-      style={{ background: "linear-gradient(180deg, rgb(var(--color-navy)) 0%, rgb(var(--color-dark)) 100%)" }}
+      className="relative overflow-hidden sec-plain"
     >
       <div className="flex flex-col lg:flex-row" style={{ minHeight: "78vh" }}>
 
@@ -52,7 +51,7 @@ export default function EventSnapshot() {
               {/* Date + time */}
               <div className="mb-6">
                 <div className="flex items-start gap-3 mb-1">
-                  <Calendar size={14} className="text-fbc-sky/50 flex-shrink-0 mt-1" />
+                  <Calendar size={14} className="text-fbc-blue/50 flex-shrink-0 mt-1" />
                   <div>
                     <h2 className="font-gigasans font-bold text-2xl sm:text-3xl md:text-4xl text-fbc-white leading-tight">
                       Friday &amp; Saturday
@@ -121,7 +120,7 @@ export default function EventSnapshot() {
             referrerPolicy="no-referrer-when-downgrade"
           />
           <div className="absolute bottom-5 left-5 bg-fbc-navy/92 backdrop-blur-md rounded-xl px-4 py-3 border border-fbc-border/60 flex items-start gap-2.5 max-w-[220px] shadow-lg">
-            <MapPin size={13} className="text-fbc-sky mt-0.5 flex-shrink-0" />
+            <MapPin size={13} className="text-fbc-blue mt-0.5 flex-shrink-0" />
             <div>
               <p className="text-fbc-white text-xs font-semibold">Zone Tech Park</p>
               <p className="text-fbc-muted text-[11px] mt-0.5 leading-snug">

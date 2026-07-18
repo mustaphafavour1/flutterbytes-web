@@ -40,7 +40,7 @@ export default async function AboutPage() {
             <h1 className="font-space font-bold text-4xl md:text-6xl text-fbc-white mb-6 leading-tight">
               About us
             </h1>
-            <p className="text-fbc-muted text-lg md:text-xl leading-relaxed max-w-2xl">
+            <p className="text-fbc-muted text-base md:text-lg leading-relaxed max-w-2xl">
               We started FlutterBytes because a couple of us writing Flutter in Lagos wanted to meet other Flutter devs.
               Turns out, a LOT of people wanted the same thing. Five editions later, here we are — and we&apos;re just getting started.
             </p>
@@ -53,7 +53,7 @@ export default async function AboutPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {globalStats.map((s) => (
                 <div key={s.label} className="text-center p-6 rounded-[999px] bg-fbc-card border border-fbc-border">
-                  <div className="font-space font-bold text-4xl text-fbc-sky">{s.value}</div>
+                  <div className="font-space font-bold text-4xl text-fbc-blue">{s.value}</div>
                   <div className="text-fbc-muted text-sm mt-1">{s.label}</div>
                 </div>
               ))}
@@ -62,10 +62,10 @@ export default async function AboutPage() {
         </div>
 
         {/* Mission */}
-        <div className="py-20 max-w-4xl mx-auto px-4 sm:px-6">
+        <div className="py-20 max-w-5xl mx-auto px-4 sm:px-6">
           <AnimateOnScroll>
             <h2 className="font-space font-bold text-3xl text-fbc-white mb-6">Our Mission</h2>
-            <p className="text-fbc-muted text-lg leading-relaxed">
+            <p className="text-fbc-muted text-base leading-relaxed max-w-3xl">
               We&apos;ve built Africa&apos;s premier Flutter developer community and conference.
               We bring together mobile engineers, tech enthusiasts, and industry leaders to celebrate,
               learn, and grow together. We believe the next generation of world-class mobile apps
@@ -84,9 +84,7 @@ export default async function AboutPage() {
         </div>
 
         {/* Five Editions horizontal scroll */}
-        <div className="pb-12">
-          <FiveEditions />
-        </div>
+        <FiveEditions />
 
         {/* Committee */}
         <div id="committee">

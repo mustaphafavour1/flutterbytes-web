@@ -25,18 +25,18 @@ export default function HackathonPage() {
         <div className="relative z-10 max-w-2xl mx-auto px-6 py-24 text-center">
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 rounded-2xl bg-fbc-blue/20 border border-fbc-border flex items-center justify-center">
-              <Rocket size={28} className="text-fbc-sky" />
+              <Rocket size={28} className="text-fbc-blue" />
             </div>
           </div>
 
-          <span className="inline-block font-mono text-xs uppercase tracking-widest text-fbc-sky border border-fbc-border rounded-full px-3 py-1 mb-4">
+          <span className="inline-block font-mono text-xs uppercase tracking-widest text-fbc-blue border border-fbc-border rounded-full px-3 py-1 mb-4">
             Coming Soon
           </span>
 
           <h1 className="font-space font-bold text-4xl md:text-6xl text-fbc-white mb-4 leading-tight">
             FlutterBytes
             <br />
-            <span className="text-fbc-sky">Hackathon 2026</span>
+            <span className="text-fbc-blue">Hackathon 2026</span>
           </h1>
 
           <p className="text-fbc-muted text-lg mb-3 leading-relaxed">

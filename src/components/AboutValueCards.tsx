@@ -15,7 +15,7 @@ export default function AboutValueCards() {
       {values.map(({ Icon, title, desc }, i) => (
         <AnimateOnScroll key={title} delay={i * 0.08}>
           <div className="flex gap-5 py-6">
-            <Icon size={18} className="text-fbc-sky mt-0.5 flex-shrink-0" />
+            <Icon size={18} className="text-fbc-blue mt-0.5 flex-shrink-0" />
             <div>
               <h3 className="font-space font-semibold text-fbc-white text-sm mb-1">{title}</h3>
               <p className="text-fbc-muted text-sm leading-relaxed">{desc}</p>

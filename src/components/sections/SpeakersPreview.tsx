@@ -141,7 +141,7 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
                   />
                 ) : (
                   <div className="w-full h-full bg-fbc-card flex items-center justify-center">
-                    <span className="font-gigasans font-bold text-sm text-fbc-sky/70">{initials}</span>
+                    <span className="font-gigasans font-bold text-sm text-fbc-blue/70">{initials}</span>
                   </div>
                 )}
               </motion.div>
@@ -193,7 +193,7 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
           {/* CCW button */}
           <button
             onClick={() => manualSpin(-1)}
-            className="w-10 h-10 rounded-full border border-fbc-border text-fbc-muted hover:text-fbc-sky hover:border-fbc-sky/50 transition-all flex items-center justify-center"
+            className="w-10 h-10 rounded-full border border-fbc-border text-fbc-muted hover:text-fbc-blue hover:border-fbc-sky/50 transition-all flex items-center justify-center"
             aria-label="Spin counter-clockwise"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -209,7 +209,7 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
           {/* CW button */}
           <button
             onClick={() => manualSpin(1)}
-            className="w-10 h-10 rounded-full border border-fbc-border text-fbc-muted hover:text-fbc-sky hover:border-fbc-sky/50 transition-all flex items-center justify-center"
+            className="w-10 h-10 rounded-full border border-fbc-border text-fbc-muted hover:text-fbc-blue hover:border-fbc-sky/50 transition-all flex items-center justify-center"
             aria-label="Spin clockwise"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -238,7 +238,7 @@ export default function SpeakersPreview({ speakers, pastSpeakers }: Props) {
   const allPast = pastSpeakers.length > 0 ? pastSpeakers : speakers;
 
   return (
-    <section id="speakers" className="relative min-h-screen flex flex-col bg-fbc-navy overflow-hidden">
+    <section id="speakers" className="relative min-h-screen flex flex-col sec-plain overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none opacity-20"
         style={{
@@ -332,7 +332,7 @@ export default function SpeakersPreview({ speakers, pastSpeakers }: Props) {
       <div className="relative z-10 pb-16 text-center">
         <Link
           href="/speakers"
-          className="rounded-full px-7 py-3 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-sky hover:bg-fbc-sky/10 transition-all inline-flex items-center gap-2"
+          className="rounded-full px-7 py-3 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-blue hover:bg-fbc-sky/10 transition-all inline-flex items-center gap-2"
         >
           See all speakers →
         </Link>

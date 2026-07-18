@@ -42,7 +42,7 @@ export default function SpeakerCard({ speaker, onClick, index = 0 }: Props) {
           />
         ) : (
           <div className="w-full h-full bg-fbc-card flex items-center justify-center">
-            <span className="font-space font-bold text-2xl text-fbc-sky/70">{initials}</span>
+            <span className="font-space font-bold text-2xl text-fbc-blue/70">{initials}</span>
           </div>
         )}
         {/* Hover glow */}
@@ -55,7 +55,7 @@ export default function SpeakerCard({ speaker, onClick, index = 0 }: Props) {
       <p className="text-fbc-light-sub dark:text-fbc-muted text-xs">{speaker.role}</p>
       <p className="text-fbc-blue text-xs font-medium mt-0.5">{speaker.company}</p>
       {speaker.twitter && (
-        <span className="flex items-center gap-1 text-fbc-sky/60 text-[11px] mt-1">
+        <span className="flex items-center gap-1 text-fbc-blue/60 text-[11px] mt-1">
           <AtSign size={10} />
           {speaker.twitter.replace("@", "")}
         </span>
@@ -65,7 +65,7 @@ export default function SpeakerCard({ speaker, onClick, index = 0 }: Props) {
           {speaker.tags.slice(0, 2).map((t) => (
             <span
               key={t}
-              className="text-[9px] font-medium rounded-full px-2 py-0.5 bg-fbc-blue/10 text-fbc-sky border border-fbc-border"
+              className="text-[9px] font-medium rounded-full px-2 py-0.5 bg-fbc-blue/10 text-fbc-blue border border-fbc-border"
             >
               {t}
             </span>

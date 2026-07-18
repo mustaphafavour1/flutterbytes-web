@@ -228,7 +228,7 @@ export default function CommitteeSection({ members }: Props) {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-fbc-card">
-                      <span className="font-bold text-fbc-sky/70" style={{ fontSize }}>
+                      <span className="font-bold text-fbc-blue/70" style={{ fontSize }}>
                         {initials}
                       </span>
                     </div>
@@ -259,7 +259,7 @@ export default function CommitteeSection({ members }: Props) {
           <div className="flex justify-center mt-8">
             <Link
               href="#volunteer"
-              className="rounded-full px-8 py-3.5 font-gigasans font-semibold border border-fbc-sky/40 text-fbc-sky hover:bg-fbc-sky/10 transition-all text-center"
+              className="rounded-full px-8 py-3.5 font-gigasans font-semibold border border-fbc-sky/40 text-fbc-blue hover:bg-fbc-sky/10 transition-all text-center"
             >
               Apply to volunteer →
             </Link>

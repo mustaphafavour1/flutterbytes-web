@@ -63,7 +63,7 @@ export default function SpeakersPageContent({ speakers, pastSpeakers }: Props) {
                   </p>
                   <button
                     onClick={() => setTab("past")}
-                    className="rounded-full px-6 py-3 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-sky hover:bg-fbc-sky/10 transition-all"
+                    className="rounded-full px-6 py-3 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-blue hover:bg-fbc-sky/10 transition-all"
                   >
                     See past speakers
                   </button>

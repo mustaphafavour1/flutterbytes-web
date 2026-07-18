@@ -132,7 +132,7 @@ export default function FiveEditions() {
         <AnimateOnScroll>
           <h2 className="font-gigasans font-black text-3xl md:text-5xl text-fbc-white leading-tight">
             <span className="block">5 Years, 1 Community:</span>
-            <span className="block text-fbc-sky">Continuous Growth and Impact</span>
+            <span className="block text-fbc-blue">Continuous Growth and Impact</span>
           </h2>
           <p className="text-fbc-muted text-base mt-3 max-w-xl">
             From a WhatsApp group for Flutter devs in Lagos to Africa&apos;s biggest Flutter conference — this is our story.

@@ -10,7 +10,7 @@ function ResponsiveShot({ img, caption }: { img: ResponsiveImage; caption?: bool
   return (
     <div className="w-full">
       {caption && (
-        <p className="text-fbc-sky/80 font-gigasans font-semibold text-sm mb-2 text-center">{img.label}</p>
+        <p className="text-fbc-blue/80 font-gigasans font-semibold text-sm mb-2 text-center">{img.label}</p>
       )}
       <div className="w-full overflow-hidden rounded-2xl border border-fbc-border">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -110,8 +110,8 @@ function Carousel({ items, caption }: { items: ResponsiveImage[]; caption?: bool
 }
 
 export default function GalleryShowcase({ years = [], testimonials = [] }: { years?: ResponsiveImage[]; testimonials?: ResponsiveImage[] }) {
-  // Testimonials by default; fall back to photos when no testimonials uploaded yet.
-  const [tab, setTab] = useState<"testimonials" | "images">(testimonials.length ? "testimonials" : "images");
+  // Photos shown by default.
+  const [tab, setTab] = useState<"testimonials" | "images">("images");
 
   return (
     <div>

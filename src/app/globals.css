@@ -21,7 +21,7 @@
   --color-card: 15 30 56;
   --color-blue: 42 157 244;
   --color-sky: 56 189 248;
-  --color-glow: 96 165 250;
+  --color-glow: 24 123 205;
   --color-white: 248 250 255;
   --color-muted: 148 163 184;
   --color-border: 30 58 95;
@@ -52,6 +52,10 @@ html {
 body {
   font-family: 'GigaSans', var(--font-inter), Inter, sans-serif;
   letter-spacing: -0.01em;
+  background-color: #010F20;
+}
+html.light body {
+  background-color: #F5FCFF;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -126,6 +130,10 @@ p, span, li, label, a, button, td, th, input, textarea {
 html.light .sec-bg-1 { background-image: url('/backgrounds/bg1-light.jpg'); }
 html.light .sec-bg-2 { background-image: url('/backgrounds/bg2-light.jpg'); }
 html.light .sec-bg-3 { background-image: url('/backgrounds/bg3-light.jpg'); }
+
+/* Plain section backgrounds: soft white->white gradient (light) / deep navy (dark) */
+.sec-plain { background-color: #010F20; }
+html.light .sec-plain { background: linear-gradient(180deg, #F5FCFF 0%, #FFFFFF 100%); }
 
 /* Hide scrollbar utility */
 .scrollbar-hide {

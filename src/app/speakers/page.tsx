@@ -26,7 +26,7 @@ export default async function SpeakersPage() {
         >
           <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-fbc-blue/20 blur-[100px] pointer-events-none" aria-hidden="true" />
           <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
-            <span className="inline-block font-mono text-xs uppercase tracking-widest text-fbc-sky border border-fbc-border rounded-full px-3 py-1 mb-4">
+            <span className="inline-block font-mono text-xs uppercase tracking-widest text-fbc-blue border border-fbc-border rounded-full px-3 py-1 mb-4">
               FBC 2026 · Edition 05
             </span>
             <h1 className="font-space font-bold text-4xl md:text-6xl text-fbc-white mb-3 leading-tight">
