@@ -78,7 +78,7 @@ export default function NotifyForm({ category }: { category: string }) {
       <button
         type="submit"
         disabled={status === "sending"}
-        className="rounded-full px-6 py-3 font-space font-semibold text-white bg-fbc-blue hover:bg-fbc-glow transition-all inline-flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(37,99,235,0.4)] disabled:opacity-70"
+        className="self-center rounded-full px-5 py-2.5 text-sm font-space font-semibold text-white bg-fbc-blue hover:bg-fbc-glow transition-all inline-flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(37,99,235,0.4)] disabled:opacity-70"
       >
         <Bell size={15} /> {status === "sending" ? "Submitting…" : "Get notified →"}
       </button>
