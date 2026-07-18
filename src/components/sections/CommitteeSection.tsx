@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import type { CommitteeMember } from "@/data/fallback-committee";
 import { fallbackCommittee } from "@/data/fallback-committee";
@@ -12,62 +12,100 @@ interface Props {
   members: CommitteeMember[];
 }
 
-/* Bigger circles, 1000×600 canvas */
-const POSITIONS = [
-  // Large (r=68): index 0-2
-  { x: 500, y: 200, r: 68 },
-  { x: 280, y: 360, r: 68 },
-  { x: 720, y: 360, r: 68 },
-  // Medium (r=52): index 3-7
-  { x: 390, y: 90,  r: 52 },
-  { x: 610, y: 90,  r: 52 },
-  { x: 155, y: 230, r: 52 },
-  { x: 845, y: 230, r: 52 },
-  { x: 500, y: 490, r: 52 },
-  // Small (r=38): index 8-17
-  { x: 100, y: 430, r: 38 },
-  { x: 285, y: 535, r: 38 },
-  { x: 715, y: 535, r: 38 },
-  { x: 900, y: 430, r: 38 },
-  { x: 90,  y: 120, r: 38 },
-  { x: 910, y: 120, r: 38 },
-  { x: 375, y: 455, r: 38 },
-  { x: 625, y: 455, r: 38 },
-  { x: 185, y: 310, r: 38 },
-  { x: 815, y: 310, r: 38 },
-];
+type Pos = { x: number; y: number; r: number };
 
-const CONNECTIONS: [number, number][] = [
-  [0, 1], [0, 2], [0, 3], [0, 4], [1, 5], [2, 6], [1, 7], [2, 7],
-  [3, 5], [4, 6], [5, 8], [5, 12], [6, 11], [6, 13], [7, 9], [7, 10],
-  [8, 9], [10, 11], [3, 14], [4, 15], [14, 1], [15, 2], [14, 15],
-  [0, 14], [0, 15],
-  [5, 16], [8, 16], [1, 16], [6, 17], [11, 17], [2, 17],
-];
+/* Desktop layout — wide 1000×600 web */
+const DESKTOP = {
+  w: 1000,
+  h: 600,
+  stackX: 500,
+  stackY: 300,
+  positions: [
+    { x: 500, y: 200, r: 68 }, { x: 280, y: 360, r: 68 }, { x: 720, y: 360, r: 68 },
+    { x: 390, y: 90, r: 52 }, { x: 610, y: 90, r: 52 }, { x: 155, y: 230, r: 52 },
+    { x: 845, y: 230, r: 52 }, { x: 500, y: 490, r: 52 }, { x: 100, y: 430, r: 38 },
+    { x: 285, y: 535, r: 38 }, { x: 715, y: 535, r: 38 }, { x: 900, y: 430, r: 38 },
+    { x: 90, y: 120, r: 38 }, { x: 910, y: 120, r: 38 }, { x: 375, y: 455, r: 38 },
+    { x: 625, y: 455, r: 38 }, { x: 185, y: 310, r: 38 }, { x: 815, y: 310, r: 38 },
+  ] as Pos[],
+  connections: [
+    [0, 1], [0, 2], [0, 3], [0, 4], [1, 5], [2, 6], [1, 7], [2, 7],
+    [3, 5], [4, 6], [5, 8], [5, 12], [6, 11], [6, 13], [7, 9], [7, 10],
+    [8, 9], [10, 11], [3, 14], [4, 15], [14, 1], [15, 2], [14, 15],
+    [0, 14], [0, 15], [5, 16], [8, 16], [1, 16], [6, 17], [11, 17], [2, 17],
+  ] as [number, number][],
+};
 
-/* Center of the canvas for the stacked starting position */
-const STACK_X = 500;
-const STACK_Y = 300;
+/* Mobile layout — tall 340×640 web that fits a phone without horizontal scroll */
+const MOBILE = {
+  w: 340,
+  h: 640,
+  stackX: 170,
+  stackY: 320,
+  positions: [
+    { x: 170, y: 72, r: 44 }, { x: 82, y: 168, r: 42 }, { x: 258, y: 168, r: 42 },
+    { x: 170, y: 250, r: 32 }, { x: 66, y: 268, r: 30 }, { x: 274, y: 268, r: 30 },
+    { x: 150, y: 350, r: 28 }, { x: 258, y: 360, r: 28 }, { x: 72, y: 382, r: 28 },
+    { x: 188, y: 448, r: 28 }, { x: 298, y: 456, r: 26 }, { x: 112, y: 502, r: 26 },
+    { x: 214, y: 548, r: 26 },
+  ] as Pos[],
+  connections: [
+    [0, 1], [0, 2], [0, 3], [1, 3], [2, 3], [1, 4], [2, 5], [3, 6], [3, 7],
+    [4, 8], [6, 8], [5, 7], [6, 9], [7, 10], [8, 11], [9, 11], [9, 12],
+    [10, 12], [9, 10], [11, 12], [6, 7],
+  ] as [number, number][],
+};
 
 export default function CommitteeSection({ members }: Props) {
-  const data           = members.length > 0 ? members : fallbackCommittee;
-  const displayMembers = data.slice(0, POSITIONS.length);
+  const data = members.length > 0 ? members : fallbackCommittee;
 
-  const [inView, setInView]       = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const layout = mounted && isMobile ? MOBILE : DESKTOP;
+  const displayMembers = data.slice(0, layout.positions.length);
+
+  const [inView, setInView] = useState(false);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [activeIdx, setActiveIdx] = useState(0);
-  const [failed, setFailed]       = useState<Set<string>>(new Set());
+  const [failed, setFailed] = useState<Set<string>>(new Set());
   const markFailed = (name: string) => setFailed((prev) => new Set(prev).add(name));
-  const containerRef              = useRef<HTMLDivElement>(null);
-  const intervalRef               = useRef<ReturnType<typeof setInterval> | null>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  /* Intersection observer — trigger spread animation */
+  /* Fit the web to the available width (never overflows -> no horizontal scroll) */
+  const fitRef = useRef<HTMLDivElement>(null);
+  const [box, setBox] = useState({ w: layout.w, scale: 1 });
+  useEffect(() => {
+    const el = fitRef.current;
+    if (!el) return;
+    const update = () => {
+      const cw = el.clientWidth;
+      setBox({ w: cw, scale: Math.min(1, cw / layout.w) });
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [layout.w]);
+  const scale = box.scale;
+  const offsetLeft = Math.max(0, (box.w - layout.w * scale) / 2);
+
+  /* Spread animation trigger */
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setInView(true); },
       { threshold: 0.15 }
     );
-    if (containerRef.current) observer.observe(containerRef.current);
+    if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, []);
 
@@ -85,29 +123,9 @@ export default function CommitteeSection({ members }: Props) {
   }, [hoveredIdx, displayMembers.length]);
 
   const activeMember = displayMembers[activeIdx];
-  const activePos    = POSITIONS[activeIdx];
-
-  const getLabelStyle = (): React.CSSProperties => {
-    if (!activePos) return {};
-    const isRight  = activePos.x > 500;
-    const isBottom = activePos.y > 380;
-    const offset   = activePos.r + 14;
-    const style: React.CSSProperties = { position: "absolute" };
-    if (isRight) {
-      style.right = 1000 - activePos.x + offset;
-    } else {
-      style.left = activePos.x + offset;
-    }
-    if (isBottom) {
-      style.bottom = 600 - activePos.y + activePos.r;
-    } else {
-      style.top = activePos.y + activePos.r + 4;
-    }
-    return style;
-  };
 
   return (
-    <section id="committee" className="relative py-16 sm:py-24 md:py-32 overflow-hidden">
+    <section ref={sectionRef} id="committee" className="relative py-16 sm:py-24 md:py-32 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateOnScroll>
           <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-3 text-center">
@@ -121,23 +139,32 @@ export default function CommitteeSection({ members }: Props) {
           </p>
         </AnimateOnScroll>
 
-        {/* Web of circles */}
-        <div className="overflow-x-auto mx-auto">
-        <div ref={containerRef} className="mx-auto overflow-x-auto" style={{ maxWidth: 1000 }}>
-          <div className="relative mx-auto" style={{ width: 1000, height: 600 }}>
-            {/* Connection lines — fade in after spread */}
+        {/* Web of circles — scaled to fit */}
+        <div ref={fitRef} className="relative w-full mx-auto" style={{ height: layout.h * scale }}>
+          <div
+            style={{
+              position: "absolute",
+              left: offsetLeft,
+              top: 0,
+              width: layout.w,
+              height: layout.h,
+              transform: `scale(${scale})`,
+              transformOrigin: "top left",
+            }}
+          >
+            {/* Connection lines */}
             <motion.svg
               className="absolute inset-0 w-full h-full"
-              viewBox="0 0 1000 600"
+              viewBox={`0 0 ${layout.w} ${layout.h}`}
               aria-hidden="true"
               initial={{ opacity: 0 }}
               animate={{ opacity: inView ? 1 : 0 }}
-              transition={{ duration: 0.8, delay: 1.4 }}
+              transition={{ duration: 0.8, delay: 1.2 }}
             >
-              {CONNECTIONS.map(([a, b]) => {
+              {layout.connections.map(([a, b]) => {
                 if (a >= displayMembers.length || b >= displayMembers.length) return null;
-                const posA     = POSITIONS[a];
-                const posB     = POSITIONS[b];
+                const posA = layout.positions[a];
+                const posB = layout.positions[b];
                 const isActive = a === activeIdx || b === activeIdx;
                 return (
                   <line
@@ -154,7 +181,7 @@ export default function CommitteeSection({ members }: Props) {
 
             {/* Circles */}
             {displayMembers.map((member, i) => {
-              const pos      = POSITIONS[i];
+              const pos = layout.positions[i];
               const isActive = i === activeIdx;
               const diameter = pos.r * 2;
               const initials = member.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
@@ -171,17 +198,13 @@ export default function CommitteeSection({ members }: Props) {
                     boxShadow: isActive ? "0 0 20px rgba(42,157,244,0.5)" : "none",
                     zIndex: isActive ? 20 : 10,
                   }}
-                  initial={{ left: STACK_X - pos.r, top: STACK_Y - pos.r, opacity: 0 }}
+                  initial={{ left: layout.stackX - pos.r, top: layout.stackY - pos.r, opacity: 0 }}
                   animate={
                     inView
                       ? { left: pos.x - pos.r, top: pos.y - pos.r, opacity: 1 }
-                      : { left: STACK_X - pos.r, top: STACK_Y - pos.r, opacity: 0 }
+                      : { left: layout.stackX - pos.r, top: layout.stackY - pos.r, opacity: 0 }
                   }
-                  transition={{
-                    duration: 0.9,
-                    delay: inView ? i * 0.055 : 0,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
+                  transition={{ duration: 0.9, delay: inView ? i * 0.05 : 0, ease: [0.22, 1, 0.36, 1] }}
                   whileHover={{ scale: isActive ? 1.1 : 1.05 }}
                   onMouseEnter={() => setHoveredIdx(i)}
                   onMouseLeave={() => setHoveredIdx(null)}
@@ -206,42 +229,32 @@ export default function CommitteeSection({ members }: Props) {
                 </motion.div>
               );
             })}
-
-            {/* Floating label for active member */}
-            <AnimatePresence mode="wait">
-              {activeMember && inView && (
-                <motion.div
-                  key={activeIdx}
-                  className="absolute z-30 bg-fbc-card/90 backdrop-blur-sm rounded-xl px-3 py-2 border border-fbc-border pointer-events-none"
-                  style={{ ...getLabelStyle(), minWidth: 120, maxWidth: 200 }}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.2, ease: "easeOut" }}
-                >
-                  <p className="text-fbc-white font-semibold text-xs leading-tight">{activeMember.name}</p>
-                  <p className="text-fbc-muted text-[10px] leading-snug mt-0.5">{activeMember.role}</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
         </div>
+
+        {/* Active member name + role — centered under the web, never clipped */}
+        <div className="mt-8 text-center min-h-[3.5rem]">
+          {activeMember && inView && (
+            <motion.div
+              key={activeIdx}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25 }}
+            >
+              <p className="text-fbc-white font-gigasans font-bold text-lg leading-tight">{activeMember.name}</p>
+              <p className="text-fbc-muted text-sm mt-1">{activeMember.role}</p>
+            </motion.div>
+          )}
         </div>
 
-        {/* CTA buttons */}
+        {/* CTA */}
         <AnimateOnScroll delay={0.15}>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
+          <div className="flex justify-center mt-8">
             <Link
               href="#volunteer"
               className="rounded-full px-8 py-3.5 font-gigasans font-semibold border border-fbc-sky/40 text-fbc-sky hover:bg-fbc-sky/10 transition-all text-center"
             >
               Apply to volunteer →
-            </Link>
-            <Link
-              href="/about#committee"
-              className="rounded-full px-8 py-3.5 font-gigasans font-semibold text-white bg-fbc-blue hover:opacity-90 transition-all shadow-[0_0_20px_rgba(42,157,244,0.4)] text-center"
-            >
-              See full committee →
             </Link>
           </div>
         </AnimateOnScroll>

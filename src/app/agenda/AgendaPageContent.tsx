@@ -36,7 +36,7 @@ function AgendaComingSoon({ sessions }: { sessions: AgendaSession[] }) {
                     }}
                   >
                     <div className="p-3 h-full flex flex-col justify-between">
-                      <p style={{ color: "rgb(var(--color-muted) / 0.6)", fontSize: 10, fontWeight: 500 }} className="line-clamp-2 leading-snug">{session.session}</p>
+                      <p style={{ color: "rgb(var(--color-muted) / 0.6)", fontSize: 13, fontWeight: 700 }} className="line-clamp-2 leading-snug">{session.session}</p>
                       <div style={{ opacity: 0, borderTop: "1px solid rgba(42,157,244,0.22)", paddingTop: 4 }}>
                         <div className="flex items-center justify-between">
                           <span style={{ fontSize: 9, color: "#38BDF8", fontWeight: 600 }}>{session.type ?? session.time}</span>
@@ -125,7 +125,7 @@ function PastSessionsGrid({ sessions }: { sessions: AgendaSession[] }) {
                   onMouseLeave={() => setHoveredIdx(null)}
                 >
                   <div className="p-3 h-full flex flex-col justify-between">
-                    <p style={{ color: isHovered ? "rgb(var(--color-white) / 0.9)" : "rgb(var(--color-muted) / 0.6)", fontSize: 10, fontWeight: 500 }} className="line-clamp-2 leading-snug">{session.session}</p>
+                    <p style={{ color: isHovered ? "rgb(var(--color-white) / 0.9)" : "rgb(var(--color-muted) / 0.6)", fontSize: 13, fontWeight: 700 }} className="line-clamp-2 leading-snug">{session.session}</p>
                     <div style={{ opacity: isHovered ? 1 : 0, transition: "opacity 0.18s", borderTop: "1px solid rgba(42,157,244,0.22)", paddingTop: 4 }}>
                       <div className="flex items-center justify-between">
                         <span style={{ fontSize: 9, color: "#38BDF8", fontWeight: 600 }}>{session.type ?? session.time}</span>
@@ -158,7 +158,7 @@ export default function AgendaPageContent({ friday, saturday, pastSessions }: Pr
   ];
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
       {/* Tabs */}
       <div className="flex gap-2 mb-8 flex-wrap" role="tablist" aria-label="Conference days">
         {tabs.map(({ id, label }) => (

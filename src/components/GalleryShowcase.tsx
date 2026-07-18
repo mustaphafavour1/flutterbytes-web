@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { ResponsiveImage } from "@/lib/gallery-photos";
 
@@ -22,14 +22,101 @@ function ResponsiveShot({ img, caption }: { img: ResponsiveImage; caption?: bool
   );
 }
 
-function Stack({ items, caption }: { items: ResponsiveImage[]; caption?: boolean }) {
+/* Full-bleed horizontal carousel — one year per view, auto-advancing, swipeable. */
+function YearCarousel({ years }: { years: ResponsiveImage[] }) {
+  const ordered = [...years].reverse(); // 2025 -> 2024 -> 2023 -> 2022
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [idx, setIdx] = useState(0);
+  const pausedRef = useRef(false);
+  const resumeRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const scrollTo = (i: number) => {
+    const el = scrollRef.current;
+    if (el) el.scrollTo({ left: i * el.clientWidth, behavior: "smooth" });
+  };
+
+  /* Auto-advance every 3s (paused briefly after a manual swipe) */
+  useEffect(() => {
+    if (ordered.length <= 1) return;
+    const id = setInterval(() => {
+      if (pausedRef.current) return;
+      setIdx((prev) => {
+        const next = (prev + 1) % ordered.length;
+        const el = scrollRef.current;
+        if (el) el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
+        return next;
+      });
+    }, 3000);
+    return () => clearInterval(id);
+  }, [ordered.length]);
+
+  /* Pause auto-advance while the visitor is interacting */
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const pause = () => {
+      pausedRef.current = true;
+      if (resumeRef.current) clearTimeout(resumeRef.current);
+      resumeRef.current = setTimeout(() => { pausedRef.current = false; }, 4500);
+    };
+    el.addEventListener("touchstart", pause, { passive: true });
+    el.addEventListener("wheel", pause, { passive: true });
+    el.addEventListener("pointerdown", pause);
+    return () => {
+      el.removeEventListener("touchstart", pause);
+      el.removeEventListener("wheel", pause);
+      el.removeEventListener("pointerdown", pause);
+      if (resumeRef.current) clearTimeout(resumeRef.current);
+    };
+  }, []);
+
+  const onScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const i = Math.round(el.scrollLeft / el.clientWidth);
+    if (i !== idx) setIdx(i);
+  };
+
+  if (!ordered.length) {
+    return <p className="text-center text-fbc-muted text-sm py-12">Coming soon.</p>;
+  }
+
+  return (
+    <div style={{ width: "100vw", marginLeft: "calc(50% - 50vw)" }}>
+      <div
+        ref={scrollRef}
+        onScroll={onScroll}
+        className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
+        {ordered.map((y) => (
+          <div key={y.label} className="snap-center shrink-0 w-screen px-3 sm:px-6">
+            <ResponsiveShot img={y} caption />
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-center gap-2 mt-6">
+        {ordered.map((y, i) => (
+          <button
+            key={y.label}
+            onClick={() => { setIdx(i); scrollTo(i); }}
+            aria-label={`Show ${y.label}`}
+            className={`rounded-full transition-all duration-300 ${i === idx ? "w-6 h-1.5 bg-fbc-sky" : "w-1.5 h-1.5 bg-fbc-border"}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TestimonialsStack({ items }: { items: ResponsiveImage[] }) {
   if (!items.length) {
     return <p className="text-center text-fbc-muted text-sm py-12">Coming soon.</p>;
   }
   return (
     <div className="flex flex-col gap-8">
       {items.map((it) => (
-        <ResponsiveShot key={it.label} img={it} caption={caption} />
+        <ResponsiveShot key={it.label} img={it} />
       ))}
     </div>
   );
@@ -68,7 +155,7 @@ export default function GalleryShowcase({ years = [], testimonials = [] }: { yea
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.2 }}
         >
-          {tab === "testimonials" ? <Stack items={testimonials} /> : <Stack items={years} caption />}
+          {tab === "testimonials" ? <TestimonialsStack items={testimonials} /> : <YearCarousel years={years} />}
         </motion.div>
       </AnimatePresence>
     </div>

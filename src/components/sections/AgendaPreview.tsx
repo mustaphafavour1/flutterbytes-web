@@ -73,7 +73,7 @@ function AgendaGrid({ sessions }: { sessions: AgendaSession[] }) {
                 >
                   <div className="p-3.5 h-full flex flex-col justify-between">
                     <p
-                      className="text-[11px] font-medium leading-snug line-clamp-3"
+                      className="text-[15px] font-bold leading-snug line-clamp-3"
                       style={{ color: isHovered ? "rgb(var(--color-white) / 0.9)" : "rgb(var(--color-muted) / 0.5)", transition: "color 0.18s" }}
                     >
                       {session.session}
@@ -143,7 +143,7 @@ export default function AgendaPreview({ friday, saturday, agendaVisible }: Props
         }}
         aria-hidden="true"
       />
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateOnScroll>
           <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-3 text-center">
             What&apos;s on the schedule
