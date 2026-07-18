@@ -114,6 +114,19 @@ p, span, li, label, a, button, td, th, input, textarea {
   box-shadow: 0 0 40px rgba(37, 99, 235, 0.3);
 }
 
+/* Themed patterned section backgrounds (dark by default, light override) */
+.sec-bg-1, .sec-bg-2, .sec-bg-3 {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.sec-bg-1 { background-color: rgb(var(--color-dark)); background-image: url('/backgrounds/bg1-dark.jpg'); }
+.sec-bg-2 { background-color: rgb(var(--color-navy)); background-image: url('/backgrounds/bg2-dark.jpg'); }
+.sec-bg-3 { background-color: rgb(var(--color-dark)); background-image: url('/backgrounds/bg3-dark.jpg'); }
+html.light .sec-bg-1 { background-image: url('/backgrounds/bg1-light.jpg'); }
+html.light .sec-bg-2 { background-image: url('/backgrounds/bg2-light.jpg'); }
+html.light .sec-bg-3 { background-image: url('/backgrounds/bg3-light.jpg'); }
+
 /* Hide scrollbar utility */
 .scrollbar-hide {
   -ms-overflow-style: none;

@@ -16,7 +16,7 @@ function AgendaGrid({ sessions }: { sessions: AgendaSession[] }) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const preview = sessions.slice(0, Math.ceil(sessions.length / 2));
+  const preview = sessions.slice(0, 24);
   const ROWS = 4;
   const perRow = Math.ceil(preview.length / ROWS);
   const rows = Array.from({ length: ROWS }, (_, r) =>
@@ -51,7 +51,7 @@ function AgendaGrid({ sessions }: { sessions: AgendaSession[] }) {
 
   return (
     <div ref={scrollRef} className="overflow-x-auto scrollbar-hide pb-2">
-      <div className="inline-flex flex-col gap-2" style={{ minWidth: "max-content" }}>
+      <div className="flex flex-col gap-2 w-max mx-auto">
         {rows.map((row, ri) => (
           <div key={ri} className="flex gap-2">
             {row.map((session, ci) => {
@@ -73,7 +73,7 @@ function AgendaGrid({ sessions }: { sessions: AgendaSession[] }) {
                 >
                   <div className="p-3.5 h-full flex flex-col justify-between">
                     <p
-                      className="text-[15px] font-bold leading-snug line-clamp-3"
+                      className="text-[14px] font-semibold leading-snug line-clamp-3"
                       style={{ color: isHovered ? "rgb(var(--color-white) / 0.9)" : "rgb(var(--color-muted) / 0.5)", transition: "color 0.18s" }}
                     >
                       {session.session}
@@ -134,7 +134,7 @@ export default function AgendaPreview({ friday, saturday, agendaVisible }: Props
   const sessions = tab === "friday" ? friday : tab === "saturday" ? saturday : [...friday, ...saturday];
 
   return (
-    <section id="agenda" className="relative py-16 sm:py-24 md:py-32 bg-fbc-dark overflow-hidden">
+    <section id="agenda" className="relative py-16 sm:py-24 md:py-32 sec-bg-1 overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none opacity-20"
         style={{

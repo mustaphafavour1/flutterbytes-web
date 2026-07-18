@@ -18,6 +18,7 @@ type Pos = { x: number; y: number; r: number };
 const DESKTOP = {
   w: 1000,
   h: 600,
+  maxScale: 1,
   stackX: 500,
   stackY: 300,
   positions: [
@@ -36,23 +37,24 @@ const DESKTOP = {
   ] as [number, number][],
 };
 
-/* Mobile layout — tall 340×640 web that fits a phone without horizontal scroll */
+/* Mobile layout — tall 340×660 web that fits a phone without horizontal scroll */
 const MOBILE = {
   w: 340,
-  h: 640,
+  h: 660,
+  maxScale: 1.2,
   stackX: 170,
-  stackY: 320,
+  stackY: 330,
   positions: [
-    { x: 170, y: 72, r: 44 }, { x: 82, y: 168, r: 42 }, { x: 258, y: 168, r: 42 },
-    { x: 170, y: 250, r: 32 }, { x: 66, y: 268, r: 30 }, { x: 274, y: 268, r: 30 },
-    { x: 150, y: 350, r: 28 }, { x: 258, y: 360, r: 28 }, { x: 72, y: 382, r: 28 },
-    { x: 188, y: 448, r: 28 }, { x: 298, y: 456, r: 26 }, { x: 112, y: 502, r: 26 },
-    { x: 214, y: 548, r: 26 },
+    { x: 168, y: 82, r: 50 }, { x: 76, y: 190, r: 46 }, { x: 264, y: 178, r: 46 },
+    { x: 174, y: 278, r: 35 }, { x: 58, y: 296, r: 33 }, { x: 282, y: 290, r: 33 },
+    { x: 138, y: 372, r: 31 }, { x: 254, y: 382, r: 31 }, { x: 64, y: 410, r: 31 },
+    { x: 200, y: 468, r: 31 }, { x: 300, y: 480, r: 28 }, { x: 110, y: 532, r: 28 },
+    { x: 224, y: 574, r: 28 },
   ] as Pos[],
   connections: [
-    [0, 1], [0, 2], [0, 3], [1, 3], [2, 3], [1, 4], [2, 5], [3, 6], [3, 7],
-    [4, 8], [6, 8], [5, 7], [6, 9], [7, 10], [8, 11], [9, 11], [9, 12],
-    [10, 12], [9, 10], [11, 12], [6, 7],
+    [0, 1], [0, 2], [0, 3], [1, 4], [2, 5], [1, 3], [2, 3], [3, 6], [3, 7],
+    [4, 8], [6, 8], [5, 7], [6, 9], [7, 9], [7, 10], [8, 11], [9, 11],
+    [9, 12], [10, 12], [11, 12], [6, 7], [9, 10],
   ] as [number, number][],
 };
 
@@ -89,15 +91,20 @@ export default function CommitteeSection({ members }: Props) {
     if (!el) return;
     const update = () => {
       const cw = el.clientWidth;
-      setBox({ w: cw, scale: Math.min(1, cw / layout.w) });
+      setBox({ w: cw, scale: Math.min(layout.maxScale, cw / layout.w) });
     };
     update();
     const ro = new ResizeObserver(update);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [layout.w]);
+  }, [layout.w, layout.maxScale]);
   const scale = box.scale;
   const offsetLeft = Math.max(0, (box.w - layout.w * scale) / 2);
+
+  /* Position for the floating name label — directly under the active circle */
+  const activePos = layout.positions[activeIdx] ?? layout.positions[0];
+  const labelLeft = Math.min(Math.max(offsetLeft + activePos.x * scale, 92), Math.max(92, box.w - 92));
+  const labelTop = (activePos.y + activePos.r) * scale + 8;
 
   /* Spread animation trigger */
   useEffect(() => {
@@ -125,7 +132,7 @@ export default function CommitteeSection({ members }: Props) {
   const activeMember = displayMembers[activeIdx];
 
   return (
-    <section ref={sectionRef} id="committee" className="relative py-16 sm:py-24 md:py-32 overflow-hidden">
+    <section ref={sectionRef} id="committee" className="relative py-16 sm:py-24 md:py-32 sec-bg-3 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateOnScroll>
           <h2 className="font-gigasans font-bold text-3xl md:text-5xl text-fbc-white mb-3 text-center">
@@ -139,8 +146,8 @@ export default function CommitteeSection({ members }: Props) {
           </p>
         </AnimateOnScroll>
 
-        {/* Web of circles — scaled to fit */}
-        <div ref={fitRef} className="relative w-full mx-auto" style={{ height: layout.h * scale }}>
+        {/* Web of circles — scaled to fit (extra room below for the name label) */}
+        <div ref={fitRef} className="relative w-full mx-auto" style={{ height: layout.h * scale + 56 }}>
           <div
             style={{
               position: "absolute",
@@ -230,19 +237,19 @@ export default function CommitteeSection({ members }: Props) {
               );
             })}
           </div>
-        </div>
 
-        {/* Active member name + role — centered under the web, never clipped */}
-        <div className="mt-8 text-center min-h-[3.5rem]">
+          {/* Floating name label — directly under the active person's picture */}
           {activeMember && inView && (
             <motion.div
               key={activeIdx}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25 }}
+              className="absolute z-30 bg-fbc-card/95 backdrop-blur-sm rounded-xl px-3 py-2 border border-fbc-border pointer-events-none text-center"
+              style={{ left: labelLeft, top: labelTop, transform: "translateX(-50%)", minWidth: 120, maxWidth: 200 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
             >
-              <p className="text-fbc-white font-gigasans font-bold text-lg leading-tight">{activeMember.name}</p>
-              <p className="text-fbc-muted text-sm mt-1">{activeMember.role}</p>
+              <p className="text-fbc-white font-semibold text-xs leading-tight">{activeMember.name}</p>
+              <p className="text-fbc-muted text-[10px] leading-snug mt-0.5">{activeMember.role}</p>
             </motion.div>
           )}
         </div>

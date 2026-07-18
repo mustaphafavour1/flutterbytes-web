@@ -22,9 +22,9 @@ function ResponsiveShot({ img, caption }: { img: ResponsiveImage; caption?: bool
   );
 }
 
-/* Full-bleed horizontal carousel — one year per view, auto-advancing, swipeable. */
-function YearCarousel({ years }: { years: ResponsiveImage[] }) {
-  const ordered = [...years].reverse(); // 2025 -> 2024 -> 2023 -> 2022
+/* Full-bleed horizontal carousel — one item per view, auto-advancing, swipeable. */
+function Carousel({ items, caption }: { items: ResponsiveImage[]; caption?: boolean }) {
+  const ordered = items;
   const scrollRef = useRef<HTMLDivElement>(null);
   const [idx, setIdx] = useState(0);
   const pausedRef = useRef(false);
@@ -91,7 +91,7 @@ function YearCarousel({ years }: { years: ResponsiveImage[] }) {
       >
         {ordered.map((y) => (
           <div key={y.label} className="snap-center shrink-0 w-screen px-3 sm:px-6">
-            <ResponsiveShot img={y} caption />
+            <ResponsiveShot img={y} caption={caption} />
           </div>
         ))}
       </div>
@@ -105,19 +105,6 @@ function YearCarousel({ years }: { years: ResponsiveImage[] }) {
           />
         ))}
       </div>
-    </div>
-  );
-}
-
-function TestimonialsStack({ items }: { items: ResponsiveImage[] }) {
-  if (!items.length) {
-    return <p className="text-center text-fbc-muted text-sm py-12">Coming soon.</p>;
-  }
-  return (
-    <div className="flex flex-col gap-8">
-      {items.map((it) => (
-        <ResponsiveShot key={it.label} img={it} />
-      ))}
     </div>
   );
 }
@@ -155,7 +142,9 @@ export default function GalleryShowcase({ years = [], testimonials = [] }: { yea
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.2 }}
         >
-          {tab === "testimonials" ? <TestimonialsStack items={testimonials} /> : <YearCarousel years={years} />}
+          {tab === "testimonials"
+            ? <Carousel items={testimonials} />
+            : <Carousel items={[...years].reverse()} caption />}
         </motion.div>
       </AnimatePresence>
     </div>

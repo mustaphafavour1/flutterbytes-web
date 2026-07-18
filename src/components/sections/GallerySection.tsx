@@ -5,7 +5,7 @@ import type { ResponsiveImage } from "@/lib/gallery-photos";
 
 export default function GallerySection({ years = [], testimonials = [] }: { years?: ResponsiveImage[]; testimonials?: ResponsiveImage[] }) {
   return (
-    <section id="gallery" className="relative py-16 sm:py-24 md:py-32 bg-fbc-navy overflow-hidden">
+    <section id="gallery" className="relative py-16 sm:py-24 md:py-32 sec-bg-2 overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none opacity-15"
         style={{

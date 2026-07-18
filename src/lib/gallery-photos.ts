@@ -42,8 +42,9 @@ export function getTestimonialPairs(): ResponsiveImage[] {
   const map = galleryMap();
   const out: ResponsiveImage[] = [];
   for (let i = 1; i <= 8; i++) {
-    const desktop = map.get(`testimonial${i}-desktop`);
-    const mobile = map.get(`testimonial${i}-mobile`);
+    // accept both "testimonial<N>-…" and "testimonials<N>-…"
+    const desktop = map.get(`testimonial${i}-desktop`) ?? map.get(`testimonials${i}-desktop`);
+    const mobile = map.get(`testimonial${i}-mobile`) ?? map.get(`testimonials${i}-mobile`);
     if (desktop || mobile) out.push({ label: `Testimonial ${i}`, desktop, mobile });
   }
   return out;

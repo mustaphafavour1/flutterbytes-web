@@ -126,7 +126,7 @@ export default function FiveEditions() {
   }, []);
 
   return (
-    <section id="editions" className="bg-fbc-dark py-16 sm:py-24 md:py-32">
+    <section id="editions" className="sec-bg-3 py-16 sm:py-24 md:py-32">
       {/* Heading */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <AnimateOnScroll>
