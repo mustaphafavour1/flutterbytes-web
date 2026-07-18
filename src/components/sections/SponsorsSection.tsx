@@ -168,18 +168,12 @@ export default function SponsorsSection() {
             <p className="text-fbc-muted text-sm max-w-sm mx-auto leading-relaxed mb-7">
               Reach 600+ Flutter engineers, founders and tech leaders at Africa&apos;s premier mobile conference.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="flex justify-center">
               <a
-                href="mailto:contact.flutterbytes@gmail.com"
+                href="mailto:contact.flutterbytes@gmail.com?subject=Sponsorship Deck Request&body=Hello FlutterBytes team, I'd love to sponsor the next edition."
                 className="rounded-full px-6 py-2.5 font-gigasans font-semibold text-sm text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_18px_rgba(42,157,244,0.4)] inline-flex items-center justify-center gap-2"
               >
-                <Mail size={14} /> Send us a mail →
-              </a>
-              <a
-                href="mailto:contact.flutterbytes@gmail.com?subject=Sponsorship%20Deck%20Request&body=Hello%20FlutterBytes%20team%2C%20I%27d%20love%20to%20sponsor%20the%20next%20edition."
-                className="rounded-full px-6 py-2.5 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-blue hover:bg-fbc-sky/10 transition-all inline-flex items-center justify-center gap-2"
-              >
-                Request sponsorship deck →
+                <Mail size={14} /> Request sponsorship deck →
               </a>
             </div>
           </div>

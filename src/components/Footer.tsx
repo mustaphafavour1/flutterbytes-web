@@ -78,7 +78,7 @@ function FooterLogo() {
 
 export default function Footer() {
   return (
-    <footer className="bg-fbc-navy border-t border-fbc-border/20">
+    <footer className="sec-plain border-t border-fbc-border/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="flex flex-col md:flex-row items-start justify-between gap-12 mb-10">
           {/* Left — logo + tagline + social */}

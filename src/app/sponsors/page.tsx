@@ -44,16 +44,10 @@ export default function SponsorsPage() {
             <p className="text-fbc-muted mb-6">
               Reach out and we&apos;ll put together a custom package for your goals.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <a
-                href="mailto:contact.flutterbytes@gmail.com"
+                href="mailto:contact.flutterbytes@gmail.com?subject=Sponsorship Deck Request&body=Hello FlutterBytes team, I'd love to sponsor the next edition."
                 className="rounded-full px-6 py-3 font-space font-semibold text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)] inline-flex items-center justify-center gap-2"
-              >
-                <Mail size={16} /> Send us a mail →
-              </a>
-              <a
-                href="mailto:contact.flutterbytes@gmail.com?subject=Sponsorship%20Deck%20Request&body=Hello%20FlutterBytes%20team%2C%20I%27d%20love%20to%20sponsor%20the%20next%20edition."
-                className="rounded-full px-6 py-3 font-space font-semibold border border-fbc-sky/40 text-fbc-blue hover:bg-fbc-sky/10 transition-all inline-flex items-center justify-center gap-2"
               >
                 <Mail size={16} /> Request sponsorship deck →
               </a>
