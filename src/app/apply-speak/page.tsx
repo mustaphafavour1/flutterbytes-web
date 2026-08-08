@@ -7,5 +7,5 @@ export const metadata = {
 
 export default function ApplyToSpeakPage() {
   // Call for speakers is handled on Sessionize.
-  redirect("https://sessionize.com/flutterbytes-conference-2026/");
+  redirect("/");
 }

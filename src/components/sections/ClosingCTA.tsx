@@ -62,12 +62,12 @@ export default function ClosingCTA() {
 
           <div className="flex items-center justify-center">
             <a
-              href="https://sessionize.com/flutterbytes-conference-2026/"
+              href="https://www.harpen.in/flutterbytes-conference-2026"
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-full px-10 py-4 font-gigasans font-bold text-lg text-white bg-fbc-blue shadow-[0_0_30px_rgba(42,157,244,0.6)] hover:shadow-[0_0_50px_rgba(42,157,244,0.8)] hover:bg-fbc-glow transition-all"
             >
-              Apply to Speak →
+              Get Tickets →
             </a>
           </div>
         </AnimateOnScroll>

@@ -98,12 +98,12 @@ export default function EventSnapshot() {
                     </Suspense>
                   </div>
                   <a
-                    href="https://sessionize.com/flutterbytes-conference-2026/"
+                    href="https://www.harpen.in/flutterbytes-conference-2026"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-full px-5 py-2.5 font-gigasans font-semibold text-xs text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_16px_rgba(42,157,244,0.35)] whitespace-nowrap flex-shrink-0"
                   >
-                    Apply to Speak →
+                    Get Tickets →
                   </a>
                 </div>
               </div>

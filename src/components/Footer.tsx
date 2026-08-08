@@ -38,7 +38,7 @@ const linkCols = [
   {
     heading: "Participate",
     links: [
-      { label: "Apply to speak", href: "https://sessionize.com/flutterbytes-conference-2026/" },
+      { label: "Get tickets", href: "https://www.harpen.in/flutterbytes-conference-2026" },
       { label: "Apply to volunteer", href: "/apply-volunteer" },
       { label: "Product showcase", href: "/product-showcase" },
       { label: "FlutterBytes Hackathon", href: "/hackathon" },

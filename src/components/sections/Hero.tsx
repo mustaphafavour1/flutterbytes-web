@@ -419,12 +419,12 @@ export default function Hero() {
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-36"
         >
           <a
-            href="https://sessionize.com/flutterbytes-conference-2026/"
+            href="https://www.harpen.in/flutterbytes-conference-2026"
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-full px-8 py-3.5 font-gigasans font-semibold text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_20px_rgba(37,99,235,0.5)] hover:shadow-[0_0_40px_rgba(96,165,250,0.5)]"
           >
-            Apply to Speak →
+            Get Tickets →
           </a>
           <a
             href="/agenda"
