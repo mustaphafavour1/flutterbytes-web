@@ -40,7 +40,7 @@ export default function HackathonPage() {
             Build something in Flutter. AI bonus points. More details dropping soon.
           </p>
           <p className="text-fbc-muted/60 text-sm mb-10">
-            October 30–31, 2026 · The Zone, Gbagada, Lagos
+            November 6–7, 2026 · Zone Tech Park, Gbagada, Lagos
           </p>
 
           {/* Get notified */}

@@ -42,7 +42,7 @@ export default function ApplyToVolunteerPage() {
             Be part of the team that makes FlutterBytes happen. Applications open soon.
           </p>
           <p className="text-fbc-muted/60 text-sm mb-10">
-            October 30–31, 2026 · The Zone, Gbagada, Lagos
+            November 6–7, 2026 · Zone Tech Park, Gbagada, Lagos
           </p>
 
           <div className="rounded-2xl bg-fbc-card border border-fbc-border p-6 text-left">

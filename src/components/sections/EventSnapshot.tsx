@@ -57,7 +57,7 @@ export default function EventSnapshot() {
                       Friday &amp; Saturday
                     </h2>
                     <p className="font-gigasans font-semibold text-fbc-blue text-lg sm:text-xl mt-0.5">
-                      October 30th &amp; 31st, 2026
+                      November 6th &amp; 7th, 2026
                     </p>
                   </div>
                 </div>

@@ -41,7 +41,7 @@ const editionData = [
   {
     year: "2026",
     theme: "Becoming A Flutter AI Engineer",
-    date: "Oct 30–31, 2026",
+    date: "Nov 6–7, 2026",
     attendees: "You're here! 🎉",
     above: true,
     isCurrent: true,

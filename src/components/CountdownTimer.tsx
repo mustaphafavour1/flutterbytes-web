@@ -9,7 +9,7 @@ interface TimeLeft {
   seconds: number;
 }
 
-const TARGET = new Date("2026-10-30T09:00:00+01:00").getTime();
+const TARGET = new Date("2026-11-06T09:00:00+01:00").getTime();
 
 function calc(): TimeLeft {
   const diff = Math.max(0, TARGET - Date.now());

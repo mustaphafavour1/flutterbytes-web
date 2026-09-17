@@ -385,7 +385,7 @@ export default function Hero() {
             <span className="text-fbc-white">FlutterBytes2026.dart</span>
             <span className="text-fbc-blue/50 animate-cursor-blink flex-shrink-0">|</span>
             <span className="text-fbc-blue font-semibold flex-shrink-0">
-              <span className="hidden sm:inline">Friday &amp; Saturday, </span>Oct 30–31, 2026
+              <span className="hidden sm:inline">Friday &amp; Saturday, </span>Nov 6–7, 2026
             </span>
           </div>
         </motion.div>

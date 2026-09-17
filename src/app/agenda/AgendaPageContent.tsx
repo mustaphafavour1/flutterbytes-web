@@ -153,8 +153,8 @@ export default function AgendaPageContent({ friday, saturday, pastSessions }: Pr
 
   const tabs: { id: TabId; label: string }[] = [
     { id: "past", label: "Past Editions" },
-    { id: "friday", label: "Friday, Oct 30" },
-    { id: "saturday", label: "Saturday, Oct 31" },
+    { id: "friday", label: "Friday, Nov 6" },
+    { id: "saturday", label: "Saturday, Nov 7" },
   ];
 
   return (

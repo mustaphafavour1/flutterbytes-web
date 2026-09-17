@@ -175,8 +175,8 @@ export default function AgendaPreview({ friday, saturday, agendaVisible }: Props
           <div className="flex gap-2 mb-6 justify-center" role="tablist">
             {([
               ["past",     "Past Editions"],
-              ["friday",   "Friday, Oct 30"],
-              ["saturday", "Saturday, Oct 31"],
+              ["friday",   "Friday, Nov 6"],
+              ["saturday", "Saturday, Nov 7"],
             ] as const).map(([val, label]) => (
               <button
                 key={val}
