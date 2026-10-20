@@ -10,8 +10,8 @@ const nextConfig = {
   // build-time directory scan (see src/lib/speaker-photos.ts) also works at runtime.
   experimental: {
     outputFileTracingIncludes: {
-      '/': ['./public/past_speakers/**', './public/gallery/**', './public/committee/**'],
-      '/speakers': ['./public/past_speakers/**'],
+      '/': ['./public/past_speakers/**', './public/speakers_2026/**', './public/gallery/**', './public/committee/**'],
+      '/speakers': ['./public/past_speakers/**', './public/speakers_2026/**'],
       '/gallery': ['./public/gallery/**'],
       '/about': ['./public/committee/**'],
     },

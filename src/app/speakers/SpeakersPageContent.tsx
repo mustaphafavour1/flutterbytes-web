@@ -11,8 +11,11 @@ interface Props {
 }
 
 export default function SpeakersPageContent({ speakers, pastSpeakers }: Props) {
-  const [tab, setTab] = useState<"2026" | "past">("past");
+  const has2026 = speakers.length > 0;
+  const [tab, setTab] = useState<"2026" | "past">(has2026 ? "2026" : "past");
   const allPast = pastSpeakers.length > 0 ? pastSpeakers : speakers;
+  const gridList = tab === "2026" ? speakers : allPast;
+  const gridLabel = tab === "2026" ? `All ${speakers.length} 2026 speakers` : `All ${allPast.length} past speakers`;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
@@ -47,28 +50,33 @@ export default function SpeakersPageContent({ speakers, pastSpeakers }: Props) {
               transition={{ duration: 0.2 }}
               className="relative w-full"
             >
-              {/* Blurred wheel behind overlay */}
-              <div className="pointer-events-none select-none" style={{ filter: "blur(4px)", opacity: 0.3 }}>
-                <SpeakerWheel speakers={allPast} />
-              </div>
-              {/* Coming soon overlay */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-fbc-card/95 backdrop-blur-xl rounded-2xl px-8 py-10 text-center border border-fbc-border max-w-sm shadow-2xl">
-                  <div className="text-5xl mb-5">🚀</div>
-                  <h3 className="font-gigasans font-bold text-fbc-white text-2xl mb-3">
-                    Speakers coming soon
-                  </h3>
-                  <p className="text-fbc-muted text-sm leading-relaxed mb-6">
-                    We&apos;re finalising an incredible lineup of speakers for the 5th edition. Stay tuned.
-                  </p>
-                  <button
-                    onClick={() => setTab("past")}
-                    className="rounded-full px-6 py-3 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-blue hover:bg-fbc-sky/10 transition-all"
-                  >
-                    See past speakers
-                  </button>
-                </div>
-              </div>
+              {has2026 ? (
+                <SpeakerWheel speakers={speakers} />
+              ) : (
+                <>
+                  {/* Blurred wheel behind coming-soon overlay */}
+                  <div className="pointer-events-none select-none" style={{ filter: "blur(4px)", opacity: 0.3 }}>
+                    <SpeakerWheel speakers={allPast} />
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="bg-fbc-card/95 backdrop-blur-xl rounded-2xl px-8 py-10 text-center border border-fbc-border max-w-sm shadow-2xl">
+                      <div className="text-5xl mb-5">🚀</div>
+                      <h3 className="font-gigasans font-bold text-fbc-white text-2xl mb-3">
+                        Speakers coming soon
+                      </h3>
+                      <p className="text-fbc-muted text-sm leading-relaxed mb-6">
+                        We&apos;re finalising an incredible lineup of speakers for the 5th edition. Stay tuned.
+                      </p>
+                      <button
+                        onClick={() => setTab("past")}
+                        className="rounded-full px-6 py-3 font-gigasans font-semibold text-sm border border-fbc-sky/30 text-fbc-blue hover:bg-fbc-sky/10 transition-all"
+                      >
+                        See past speakers
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
             </motion.div>
           ) : (
             <motion.div
@@ -86,16 +94,14 @@ export default function SpeakersPageContent({ speakers, pastSpeakers }: Props) {
       </div>
 
       {/* Full grid — see every speaker without spinning */}
-      {tab === "past" && allPast.length > 0 && (
+      {!(tab === "2026" && !has2026) && gridList.length > 0 && (
         <div className="mt-40 md:mt-60">
           <div className="flex items-center gap-4 mb-10">
             <div className="h-px flex-1 bg-fbc-border/60" />
-            <p className="text-fbc-muted text-sm whitespace-nowrap">
-              All {allPast.length} past speakers
-            </p>
+            <p className="text-fbc-muted text-sm whitespace-nowrap">{gridLabel}</p>
             <div className="h-px flex-1 bg-fbc-border/60" />
           </div>
-          <SpeakerGrid speakers={allPast} />
+          <SpeakerGrid speakers={gridList} />
         </div>
       )}
     </div>

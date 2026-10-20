@@ -1,7 +1,8 @@
 import { google } from 'googleapis';
-import { resolvePastSpeakers } from '@/lib/speaker-photos';
+import { resolvePastSpeakers, resolveSpeakers2026 } from '@/lib/speaker-photos';
 import { resolveCommittee } from '@/lib/committee-photos';
 import { fallbackSpeakers, type Speaker } from '@/data/fallback-speakers';
+import { speakers2026 } from '@/data/speakers-2026';
 import { fallbackFriday, fallbackSaturday, type AgendaSession } from '@/data/fallback-agenda';
 import { fallbackCommittee, type CommitteeMember } from '@/data/fallback-committee';
 
@@ -73,24 +74,8 @@ async function fetchTabRows(candidates: string[], a1Range: string): Promise<stri
 }
 
 export async function getSpeakers(): Promise<Speaker[]> {
-  if (!hasSheetsCreds()) {
-    console.log('[sheets] getSpeakers: missing env vars, using fallback');
-    return fallbackSpeakers;
-  }
-  try {
-    const rows = await fetchTabRows(['Speakers', 'Speaker', '2026 Speakers'], 'A2:G100');
-    console.log('[sheets] getSpeakers: got', rows.length, 'rows');
-    if (rows.length === 0) return fallbackSpeakers;
-    return rows.map(([name, role, company, twitter, photo, bio, tags]) => ({
-      name: name || '',
-      role: role || '',
-      company: company || '',
-      twitter: twitter || undefined,
-      photo: convertDriveUrl(photo),
-      bio: bio || undefined,
-      tags: tags ? tags.split(',').map((t: string) => t.trim()) : [],
-    }));
-  } catch (e) { console.error('[sheets] getSpeakers error:', e); return fallbackSpeakers; }
+  // 2026 lineup — from src/data/speakers-2026.ts, photos from /public/speakers_2026.
+  return resolveSpeakers2026(speakers2026);
 }
 
 export async function getAgenda(day: 'Friday' | 'Saturday'): Promise<AgendaSession[]> {

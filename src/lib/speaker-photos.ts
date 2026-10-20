@@ -6,23 +6,22 @@ import type { Speaker } from "@/data/fallback-speakers";
 const IMG_RE = /^(?:(\d+)-)?(.+)\.(png|jpe?g|webp|avif|gif)$/i;
 
 /**
- * Match each speaker to an image file in /public/past_speakers.
+ * Match each speaker to an image file in /public/<folder>.
  *
  * Filenames:
  *   - are the person's name, lowercase-hyphenated  → `odinachi-david.jpg`
  *   - may use ANY common extension (.jpg/.png/.webp/…) — whichever you uploaded
  *   - may OPTIONALLY start with "N-" to pin display order, lower = earlier
  *       `1-odinachi-david.png`  → shown first
- *       `8-kudus-rufai.jpg`     → shown eighth
  *     Prefixed speakers sort ascending and come first; everyone else keeps their
  *     original list order after them. No prefix needed until you want to reorder.
  *
  * Missing photos are left undefined so the UI shows an initials avatar.
  */
-export function resolvePastSpeakers(speakers: Speaker[]): Speaker[] {
+export function resolveSpeakerPhotos(speakers: Speaker[], folder: string): Speaker[] {
   let files: string[] = [];
   try {
-    files = fs.readdirSync(path.join(process.cwd(), "public", "past_speakers"));
+    files = fs.readdirSync(path.join(process.cwd(), "public", folder));
   } catch {
     return speakers; // folder missing / unreadable — everyone falls back to initials
   }
@@ -42,7 +41,7 @@ export function resolvePastSpeakers(speakers: Speaker[]): Speaker[] {
     .map((s, idx) => {
       const hit = bySlug.get(slugify(s.name));
       return {
-        speaker: { ...s, photo: hit ? `/past_speakers/${hit.file}` : s.photo },
+        speaker: { ...s, photo: hit ? `/${folder}/${hit.file}` : s.photo },
         order: hit ? hit.order : Number.POSITIVE_INFINITY,
         idx,
       };
@@ -50,3 +49,9 @@ export function resolvePastSpeakers(speakers: Speaker[]): Speaker[] {
     .sort((a, b) => a.order - b.order || a.idx - b.idx)
     .map((w) => w.speaker);
 }
+
+/** Past-edition speakers resolve their photos from /public/past_speakers. */
+export const resolvePastSpeakers = (speakers: Speaker[]) => resolveSpeakerPhotos(speakers, "past_speakers");
+
+/** 2026 speakers resolve their photos from /public/speakers_2026. */
+export const resolveSpeakers2026 = (speakers: Speaker[]) => resolveSpeakerPhotos(speakers, "speakers_2026");

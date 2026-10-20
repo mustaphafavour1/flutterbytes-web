@@ -234,7 +234,8 @@ function SpeakerWheel({ speakers }: { speakers: Speaker[] }) {
 }
 
 export default function SpeakersPreview({ speakers, pastSpeakers }: Props) {
-  const [tab, setTab] = useState<"2026" | "past">("past");
+  const has2026 = speakers.length > 0;
+  const [tab, setTab] = useState<"2026" | "past">(has2026 ? "2026" : "past");
   const allPast = pastSpeakers.length > 0 ? pastSpeakers : speakers;
 
   return (
@@ -289,22 +290,28 @@ export default function SpeakersPreview({ speakers, pastSpeakers }: Props) {
               transition={{ duration: 0.2 }}
               className="w-full relative"
             >
-              {/* Wheel in background, dimmed */}
-              <div className="opacity-30 pointer-events-none select-none">
-                <SpeakerWheel speakers={allPast} />
-              </div>
-              {/* Coming-soon overlay */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-fbc-card/90 backdrop-blur-xl rounded-2xl px-8 py-8 text-center border border-fbc-border max-w-xs shadow-2xl">
-                  <div className="text-4xl mb-4">🚀</div>
-                  <h3 className="font-gigasans font-bold text-fbc-white text-xl mb-2">
-                    Speakers coming soon
-                  </h3>
-                  <p className="text-fbc-muted text-sm leading-relaxed">
-                    We&apos;re finalising an incredible lineup for the 5th edition. Stay tuned.
-                  </p>
-                </div>
-              </div>
+              {has2026 ? (
+                <SpeakerWheel speakers={speakers} />
+              ) : (
+                <>
+                  {/* Wheel in background, dimmed */}
+                  <div className="opacity-30 pointer-events-none select-none">
+                    <SpeakerWheel speakers={allPast} />
+                  </div>
+                  {/* Coming-soon overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="bg-fbc-card/90 backdrop-blur-xl rounded-2xl px-8 py-8 text-center border border-fbc-border max-w-xs shadow-2xl">
+                      <div className="text-4xl mb-4">🚀</div>
+                      <h3 className="font-gigasans font-bold text-fbc-white text-xl mb-2">
+                        Speakers coming soon
+                      </h3>
+                      <p className="text-fbc-muted text-sm leading-relaxed">
+                        We&apos;re finalising an incredible lineup for the 5th edition. Stay tuned.
+                      </p>
+                    </div>
+                  </div>
+                </>
+              )}
             </motion.div>
           ) : (
             <motion.div
