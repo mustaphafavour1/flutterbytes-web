@@ -2,9 +2,9 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Info, Loader2, Lock, Pencil, Ticket } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, CircleAlert, Info, Loader2, Lock, Pencil, Ticket } from "lucide-react";
 import {
-  CONTACT_EMAIL, HACKATHON_CLOSES, TICKETS_URL, hackathonPhase, prefilledFormUrl,
+  HACKATHON_CLOSES, TICKETS_URL, hackathonPhase, prefilledFormUrl,
   type HackathonEntry, type HackathonField,
 } from "@/data/hackathon";
 import { btnPrimary, GRADIENT_RING, GLASS_PANEL } from "../styles";
@@ -181,13 +181,15 @@ function Card({ children }: { children: React.ReactNode }) {
   );
 }
 
-function StateIcon({ children, tone = "blue" }: { children: React.ReactNode; tone?: "blue" | "emerald" }) {
+const ICON_TONES = {
+  blue: "border-fbc-blue/30 bg-fbc-blue/10 text-fbc-blue",
+  emerald: "border-emerald-500/30 bg-emerald-500/10 text-emerald-500",
+  amber: "border-amber-500/30 bg-amber-500/10 text-amber-500",
+};
+
+function StateIcon({ children, tone = "blue" }: { children: React.ReactNode; tone?: keyof typeof ICON_TONES }) {
   return (
-    <span
-      className={`mx-auto flex w-14 h-14 items-center justify-center rounded-full border ${
-        tone === "emerald" ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-500" : "border-fbc-blue/30 bg-fbc-blue/10 text-fbc-blue"
-      }`}
-    >
+    <span className={`mx-auto flex w-14 h-14 items-center justify-center rounded-full border ${ICON_TONES[tone]}`}>
       {children}
     </span>
   );
@@ -371,17 +373,15 @@ export default function ApplyForm({ serverNow }: { serverNow: number }) {
             <motion.div key="already" {...fade}>
               <Card>
                 <div className="text-center">
-                  <StateIcon tone="emerald"><Check size={26} strokeWidth={3} /></StateIcon>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-fbc-blue mt-6">One entry per builder</p>
-                  <h1 className="font-gigasans font-bold text-3xl sm:text-4xl text-fbc-white mt-2 mb-3">Submission already made</h1>
+                  <StateIcon tone="amber"><CircleAlert size={26} /></StateIcon>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-fbc-blue mt-6">One submission per person</p>
+                  <h1 className="font-gigasans font-bold text-3xl sm:text-4xl text-fbc-white text-balance mt-2 mb-3">You already submitted a project.</h1>
                   <p className="text-fbc-muted text-sm sm:text-base max-w-md mx-auto">
                     {alreadyBy === "email"
                       ? "An entry with this email is already in."
                       : alreadyBy === "projectId"
                       ? "An entry for this Serverpod project is already in."
-                      : "You've already sent an entry from this browser."}{" "}
-                    Need to change something? Email{" "}
-                    <a href={`mailto:${CONTACT_EMAIL}?subject=Hackathon%20entry`} className="text-fbc-blue hover:underline">{CONTACT_EMAIL}</a>.
+                      : "You've already sent an entry from this browser."}
                   </p>
                   <div className="mt-9 flex flex-wrap justify-center items-center gap-x-6 gap-y-3">
                     <a href={TICKETS_URL} target="_blank" rel="noopener noreferrer" className={btnPrimary}>

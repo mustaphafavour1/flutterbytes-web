@@ -3,7 +3,6 @@
  * dates and the submission form. All times are WAT (UTC+1).
  */
 export const TICKETS_URL = "https://www.harpen.in/flutterbytes-conference-2026";
-export const CONTACT_EMAIL = "contact.flutterbytes@gmail.com";
 
 /**
  * The Google Form behind the branded /hackathon/apply page. Entries are sent to
