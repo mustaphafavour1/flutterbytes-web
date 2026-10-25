@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Loader2, Lock, Pencil, Ticket } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Info, Loader2, Lock, Pencil, Ticket } from "lucide-react";
 import {
   CONTACT_EMAIL, HACKATHON_CLOSES, TICKETS_URL, hackathonPhase, prefilledFormUrl,
   type HackathonEntry, type HackathonField,
@@ -115,7 +115,7 @@ function FormField({
       <label htmlFor={id} className="block text-sm font-semibold text-fbc-white">
         {f.label} <span className="text-fbc-blue" aria-hidden="true">*</span>
       </label>
-      {f.hint && <p id={`${id}-hint`} className="text-xs text-fbc-muted mt-0.5">{f.hint}</p>}
+      {/* hint sits under the input so side-by-side inputs always line up */}
       <div className="mt-2">
         {f.multiline ? (
           <textarea {...shared} rows={5} className={`${cls} resize-y min-h-[132px] leading-relaxed`} />
@@ -130,6 +130,7 @@ function FormField({
           />
         )}
       </div>
+      {f.hint && <p id={`${id}-hint`} className="text-xs text-fbc-muted mt-1.5">{f.hint}</p>}
       <AnimatePresence initial={false}>
         {error && (
           <motion.p
@@ -307,7 +308,7 @@ export default function ApplyForm({ serverNow }: { serverNow: number }) {
                 Submit your <span className="text-fbc-blue">build.</span>
               </h1>
               <p className="text-fbc-muted text-sm sm:text-base mb-10">
-                One entry per builder. Closes Fri, Oct 30 · 11:59pm WAT.
+                One submission per person. Closes Fri, Oct 30 · 11:59pm WAT.
               </p>
 
               <div className="relative">
@@ -325,6 +326,10 @@ export default function ApplyForm({ serverNow }: { serverNow: number }) {
                     </div>
 
                     <div className="flex flex-col items-center gap-3 pt-2">
+                      <p className="flex items-center gap-2 rounded-full border border-fbc-border/70 bg-fbc-navy/40 px-4 py-2 text-xs text-fbc-muted text-center">
+                        <Info size={14} className="text-fbc-blue flex-shrink-0" />
+                        You can only submit once, so check your details first.
+                      </p>
                       <button type="submit" disabled={sending} className={`${btnPrimary} disabled:opacity-70`}>
                         {sending ? (
                           <><Loader2 size={17} className="animate-spin" /> Submitting</>

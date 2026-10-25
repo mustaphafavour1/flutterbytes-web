@@ -174,21 +174,6 @@ export async function getGalleryPhotos(): Promise<string[][]> {
 }
 
 /**
- * Hackathon entries so far: the Google Form's responses, linked into this
- * spreadsheet as a "Hackathon Submissions" tab (header row first).
- * Returns null when they can't be read, so callers can carry on without them.
- */
-export async function getHackathonSubmissionRows(): Promise<string[][] | null> {
-  if (!hasSheetsCreds()) return null;
-  try {
-    return await fetchTabRows(['Hackathon Submissions', 'Hackathon'], 'A1:Z');
-  } catch (e) {
-    console.warn('[sheets] hackathon submissions unavailable:', (e as Error).message);
-    return null;
-  }
-}
-
-/**
  * Live diagnostics for the /api/debug/sheets route. Never throws — returns a
  * plain object describing exactly what the server sees, with no secrets leaked.
  */
