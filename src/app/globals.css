@@ -41,7 +41,7 @@ html.light {
 
 /* Dark-mode defaults for the above vars */
 :root {
-  --code-text-color: rgba(56,189,248,0.065);
+  --code-text-color: rgba(56,189,248,0.15);
   --stat-chip-shadow: 0 4px 24px rgba(0,0,0,0.4);
 }
 

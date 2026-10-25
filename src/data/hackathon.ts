@@ -2,7 +2,8 @@
  * FlutterBytes × Serverpod Hackathon — single source of truth for links and
  * dates. All times are WAT (UTC+1).
  */
-export const HACKATHON_APPLY_URL = "https://bit.ly/FBChackathon2026";
+export const HACKATHON_APPLY_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSd9lGTKMS_lQwqlfWnAntWo-n3Kt0XGV0uX8_z6yK1kaYNpUA/viewform";
 export const TICKETS_URL = "https://www.harpen.in/flutterbytes-conference-2026";
 
 export const HACKATHON_OPENS = Date.parse("2026-10-23T00:00:00+01:00");

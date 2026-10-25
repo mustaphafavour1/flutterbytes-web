@@ -7,7 +7,7 @@ import HackathonContent from "./HackathonContent";
 export const revalidate = 60;
 
 export const metadata = {
-  title: "FlutterBytes × Serverpod Hackathon — FBC 2026",
+  title: "FlutterBytes × Serverpod Hackathon 2026",
   description:
     "A one-week solo hackathon by FlutterBytes and Serverpod. Build on Serverpod, deploy to Serverpod Cloud, and win up to $400. Applications close October 30, 11:59pm WAT.",
 };
