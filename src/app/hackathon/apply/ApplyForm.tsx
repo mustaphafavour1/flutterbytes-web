@@ -212,7 +212,6 @@ export default function ApplyForm({ serverNow }: { serverNow: number }) {
   const [touched, setTouched] = useState<Partial<Record<HackathonField, boolean>>>({});
   const [attempted, setAttempted] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "fallback" | "already">("idle");
-  const [alreadyBy, setAlreadyBy] = useState<"email" | "projectId" | "browser">("browser");
   const [fallbackUrl, setFallbackUrl] = useState("");
   const [trap, setTrap] = useState(""); // honeypot: real people never see or fill it
   const formRef = useRef<HTMLFormElement>(null);
@@ -256,7 +255,7 @@ export default function ApplyForm({ serverNow }: { serverNow: number }) {
 
     const entry = clean(values);
     setStatus("sending");
-    let result: { ok?: boolean; reason?: string; field?: "email" | "projectId" } = {};
+    let result: { ok?: boolean; reason?: string } = {};
     try {
       const res = await fetch("/api/hackathon/submit", {
         method: "POST",
@@ -269,7 +268,6 @@ export default function ApplyForm({ serverNow }: { serverNow: number }) {
     }
 
     if (result.reason === "duplicate") {
-      setAlreadyBy(result.field ?? "email");
       setStatus("already");
     } else if (result.ok) {
       try {
@@ -374,15 +372,8 @@ export default function ApplyForm({ serverNow }: { serverNow: number }) {
               <Card>
                 <div className="text-center">
                   <StateIcon tone="amber"><CircleAlert size={26} /></StateIcon>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-fbc-blue mt-6">One submission per person</p>
-                  <h1 className="font-gigasans font-bold text-3xl sm:text-4xl text-fbc-white text-balance mt-2 mb-3">You already submitted a project.</h1>
-                  <p className="text-fbc-muted text-sm sm:text-base max-w-md mx-auto">
-                    {alreadyBy === "email"
-                      ? "An entry with this email is already in."
-                      : alreadyBy === "projectId"
-                      ? "An entry for this Serverpod project is already in."
-                      : "You've already sent an entry from this browser."}
-                  </p>
+                  <h1 className="font-gigasans font-bold text-3xl sm:text-4xl text-fbc-white text-balance mt-6 mb-3">You already submitted a project.</h1>
+                  <p className="text-fbc-muted text-sm sm:text-base max-w-md mx-auto">Only one entry per person is allowed.</p>
                   <div className="mt-9 flex flex-wrap justify-center items-center gap-x-6 gap-y-3">
                     <a href={TICKETS_URL} target="_blank" rel="noopener noreferrer" className={btnPrimary}>
                       <Ticket size={17} /> Get tickets
