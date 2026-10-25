@@ -41,7 +41,7 @@ html.light {
 
 /* Dark-mode defaults for the above vars */
 :root {
-  --code-text-color: rgba(56,189,248,0.15);
+  --code-text-color: rgba(56,189,248,0.105);
   --stat-chip-shadow: 0 4px 24px rgba(0,0,0,0.4);
 }
 
@@ -134,6 +134,33 @@ html.light .sec-bg-3 { background-image: url('/backgrounds/bg3-light.jpg'); }
 /* Plain section backgrounds: soft white->white gradient (light) / deep navy (dark) */
 .sec-plain { background-color: #010F20; }
 html.light .sec-plain { background: linear-gradient(180deg, #F5FCFF 0%, #FFFFFF 100%); }
+
+/* Gradient border ring (border area only, transparent inside).
+   Set --ring-w (thickness), --ring-bg (gradient) and --ring-opacity on the element.
+   The element needs its own positioning (relative/absolute) from its classes. */
+.grad-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--ring-w, 1px);
+  background: var(--ring-bg, rgb(var(--color-border)));
+  opacity: var(--ring-opacity, 1);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Hairline borders: 0.2px idle → 0.7px when the parent .group is hovered.
+   Drawn as an anti-aliased box-shadow ring so sub-pixel widths stay visible. */
+.hairline {
+  box-shadow: 0 0 0 0.2px var(--hl, rgb(var(--color-muted) / 0.9)), var(--hl-extra, 0 0 #0000);
+  transition: box-shadow 0.3s ease;
+}
+.group:hover .hairline {
+  box-shadow: 0 0 0 0.7px var(--hl, rgb(var(--color-muted) / 0.9)), var(--hl-extra, 0 0 #0000);
+}
 
 /* Hide scrollbar utility */
 .scrollbar-hide {

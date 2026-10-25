@@ -2,15 +2,17 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { ArrowDown, ArrowRight, ArrowUpRight, Check, Ticket, Trophy, X } from "lucide-react";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import {
   HACKATHON_APPLY_URL, TICKETS_URL, HACKATHON_OPENS, HACKATHON_CLOSES,
-  WINNERS_START, WINNERS_END, hackathonPhase, type HackathonPhase,
+  WINNERS_START, WINNERS_END, hackathonPhase, isExternalUrl, type HackathonPhase,
 } from "@/data/hackathon";
+import { btnPrimary, GRADIENT_RING, GLASS_PANEL } from "./styles";
 
 const DAY = 86_400_000;
+const CYCLE_MS = 3200; // eligibility auto-cycle interval
 
 /* ─────────────────────────── content ─────────────────────────── */
 
@@ -70,11 +72,11 @@ const TERMINAL: Record<HackathonPhase, { title: string; lines: Line[] }> = {
 };
 
 const STAGES = [
-  { key: "open",  label: "Hackathon opens",    date: "Oct 23",               start: HACKATHON_OPENS,  end: HACKATHON_OPENS },
-  { key: "build", label: "Build & deploy",     date: "Oct 23–30",            start: HACKATHON_OPENS,  end: HACKATHON_CLOSES },
-  { key: "close", label: "Applications close", date: "Oct 30, 11:59pm WAT",  start: HACKATHON_CLOSES, end: HACKATHON_CLOSES },
-  { key: "judge", label: "Judging",            date: "Oct 30–Nov 6",         start: HACKATHON_CLOSES, end: WINNERS_START },
-  { key: "crown", label: "Winners at FBC",     date: "Nov 6–7",              start: WINNERS_START,    end: WINNERS_END },
+  { key: "open",  label: "Hackathon opens",    date: "Oct 23",              start: HACKATHON_OPENS,  end: HACKATHON_OPENS },
+  { key: "build", label: "Build & deploy",     date: "Oct 23–30",           start: HACKATHON_OPENS,  end: HACKATHON_CLOSES },
+  { key: "close", label: "Applications close", date: "Oct 30, 11:59pm WAT", start: HACKATHON_CLOSES, end: HACKATHON_CLOSES },
+  { key: "judge", label: "Judging",            date: "Oct 30–Nov 6",        start: HACKATHON_CLOSES, end: WINNERS_START },
+  { key: "crown", label: "Winners at FBC",     date: "Nov 6–7",             start: WINNERS_START,    end: WINNERS_END },
 ];
 
 type StageStatus = "done" | "live" | "next";
@@ -82,11 +84,11 @@ const stageStatus = (s: (typeof STAGES)[number], now: number): StageStatus =>
   now >= s.end ? "done" : now >= s.start ? "live" : "next";
 
 const RULES = [
-  { emoji: "🧑‍💻", title: "Solo builds",        sub: "Individuals only",    detail: "Each entry comes from one person.",                         label: "Teams",       value: "Not allowed" },
-  { emoji: "⚙️",   title: "Built on Serverpod", sub: "Backend framework",   detail: "Your product runs on a Serverpod backend.",                 label: "Must use",    value: "Serverpod" },
-  { emoji: "☁️",   title: "Live on the cloud",  sub: "Serverpod Cloud",     detail: "Your product is deployed and running on Serverpod Cloud.",  label: "Verified by", value: "The Serverpod team" },
+  { emoji: "🧑‍💻", title: "Solo builds",        sub: "Individuals only",    detail: "Each entry comes from one person.",                          label: "Teams",       value: "Not allowed" },
+  { emoji: "⚙️",   title: "Built on Serverpod", sub: "Backend framework",   detail: "Your product runs on a Serverpod backend.",                  label: "Must use",    value: "Serverpod" },
+  { emoji: "☁️",   title: "Live on the cloud",  sub: "Serverpod Cloud",     detail: "Your product is deployed and running on Serverpod Cloud.",   label: "Verified by", value: "The Serverpod team" },
   { emoji: "🔒",   title: "Closed source",      sub: "Code stays private",  detail: "Keep your code private and keep ownership of your product.", label: "Ownership",   value: "Stays with you" },
-  { emoji: "🛠️",   title: "Keep building",      sub: "After the hackathon", detail: "Your product is yours to keep shipping.",                   label: "Roadmap",     value: "Yours to decide" },
+  { emoji: "🛠️",   title: "Keep building",      sub: "After the hackathon", detail: "Your product is yours to keep shipping.",                    label: "Roadmap",     value: "Yours to decide" },
 ];
 
 const SUBMIT_ITEMS: [string, string][] = [
@@ -108,8 +110,29 @@ const PRIZES = [
   { place: "3rd", total: "$100", cash: "$50",  credits: "$50",  color: "#B87333", podium: "sm:h-24", order: "order-3",            featured: false },
 ];
 
-const btnPrimary =
-  "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-gigasans font-semibold text-white bg-fbc-blue hover:bg-fbc-glow transition-all shadow-[0_0_24px_rgba(42,157,244,0.45)]";
+/* ─────────────────────────── styles & motion ─────────────────────────── */
+
+/** Eligibility card: fill and 1px border both fade in from 0% (top) to 100% (bottom). */
+const RULE_CARD = {
+  "--ring-w": "1px",
+  "--ring-bg": "linear-gradient(to bottom, rgb(var(--color-border) / 0), rgb(var(--color-border) / 1))",
+  background: "linear-gradient(to bottom, rgb(var(--color-card) / 0), rgb(var(--color-card) / 1))",
+} as React.CSSProperties;
+
+const stagger = (gap: number): Variants => ({
+  hidden: {},
+  show: { transition: { staggerChildren: gap, delayChildren: 0.05 } },
+});
+
+const rise: Variants = {
+  hidden: { opacity: 0, y: 48, filter: "blur(10px)" },
+  show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { type: "spring", stiffness: 110, damping: 20, mass: 0.9 } },
+};
+
+const grow: Variants = {
+  hidden: { scaleY: 0, opacity: 0 },
+  show: { scaleY: 1, opacity: 1, transition: { type: "spring", stiffness: 90, damping: 18, delay: 0.2 } },
+};
 
 /* ─────────────────────────── pieces ─────────────────────────── */
 
@@ -118,6 +141,15 @@ function Eyebrow({ children, center = false }: { children: React.ReactNode; cent
     <p className={`font-mono text-[11px] uppercase tracking-[0.2em] text-fbc-blue mb-3 ${center ? "text-center" : ""}`}>
       {children}
     </p>
+  );
+}
+
+/** "Apply now" target: the on-site form when ready, else the Google Form (new tab). */
+function ApplyLink({ className, children }: { className: string; children: React.ReactNode }) {
+  return isExternalUrl(HACKATHON_APPLY_URL) ? (
+    <a href={HACKATHON_APPLY_URL} target="_blank" rel="noopener noreferrer" className={className}>{children}</a>
+  ) : (
+    <Link href={HACKATHON_APPLY_URL} className={className}>{children}</Link>
   );
 }
 
@@ -163,41 +195,71 @@ function Terminal({ title, lines }: { title: string; lines: Line[] }) {
     comment: { sym: "#", cls: "text-fbc-muted/60" },
   };
   return (
-    <div className="rounded-2xl overflow-hidden border border-fbc-border shadow-2xl" style={{ background: "rgb(var(--color-card) / 0.97)" }}>
-      <div className="flex items-center gap-1.5 px-4 py-3 border-b border-fbc-border" style={{ background: "rgb(var(--color-navy) / 0.95)" }}>
-        <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-        <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-        <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-        <span className="ml-3 font-mono text-[11px] text-fbc-muted/70">{title}</span>
+    <div className="grad-ring relative rounded-[28px] p-3 shadow-2xl" style={GRADIENT_RING}>
+      <div className="rounded-2xl overflow-hidden" style={GLASS_PANEL}>
+        <div className="flex items-center gap-1.5 px-4 py-3.5 border-b border-fbc-border/60" style={{ background: "rgb(var(--color-navy) / 0.35)" }}>
+          <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+          <span className="ml-3 font-mono text-[11px] text-fbc-muted/70">{title}</span>
+        </div>
+        <div className="px-5 sm:px-6 pt-7 pb-8 min-h-[284px] font-mono text-[12px] sm:text-[13px] leading-8">
+          {lines.map((l, i) => {
+            const m = mark[l.kind];
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + i * 0.35, duration: 0.3 }}
+                className={`flex gap-2 whitespace-pre-wrap break-words ${l.kind === "cmd" ? "" : "pl-4"}`}
+              >
+                <span className={`${m.cls} flex-shrink-0`}>{m.sym}</span>
+                <span className={l.kind === "cmd" ? "text-fbc-white" : l.kind === "comment" ? "text-fbc-muted/60 italic" : "text-fbc-muted"}>
+                  {l.text}
+                </span>
+              </motion.div>
+            );
+          })}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 + lines.length * 0.35 }}
+            className="flex items-center gap-2"
+          >
+            <span className="text-fbc-blue">❯</span>
+            <span className="inline-block w-2 h-4 bg-fbc-blue animate-cursor-blink" />
+          </motion.div>
+        </div>
       </div>
-      <div className="px-5 sm:px-6 pt-5 pb-12 font-mono text-[12px] sm:text-[13px] leading-7">
-        {lines.map((l, i) => {
-          const m = mark[l.kind];
-          return (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + i * 0.35, duration: 0.3 }}
-              className={`flex gap-2 whitespace-pre-wrap break-words ${l.kind === "cmd" ? "" : "pl-4"}`}
-            >
-              <span className={`${m.cls} flex-shrink-0`}>{m.sym}</span>
-              <span className={l.kind === "cmd" ? "text-fbc-white" : l.kind === "comment" ? "text-fbc-muted/60 italic" : "text-fbc-muted"}>
-                {l.text}
-              </span>
-            </motion.div>
-          );
-        })}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 + lines.length * 0.35 }}
-          className="flex items-center gap-2"
-        >
-          <span className="text-fbc-blue">❯</span>
-          <span className="inline-block w-2 h-4 bg-fbc-blue animate-cursor-blink" />
-        </motion.div>
-      </div>
+    </div>
+  );
+}
+
+/** FBC × Serverpod sticker: white in light mode, dark in dark mode. */
+function CoBrandSticker() {
+  const spLogo = {
+    width: 104,
+    height: 77,
+    className: "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-none",
+  };
+  return (
+    <div className="absolute -top-5 right-3 sm:-right-3 z-20 flex items-center gap-2 rounded-full bg-white dark:bg-fbc-card border border-slate-200 dark:border-fbc-border pl-3.5 pr-2 h-10 shadow-xl">
+      <Image src="/logo-light.png" alt="FlutterBytes" width={654} height={129} className="h-5 w-auto dark:hidden" priority />
+      <Image src="/logo-dark.png" alt="FlutterBytes" width={654} height={129} className="h-5 w-auto hidden dark:block" priority />
+      <span className="font-mono text-[10px] text-slate-400 dark:text-fbc-muted">×</span>
+
+      {/* light mode: logo as-is */}
+      <span className="relative block h-6 w-[84px] overflow-hidden dark:hidden">
+        <Image src="/sponsors/serverpod.png" alt="Serverpod" {...spLogo} style={{ width: 104, height: 77 }} priority />
+      </span>
+      {/* dark mode: same logo; blue mark untouched, black wordmark turned white */}
+      <span className="relative hidden dark:block h-6 w-[84px] overflow-hidden">
+        <Image src="/sponsors/serverpod.png" alt="" aria-hidden="true" {...spLogo}
+          style={{ width: 104, height: 77, clipPath: "inset(0 73% 0 0)" }} priority />
+        <Image src="/sponsors/serverpod.png" alt="Serverpod" {...spLogo}
+          style={{ width: 104, height: 77, clipPath: "inset(0 0 0 27%)", filter: "brightness(0) invert(1)" }} priority />
+      </span>
     </div>
   );
 }
@@ -228,9 +290,9 @@ function StageNode({ status, index }: { status: StageStatus; index: number }) {
 function PrimaryCta({ phase }: { phase: HackathonPhase }) {
   if (phase === "open") {
     return (
-      <a href={HACKATHON_APPLY_URL} target="_blank" rel="noopener noreferrer" className={btnPrimary}>
+      <ApplyLink className={btnPrimary}>
         Apply now <ArrowUpRight size={17} />
-      </a>
+      </ApplyLink>
     );
   }
   if (phase === "closed") {
@@ -247,7 +309,7 @@ function PrimaryCta({ phase }: { phase: HackathonPhase }) {
   );
 }
 
-/* Eligibility rule: base column + the expanded card shown when active */
+/* Eligibility rule: base column + the lifted card shown when active */
 function RuleBase({ r }: { r: (typeof RULES)[number] }) {
   return (
     <>
@@ -277,7 +339,7 @@ function RulesRow() {
   // Auto-cycle the highlighted rule until the visitor hovers one.
   useEffect(() => {
     if (hovering) return;
-    const id = setInterval(() => setActive((a) => (a + 1) % RULES.length), 3200);
+    const id = setInterval(() => setActive((a) => (a + 1) % RULES.length), CYCLE_MS);
     return () => clearInterval(id);
   }, [hovering]);
 
@@ -292,7 +354,10 @@ function RulesRow() {
           className="relative px-6 py-8"
           onMouseEnter={() => { setHovering(true); setActive(i); }}
         >
-          <RuleBase r={r} />
+          {/* base content hides on desktop while its lifted card is showing */}
+          <div className={`transition-opacity duration-300 ${active === i ? "lg:opacity-0" : ""}`}>
+            <RuleBase r={r} />
+          </div>
           {/* phones/tablets: details inline */}
           <div className="lg:hidden mt-5"><RuleDetail r={r} /></div>
 
@@ -302,13 +367,25 @@ function RulesRow() {
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 8 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="hidden lg:block absolute inset-x-0 top-0 z-20 rounded-xl border border-fbc-border bg-fbc-card px-6 pt-8 pb-7 shadow-2xl"
+                exit={{ opacity: 0, y: 0 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="grad-ring hidden lg:block absolute inset-x-0 top-0 z-20 rounded-xl overflow-hidden px-6 pt-8 pb-7"
+                style={RULE_CARD}
               >
                 <RuleBase r={r} />
                 <div className="mt-5"><RuleDetail r={r} /></div>
-                <span className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-fbc-blue to-transparent" aria-hidden="true" />
+
+                {/* tiny progress line while auto-cycling: shows when it moves to the next rule */}
+                {!hovering && (
+                  <span className="absolute bottom-0 inset-x-0 h-[2px] bg-fbc-border/40" aria-hidden="true">
+                    <motion.span
+                      className="block h-full bg-fbc-blue origin-left"
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ duration: CYCLE_MS / 1000, ease: "linear" }}
+                    />
+                  </span>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
@@ -356,17 +433,14 @@ export default function HackathonContent({ serverNow }: { serverNow: number }) {
       ? { label: "Winners in", target: WINNERS_START }
       : null;
 
-  const pill =
-    phase === "open"
-      ? { href: HACKATHON_APPLY_URL, label: "Apply as a solo builder", external: true }
-      : phase === "closed"
-      ? { href: TICKETS_URL, label: "Get tickets to see the winners", external: true }
-      : { href: "/", label: "Explore FlutterBytes 2026", external: false };
+  const pillClass =
+    "group inline-flex items-center gap-3 rounded-full border border-fbc-border bg-fbc-card/50 backdrop-blur px-7 py-4 text-sm sm:text-base text-fbc-white hover:border-fbc-blue/60 transition-all";
+  const pillArrow = <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />;
 
   return (
     <>
-      {/* ───────── HERO ───────── */}
-      <section className="relative overflow-hidden sec-plain pt-28 sm:pt-32 pb-20 sm:pb-28">
+      {/* ───────── HERO (vertically centred) ───────── */}
+      <section className="relative overflow-hidden sec-plain min-h-[100svh] flex items-center pt-24 pb-16 sm:pb-20">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -377,7 +451,7 @@ export default function HackathonContent({ serverNow }: { serverNow: number }) {
         />
         <div className="absolute -top-24 right-0 w-[30rem] h-[30rem] rounded-full bg-fbc-blue/15 blur-[120px] pointer-events-none" aria-hidden="true" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-14 items-center">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-14 items-center">
           {/* Left: message */}
           <div>
             <div className="inline-flex items-center gap-1.5 rounded-full border border-fbc-border/70 px-2.5 py-1 mb-6">
@@ -417,42 +491,15 @@ export default function HackathonContent({ serverNow }: { serverNow: number }) {
             )}
           </div>
 
-          {/* Right: terminal + stickers + countdown */}
-          <div>
+          {/* Right: glass terminal + co-brand sticker + countdown */}
+          <div className="relative w-full lg:w-[85%] mx-auto">
+            <div className="absolute -inset-8 rounded-[48px] bg-gradient-to-br from-fbc-blue/30 via-fbc-sky/15 to-transparent blur-3xl pointer-events-none" aria-hidden="true" />
             <div className="relative">
-              {/* FBC × Serverpod sticker, top-right */}
-              <div className="absolute -top-5 right-3 sm:-right-3 z-20 flex items-center gap-2 rounded-full bg-white border border-slate-200 pl-3.5 pr-2 h-10 shadow-xl">
-                <Image src="/logo-light.png" alt="FlutterBytes" width={654} height={129} className="h-5 w-auto" priority />
-                <span className="font-mono text-[10px] text-slate-400">×</span>
-                <span className="relative block h-6 w-[84px] overflow-hidden">
-                  <Image
-                    src="/sponsors/serverpod.png"
-                    alt="Serverpod"
-                    width={104}
-                    height={77}
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-none"
-                    style={{ width: 104, height: 77 }}
-                    priority
-                  />
-                </span>
-              </div>
-
+              <CoBrandSticker />
               <Terminal key={phase} title={term.title} lines={term.lines} />
-
-              {/* $700 sticker, bottom-left */}
-              <div className="absolute -bottom-5 left-3 sm:-left-3 z-20 flex items-center gap-2.5 rounded-2xl border border-fbc-border bg-fbc-card px-4 py-2.5 shadow-xl animate-float">
-                <span className="flex w-8 h-8 items-center justify-center rounded-xl bg-[#E5C07B]/15">
-                  <Trophy size={16} style={{ color: "#E5C07B" }} />
-                </span>
-                <div>
-                  <p className="font-gigasans font-bold text-fbc-white leading-tight">$700</p>
-                  <p className="text-fbc-muted text-[10px]">in prizes</p>
-                </div>
-              </div>
             </div>
-
             {countdown && (
-              <div className="mt-11 flex justify-end">
+              <div className="relative mt-6 flex justify-end">
                 <Countdown target={countdown.target} serverNow={serverNow} offset={offset} label={countdown.label} />
               </div>
             )}
@@ -526,14 +573,15 @@ export default function HackathonContent({ serverNow }: { serverNow: number }) {
           </AnimateOnScroll>
 
           <div className="flex justify-center mt-12 lg:mt-48">
-            <a
-              href={pill.href}
-              {...(pill.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className="group inline-flex items-center gap-3 rounded-full border border-fbc-border bg-fbc-card/50 backdrop-blur px-7 py-4 text-sm sm:text-base text-fbc-white hover:border-fbc-blue/60 transition-all"
-            >
-              {pill.label}
-              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-            </a>
+            {phase === "open" ? (
+              <ApplyLink className={pillClass}>Apply now {pillArrow}</ApplyLink>
+            ) : phase === "closed" ? (
+              <a href={TICKETS_URL} target="_blank" rel="noopener noreferrer" className={pillClass}>
+                Get tickets to see the winners {pillArrow}
+              </a>
+            ) : (
+              <Link href="/" className={pillClass}>Explore FlutterBytes 2026 {pillArrow}</Link>
+            )}
           </div>
         </div>
       </section>
@@ -548,67 +596,67 @@ export default function HackathonContent({ serverNow }: { serverNow: number }) {
             </div>
           </AnimateOnScroll>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <motion.div
+            variants={stagger(0.2)}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-80px" }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-4"
+          >
             {/* 01 Submit */}
-            <AnimateOnScroll>
-              <div className="relative h-full overflow-hidden rounded-3xl border border-fbc-border bg-fbc-card/90 backdrop-blur p-7">
-                <span className="absolute right-6 top-5 font-gigasans font-black text-6xl leading-none text-fbc-blue/15 select-none" aria-hidden="true">01</span>
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-fbc-blue">By Oct 30</p>
-                <h3 className="font-gigasans font-bold text-2xl text-fbc-white mt-2 mb-5">Submit</h3>
-                <ul className="space-y-3">
-                  {SUBMIT_ITEMS.map(([a, b]) => (
-                    <li key={a} className="flex gap-2.5">
-                      <Check size={15} className="text-emerald-500 mt-0.5 flex-shrink-0" strokeWidth={3} />
-                      <div>
-                        <p className="text-sm text-fbc-white leading-tight">{a}</p>
-                        <p className="text-xs text-fbc-muted mt-0.5">{b}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </AnimateOnScroll>
+            <motion.div variants={rise} className="relative h-full overflow-hidden rounded-3xl border border-fbc-border p-7">
+              <span className="absolute right-6 top-5 font-gigasans font-black text-6xl leading-none text-fbc-blue/15 select-none" aria-hidden="true">01</span>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-fbc-blue">By Oct 30</p>
+              <h3 className="font-gigasans font-bold text-2xl text-fbc-white mt-2 mb-5">Submit</h3>
+              <ul className="space-y-3">
+                {SUBMIT_ITEMS.map(([a, b]) => (
+                  <li key={a} className="flex gap-2.5">
+                    <Check size={15} className="text-emerald-500 mt-0.5 flex-shrink-0" strokeWidth={3} />
+                    <div>
+                      <p className="text-sm text-fbc-white leading-tight">{a}</p>
+                      <p className="text-xs text-fbc-muted mt-0.5">{b}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
 
             {/* 02 Verify */}
-            <AnimateOnScroll delay={0.08}>
-              <div className="relative h-full overflow-hidden rounded-3xl border border-fbc-border bg-fbc-card/90 backdrop-blur p-7">
-                <span className="absolute right-6 top-5 font-gigasans font-black text-6xl leading-none text-fbc-blue/15 select-none" aria-hidden="true">02</span>
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-fbc-blue">Pass or fail</p>
-                <h3 className="font-gigasans font-bold text-2xl text-fbc-white mt-2 mb-5">Verify</h3>
-                <p className="text-sm text-fbc-muted leading-relaxed">
-                  The Serverpod team checks that your project ID exists on Serverpod Cloud.
-                </p>
-                <div className="mt-6 flex flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-500">
-                    <Check size={12} strokeWidth={3} /> Pass: judged
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-fbc-border px-3 py-1 text-xs text-fbc-muted">
-                    <X size={12} strokeWidth={3} /> Fail: out
-                  </span>
-                </div>
+            <motion.div variants={rise} className="relative h-full overflow-hidden rounded-3xl border border-fbc-border p-7">
+              <span className="absolute right-6 top-5 font-gigasans font-black text-6xl leading-none text-fbc-blue/15 select-none" aria-hidden="true">02</span>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-fbc-blue">Pass or fail</p>
+              <h3 className="font-gigasans font-bold text-2xl text-fbc-white mt-2 mb-5">Verify</h3>
+              <p className="text-sm text-fbc-muted leading-relaxed">
+                The Serverpod team checks that your project ID exists on Serverpod Cloud.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-500">
+                  <Check size={12} strokeWidth={3} /> Pass: judged
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-fbc-border px-3 py-1 text-xs text-fbc-muted">
+                  <X size={12} strokeWidth={3} /> Fail: out
+                </span>
               </div>
-            </AnimateOnScroll>
+            </motion.div>
 
             {/* 03 Score */}
-            <AnimateOnScroll delay={0.16}>
-              <div className="relative h-full overflow-hidden rounded-3xl border border-fbc-border bg-fbc-card/90 backdrop-blur p-7">
-                <span className="absolute right-6 top-5 font-gigasans font-black text-6xl leading-none text-fbc-blue/15 select-none" aria-hidden="true">03</span>
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-fbc-blue">3 judges</p>
-                <h3 className="font-gigasans font-bold text-2xl text-fbc-white mt-2 mb-5">Score</h3>
-                <ul className="space-y-3">
-                  {CRITERIA.map(([a, b]) => (
-                    <li key={a} className="flex gap-2.5">
-                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-fbc-blue flex-shrink-0" />
-                      <div>
-                        <p className="text-sm text-fbc-white leading-tight">{a}</p>
-                        <p className="text-xs text-fbc-muted mt-0.5">{b}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </AnimateOnScroll>
-          </div>
+            <motion.div variants={rise} className="relative h-full overflow-hidden rounded-3xl border border-fbc-border p-7">
+              <span className="absolute right-6 top-5 font-gigasans font-black text-6xl leading-none text-fbc-blue/15 select-none" aria-hidden="true">03</span>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-fbc-blue">3 judges</p>
+              <h3 className="font-gigasans font-bold text-2xl text-fbc-white mt-2 mb-5">Score</h3>
+              <ul className="space-y-3">
+                {CRITERIA.map(([a, b]) => (
+                  <li key={a} className="flex gap-2.5">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-fbc-blue flex-shrink-0" />
+                    <div>
+                      <p className="text-sm text-fbc-white leading-tight">{a}</p>
+                      <p className="text-xs text-fbc-muted mt-0.5">{b}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
@@ -624,51 +672,61 @@ export default function HackathonContent({ serverNow }: { serverNow: number }) {
             </div>
           </AnimateOnScroll>
 
-          <AnimateOnScroll delay={0.1}>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
-              {PRIZES.map((p) => (
-                <div key={p.place} className={`flex flex-col ${p.order}`}>
-                  <div
-                    className={`rounded-3xl border bg-fbc-card p-6 text-center ${p.featured ? "shadow-[0_0_40px_rgba(229,192,123,0.25)]" : ""}`}
-                    style={{ borderColor: p.featured ? "rgba(229,192,123,0.6)" : undefined }}
+          {/* DOM order is 1st → 2nd → 3rd, so they reveal in that order (layout still puts 1st in the middle) */}
+          <motion.div
+            variants={stagger(0.25)}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-80px" }}
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end"
+          >
+            {PRIZES.map((p) => (
+              <motion.div key={p.place} variants={rise} className={`group flex flex-col ${p.order}`}>
+                <div
+                  className="hairline rounded-3xl bg-fbc-card p-6 text-center"
+                  style={
+                    p.featured
+                      ? ({ "--hl": "rgba(229,192,123,0.95)", "--hl-extra": "0 0 40px rgba(229,192,123,0.25)" } as React.CSSProperties)
+                      : undefined
+                  }
+                >
+                  <span
+                    className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-xs font-semibold uppercase tracking-widest mb-4"
+                    style={{ color: p.color, background: `${p.color}1f` }}
                   >
-                    <span
-                      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-xs font-semibold uppercase tracking-widest mb-4"
-                      style={{ color: p.color, background: `${p.color}1f` }}
-                    >
-                      {p.featured && <Trophy size={13} />}
-                      {p.place}
-                    </span>
-                    <p className="font-gigasans font-bold text-4xl sm:text-5xl text-fbc-white leading-none">{p.total}</p>
-                    <p className="text-fbc-muted text-xs mt-2 mb-5">total value</p>
-                    <div className="grid grid-cols-2 gap-2 text-left">
-                      <div className="rounded-xl border border-fbc-border bg-fbc-navy/40 px-3 py-2">
-                        <p className="text-fbc-muted text-[10px] uppercase tracking-wider">Cash</p>
-                        <p className="font-gigasans font-semibold text-fbc-white">{p.cash}</p>
-                      </div>
-                      <div className="rounded-xl border border-fbc-border bg-fbc-navy/40 px-3 py-2">
-                        <p className="text-fbc-muted text-[10px] uppercase tracking-wider">Cloud credits</p>
-                        <p className="font-gigasans font-semibold text-fbc-white">{p.credits}</p>
-                      </div>
+                    {p.featured && <Trophy size={13} />}
+                    {p.place}
+                  </span>
+                  <p className="font-gigasans font-bold text-4xl sm:text-5xl text-fbc-white leading-none">{p.total}</p>
+                  <p className="text-fbc-muted text-xs mt-2 mb-5">total value</p>
+                  <div className="grid grid-cols-2 gap-2 text-left">
+                    <div className="hairline rounded-xl bg-fbc-navy/40 px-3 py-2">
+                      <p className="text-fbc-muted text-[10px] uppercase tracking-wider">Cash</p>
+                      <p className="font-gigasans font-semibold text-fbc-white">{p.cash}</p>
+                    </div>
+                    <div className="hairline rounded-xl bg-fbc-navy/40 px-3 py-2">
+                      <p className="text-fbc-muted text-[10px] uppercase tracking-wider">Cloud credits</p>
+                      <p className="font-gigasans font-semibold text-fbc-white">{p.credits}</p>
                     </div>
                   </div>
-                  {/* podium block: faded, tilted 1st / 2nd / 3rd */}
-                  <div
-                    className={`hidden sm:flex relative mt-3 rounded-t-2xl border border-b-0 border-fbc-border items-center justify-center overflow-hidden ${p.podium}`}
-                    style={{ background: `linear-gradient(to bottom, ${p.color}26, transparent)` }}
-                    aria-hidden="true"
-                  >
-                    <span
-                      className="font-gigasans font-black text-7xl leading-none select-none opacity-20"
-                      style={{ color: p.color, transform: "rotate(-30deg)" }}
-                    >
-                      {p.place}
-                    </span>
-                  </div>
                 </div>
-              ))}
-            </div>
-          </AnimateOnScroll>
+                {/* podium block: faded, tilted 1st / 2nd / 3rd */}
+                <motion.div
+                  variants={grow}
+                  className={`hairline hidden sm:flex relative mt-3 rounded-t-2xl items-center justify-center overflow-hidden origin-bottom ${p.podium}`}
+                  style={{ background: `linear-gradient(to bottom, ${p.color}26, transparent)` }}
+                  aria-hidden="true"
+                >
+                  <span
+                    className="font-gigasans font-black text-7xl leading-none select-none opacity-20"
+                    style={{ color: p.color, transform: "rotate(-30deg)" }}
+                  >
+                    {p.place}
+                  </span>
+                </motion.div>
+              </motion.div>
+            ))}
+          </motion.div>
 
           <p className="text-center text-fbc-muted text-sm mt-8 max-w-xl mx-auto">
             Only the three winners get Serverpod credits; equal to their cash prizes
