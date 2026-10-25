@@ -5,13 +5,25 @@ import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import ThemeToggle from "./ThemeToggle";
+import { HACKATHON_CLOSES } from "@/data/hackathon";
 
 const navLinks = [
   { label: "Be a sponsor", href: "/#sponsors" },
   { label: "Event Agenda", href: "/agenda" },
   { label: "Speakers", href: "/speakers" },
+  { label: "Hackathon", href: "/hackathon" },
   { label: "About us", href: "/about" },
 ];
+
+/** Small pulsing dot shown next to "Hackathon" while applications are open. */
+function LiveDot() {
+  return (
+    <span className="relative inline-flex h-1.5 w-1.5 ml-1.5 align-middle" aria-hidden="true">
+      <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-ping" />
+      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+    </span>
+  );
+}
 
 function Logo() {
   const { resolvedTheme } = useTheme();
@@ -28,6 +40,10 @@ function Logo() {
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [hackathonLive, setHackathonLive] = useState(false);
+
+  // Checked client-side so the dot disappears on its own after the deadline.
+  useEffect(() => setHackathonLive(Date.now() <= HACKATHON_CLOSES), []);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 60);
@@ -59,6 +75,7 @@ export default function Navbar() {
                   className="rounded-full px-4 py-2 text-sm text-fbc-muted hover:text-fbc-white hover:bg-fbc-blue/20 transition-all duration-200 whitespace-nowrap"
                 >
                   {link.label}
+                  {link.href === "/hackathon" && hackathonLive && <LiveDot />}
                 </a>
               ))}
             </div>
@@ -119,6 +136,7 @@ export default function Navbar() {
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}
+                  {link.href === "/hackathon" && hackathonLive && <LiveDot />}
                 </motion.a>
               ))}
               <div className="pt-6 flex flex-col gap-3">
