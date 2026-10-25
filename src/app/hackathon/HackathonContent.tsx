@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence, type Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { ArrowDown, ArrowRight, ArrowUpRight, Check, Ticket, Trophy, X } from "lucide-react";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import {
@@ -13,6 +13,7 @@ import { btnPrimary, GRADIENT_RING, GLASS_PANEL } from "./styles";
 
 const DAY = 86_400_000;
 const CYCLE_MS = 3200; // eligibility auto-cycle interval
+const EASE_GENTLE = [0.4, 0, 0.2, 1] as const; // soft ease-in-out for the eligibility card expanding
 
 /* ─────────────────────────── content ─────────────────────────── */
 
@@ -95,7 +96,7 @@ const SUBMIT_ITEMS: [string, string][] = [
   ["Project ID", "From Serverpod Cloud"],
   ["Description", "The product + the problem it solves"],
   ["Live link", "To the running product"],
-  ["Demo video", "Short; required"],
+  ["Demo video", "Short; a Google Drive link"],
 ];
 
 const CRITERIA: [string, string][] = [
@@ -348,36 +349,31 @@ function RulesRow() {
       className="grid grid-cols-1 lg:grid-cols-5 border-b border-fbc-border/70 divide-y divide-fbc-border/70 lg:divide-y-0 lg:divide-x"
       onMouseLeave={() => setHovering(false)}
     >
-      {RULES.map((r, i) => (
-        <div
-          key={r.title}
-          className="relative px-6 py-8"
-          onMouseEnter={() => { setHovering(true); setActive(i); }}
-        >
-          {/* base content hides on desktop while its lifted card is showing */}
-          <div className={`transition-opacity duration-300 ${active === i ? "lg:opacity-0" : ""}`}>
-            <RuleBase r={r} />
-          </div>
-          {/* phones/tablets: details inline */}
-          <div className="lg:hidden mt-5"><RuleDetail r={r} /></div>
+      {RULES.map((r, i) => {
+        const on = active === i;
+        return (
+          <div
+            key={r.title}
+            className="relative px-6 py-8"
+            onMouseEnter={() => { setHovering(true); setActive(i); }}
+          >
+            {/* in-flow copy: the content on phones/tablets; on desktop an invisible spacer for the panel below */}
+            <div className="lg:invisible"><RuleBase r={r} /></div>
+            <div className="lg:hidden mt-5"><RuleDetail r={r} /></div>
 
-          {/* desktop: lifted card for the active rule */}
-          <AnimatePresence>
-            {active === i && (
+            {/* desktop: the title stays put while the card fades in and the details expand below it */}
+            <div className="hidden lg:block absolute inset-x-0 top-0 z-20 px-6 pt-8 pb-7">
               <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 0 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-                className="grad-ring hidden lg:block absolute inset-x-0 top-0 z-20 rounded-xl overflow-hidden px-6 pt-8 pb-7"
+                className="grad-ring absolute inset-0 rounded-xl overflow-hidden"
                 style={RULE_CARD}
+                initial={false}
+                animate={{ opacity: on ? 1 : 0 }}
+                transition={{ duration: 0.75, ease: EASE_GENTLE }}
+                aria-hidden="true"
               >
-                <RuleBase r={r} />
-                <div className="mt-5"><RuleDetail r={r} /></div>
-
                 {/* tiny progress line while auto-cycling: shows when it moves to the next rule */}
-                {!hovering && (
-                  <span className="absolute bottom-0 inset-x-0 h-[2px] bg-fbc-border/40" aria-hidden="true">
+                {on && !hovering && (
+                  <span className="absolute bottom-0 inset-x-0 h-[2px] bg-fbc-border/40">
                     <motion.span
                       className="block h-full bg-fbc-blue origin-left"
                       initial={{ scaleX: 0 }}
@@ -387,10 +383,24 @@ function RulesRow() {
                   </span>
                 )}
               </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      ))}
+              <div className="relative">
+                <RuleBase r={r} />
+                <motion.div
+                  className="overflow-hidden"
+                  initial={false}
+                  animate={{ height: on ? "auto" : 0, opacity: on ? 1 : 0 }}
+                  transition={{
+                    height: { duration: 0.75, ease: EASE_GENTLE },
+                    opacity: { duration: 0.55, ease: "easeOut", delay: on ? 0.2 : 0 },
+                  }}
+                >
+                  <div className="pt-5"><RuleDetail r={r} /></div>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -440,7 +450,7 @@ export default function HackathonContent({ serverNow }: { serverNow: number }) {
   return (
     <>
       {/* ───────── HERO (vertically centred) ───────── */}
-      <section className="relative overflow-hidden sec-plain min-h-[100svh] flex items-center pt-24 pb-16 sm:pb-20">
+      <section className="relative overflow-hidden sec-plain min-h-[94svh] flex items-center pt-24 pb-16 sm:pb-20">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -491,7 +501,9 @@ export default function HackathonContent({ serverNow }: { serverNow: number }) {
             )}
           </div>
 
-          {/* Right: glass terminal + co-brand sticker + countdown */}
+          {/* Right: glass terminal + co-brand sticker + countdown.
+              On desktop the countdown hangs below the snippet, out of the flow,
+              so the headline lines up with the snippet's centre only. */}
           <div className="relative w-full lg:w-[85%] mx-auto">
             <div className="absolute -inset-8 rounded-[48px] bg-gradient-to-br from-fbc-blue/30 via-fbc-sky/15 to-transparent blur-3xl pointer-events-none" aria-hidden="true" />
             <div className="relative">
@@ -499,7 +511,7 @@ export default function HackathonContent({ serverNow }: { serverNow: number }) {
               <Terminal key={phase} title={term.title} lines={term.lines} />
             </div>
             {countdown && (
-              <div className="relative mt-6 flex justify-end">
+              <div className="relative mt-6 flex justify-end lg:absolute lg:top-full lg:right-0">
                 <Countdown target={countdown.target} serverNow={serverNow} offset={offset} label={countdown.label} />
               </div>
             )}
@@ -686,7 +698,7 @@ export default function HackathonContent({ serverNow }: { serverNow: number }) {
                   className="hairline rounded-3xl bg-fbc-card p-6 text-center"
                   style={
                     p.featured
-                      ? ({ "--hl": "rgba(229,192,123,0.95)", "--hl-extra": "0 0 40px rgba(229,192,123,0.25)" } as React.CSSProperties)
+                      ? ({ "--hl": "rgba(229,192,123,0.95)", "--hl-extra": "0 0 40px rgba(229,192,123,0.1)" } as React.CSSProperties)
                       : undefined
                   }
                 >
@@ -710,15 +722,19 @@ export default function HackathonContent({ serverNow }: { serverNow: number }) {
                     </div>
                   </div>
                 </div>
-                {/* podium block: faded, tilted 1st / 2nd / 3rd */}
+                {/* podium block: fill and border both fade out towards the bottom; faded, tilted 1st / 2nd / 3rd */}
                 <motion.div
                   variants={grow}
-                  className={`hairline hidden sm:flex relative mt-3 rounded-t-2xl items-center justify-center overflow-hidden origin-bottom ${p.podium}`}
-                  style={{ background: `linear-gradient(to bottom, ${p.color}26, transparent)` }}
+                  className={`grad-ring hidden sm:flex relative mt-3 rounded-t-2xl items-center justify-center overflow-hidden origin-bottom ${p.podium}`}
+                  style={{
+                    background: `linear-gradient(to bottom, ${p.color}26, transparent)`,
+                    "--ring-w": "1px",
+                    "--ring-bg": `linear-gradient(to bottom, ${p.color}, transparent)`,
+                  } as React.CSSProperties}
                   aria-hidden="true"
                 >
                   <span
-                    className="font-gigasans font-black text-7xl leading-none select-none opacity-20"
+                    className="font-gigasans font-black text-7xl leading-none select-none opacity-[0.12]"
                     style={{ color: p.color, transform: "rotate(-30deg)" }}
                   >
                     {p.place}
