@@ -3,10 +3,11 @@
  * dates and the submission form. All times are WAT (UTC+1).
  */
 export const TICKETS_URL = "https://www.harpen.in/flutterbytes-conference-2026";
+export const CONTACT_EMAIL = "contact.flutterbytes@gmail.com";
 
 /**
- * The Google Form behind the branded /hackathon/apply page. Submissions are
- * POSTed silently to `formResponse` with these entry IDs.
+ * The Google Form behind the branded /hackathon/apply page. Entries are sent to
+ * it from the server (/api/hackathon/submit) using these entry IDs.
  */
 export const HACKATHON_FORM = {
   id: "1FAIpQLSd9lGTKMS_lQwqlfWnAntWo-n3Kt0XGV0uX8_z6yK1kaYNpUA",
@@ -17,28 +18,31 @@ export const HACKATHON_FORM = {
     projectId: "entry.73303985",
     projectInfo: "entry.507386588",
     projectLink: "entry.1301816772",
-    /**
-     * Entry ID of the "Short video" question once it is a SHORT ANSWER (video
-     * link) instead of a file upload. Leave empty until then: Google Forms can't
-     * accept file uploads from a website, and a form with a file-upload question
-     * forces Google sign-in, which rejects silent submissions.
-     */
-    videoLink: "",
+    videoLink: "entry.535272690",
   },
 };
+
+export type HackathonField = keyof typeof HACKATHON_FORM.entries;
+export type HackathonEntry = Record<HackathonField, string>;
 
 export const GOOGLE_FORM_VIEW_URL = `https://docs.google.com/forms/d/e/${HACKATHON_FORM.id}/viewform`;
 export const GOOGLE_FORM_POST_URL = `https://docs.google.com/forms/d/e/${HACKATHON_FORM.id}/formResponse`;
 
-/** True once the video question is a link field, so the whole entry can be sent silently. */
-export const SILENT_SUBMIT_READY = HACKATHON_FORM.entries.videoLink !== "";
+/** Every answer keyed by its Google Form entry ID. */
+export function entryParams(entry: HackathonEntry) {
+  const params = new URLSearchParams();
+  (Object.keys(HACKATHON_FORM.entries) as HackathonField[]).forEach((k) => {
+    if (entry[k]) params.append(HACKATHON_FORM.entries[k], entry[k]);
+  });
+  return params;
+}
 
-/**
- * Where "Apply now" buttons go: the branded on-site form once silent submission
- * is ready; until then, straight to the Google Form so no entry is ever lost.
- */
-export const HACKATHON_APPLY_URL = SILENT_SUBMIT_READY ? "/hackathon/apply" : GOOGLE_FORM_VIEW_URL;
-export const isExternalUrl = (url: string) => /^https?:\/\//.test(url);
+/** The Google Form with every answer already filled in (fallback if a silent submit is refused). */
+export const prefilledFormUrl = (entry: HackathonEntry) =>
+  `${GOOGLE_FORM_VIEW_URL}?usp=pp_url&${entryParams(entry).toString()}`;
+
+/** Where every "Apply now" button goes. */
+export const HACKATHON_APPLY_URL = "/hackathon/apply";
 
 export const HACKATHON_OPENS = Date.parse("2026-10-23T00:00:00+01:00");
 /** Applications/submissions close Friday, Oct 30 at 11:59pm WAT. */

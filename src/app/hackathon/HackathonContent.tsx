@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
-import { ArrowDown, ArrowRight, ArrowUpRight, Check, Ticket, Trophy, X } from "lucide-react";
+import { ArrowDown, ArrowRight, Check, Ticket, Trophy, X } from "lucide-react";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import {
   HACKATHON_APPLY_URL, TICKETS_URL, HACKATHON_OPENS, HACKATHON_CLOSES,
-  WINNERS_START, WINNERS_END, hackathonPhase, isExternalUrl, type HackathonPhase,
+  WINNERS_START, WINNERS_END, hackathonPhase, type HackathonPhase,
 } from "@/data/hackathon";
 import { btnPrimary, GRADIENT_RING, GLASS_PANEL } from "./styles";
 
@@ -145,13 +145,8 @@ function Eyebrow({ children, center = false }: { children: React.ReactNode; cent
   );
 }
 
-/** "Apply now" target: the on-site form when ready, else the Google Form (new tab). */
 function ApplyLink({ className, children }: { className: string; children: React.ReactNode }) {
-  return isExternalUrl(HACKATHON_APPLY_URL) ? (
-    <a href={HACKATHON_APPLY_URL} target="_blank" rel="noopener noreferrer" className={className}>{children}</a>
-  ) : (
-    <Link href={HACKATHON_APPLY_URL} className={className}>{children}</Link>
-  );
+  return <Link href={HACKATHON_APPLY_URL} className={className}>{children}</Link>;
 }
 
 function Countdown({ target, serverNow, offset, label }: { target: number; serverNow: number; offset: number; label: string }) {
@@ -292,7 +287,7 @@ function PrimaryCta({ phase }: { phase: HackathonPhase }) {
   if (phase === "open") {
     return (
       <ApplyLink className={btnPrimary}>
-        Apply now <ArrowUpRight size={17} />
+        Apply now <ArrowRight size={17} />
       </ApplyLink>
     );
   }

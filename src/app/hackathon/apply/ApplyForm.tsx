@@ -2,18 +2,15 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Film, Loader2, Lock, Pencil, Ticket } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Loader2, Lock, Pencil, Ticket } from "lucide-react";
 import {
-  HACKATHON_FORM, GOOGLE_FORM_VIEW_URL, GOOGLE_FORM_POST_URL, SILENT_SUBMIT_READY,
-  HACKATHON_CLOSES, TICKETS_URL, hackathonPhase,
+  CONTACT_EMAIL, HACKATHON_CLOSES, TICKETS_URL, hackathonPhase, prefilledFormUrl,
+  type HackathonEntry, type HackathonField,
 } from "@/data/hackathon";
 import { btnPrimary, GRADIENT_RING, GLASS_PANEL } from "../styles";
 
-type Field = keyof typeof HACKATHON_FORM.entries;
-type Values = Record<Field, string>;
-
 type FieldDef = {
-  key: Field;
+  key: HackathonField;
   label: string;
   hint?: string;
   placeholder: string;
@@ -25,6 +22,7 @@ type FieldDef = {
   link?: boolean;
 };
 
+// Same order as the Google Form.
 const ABOUT_YOU: FieldDef[] = [
   { key: "name", label: "Full name", placeholder: "Your full name", autoComplete: "name", half: true },
   { key: "email", label: "Email address", placeholder: "you@example.com", type: "email", inputMode: "email", autoComplete: "email", half: true },
@@ -33,7 +31,6 @@ const ABOUT_YOU: FieldDef[] = [
 const YOUR_BUILD: FieldDef[] = [
   { key: "projectName", label: "Project name", placeholder: "What's it called?", half: true },
   { key: "projectId", label: "Project ID", hint: "Your Serverpod Cloud project ID", placeholder: "my-product", half: true },
-  { key: "projectLink", label: "Project link", hint: "Where the live product runs", placeholder: "https://", inputMode: "url", link: true },
   {
     key: "projectInfo",
     label: "Project information",
@@ -41,21 +38,23 @@ const YOUR_BUILD: FieldDef[] = [
     placeholder: "Who it's for, what it does, and why it matters.",
     multiline: true,
   },
-  // Only asked here once the Google Form takes a video link instead of a file upload.
-  ...(SILENT_SUBMIT_READY
-    ? [{
-        key: "videoLink" as const,
-        label: "Demo video",
-        hint: "A short video link: YouTube (unlisted), Loom or Google Drive",
-        placeholder: "https://",
-        inputMode: "url" as const,
-        link: true,
-      }]
-    : []),
+  { key: "projectLink", label: "Project link", hint: "Where the live product runs", placeholder: "https://", inputMode: "url", link: true },
 ];
 
-const ALL_FIELDS = [...ABOUT_YOU, ...YOUR_BUILD];
-const EMPTY: Values = { name: "", email: "", projectName: "", projectId: "", projectInfo: "", projectLink: "", videoLink: "" };
+const DEMO_VIDEO: FieldDef[] = [
+  {
+    key: "videoLink",
+    label: "Demo video link",
+    hint: "Upload your video to Google Drive and set access to \"Anyone with the link\"",
+    placeholder: "https://drive.google.com/",
+    inputMode: "url",
+    link: true,
+  },
+];
+
+const ALL_FIELDS = [...ABOUT_YOU, ...YOUR_BUILD, ...DEMO_VIDEO];
+const SUBMITTED_KEY = "fbc-hackathon-2026-entry"; // set in this browser after a successful entry
+const EMPTY: HackathonEntry = { name: "", email: "", projectName: "", projectId: "", projectInfo: "", projectLink: "", videoLink: "" };
 
 /** Accept "myapp.com" as well as "https://myapp.com". */
 const withProtocol = (v: string) => (/^https?:\/\//i.test(v) ? v : `https://${v}`);
@@ -69,8 +68,8 @@ function isLink(v: string) {
   }
 }
 
-function validate(v: Values): Partial<Record<Field, string>> {
-  const errors: Partial<Record<Field, string>> = {};
+function validate(v: HackathonEntry): Partial<Record<HackathonField, string>> {
+  const errors: Partial<Record<HackathonField, string>> = {};
   for (const f of ALL_FIELDS) {
     const val = v[f.key].trim();
     if (!val) errors[f.key] = `Add your ${f.label[0].toLowerCase()}${f.label.slice(1)}`;
@@ -80,23 +79,13 @@ function validate(v: Values): Partial<Record<Field, string>> {
   return errors;
 }
 
-function clean(v: Values): Values {
+function clean(v: HackathonEntry): HackathonEntry {
   const out = { ...v };
-  (Object.keys(out) as Field[]).forEach((k) => (out[k] = out[k].trim()));
+  (Object.keys(out) as HackathonField[]).forEach((k) => (out[k] = out[k].trim()));
   out.email = out.email.toLowerCase();
   out.projectLink = withProtocol(out.projectLink);
-  if (out.videoLink) out.videoLink = withProtocol(out.videoLink);
+  out.videoLink = withProtocol(out.videoLink);
   return out;
-}
-
-/** Every field mapped to its Google Form entry ID (skips fields without one). */
-function entryParams(v: Values) {
-  const params = new URLSearchParams();
-  (Object.keys(HACKATHON_FORM.entries) as Field[]).forEach((k) => {
-    const id = HACKATHON_FORM.entries[k];
-    if (id && v[k]) params.append(id, v[k]);
-  });
-  return params;
 }
 
 const inputBase =
@@ -158,12 +147,27 @@ function FormField({
   );
 }
 
-function GroupTitle({ n, children }: { n: string; children: React.ReactNode }) {
+function FieldGroup({
+  n, title, fields, values, showError, disabled, set, touch,
+}: {
+  n: string; title: string; fields: FieldDef[]; values: HackathonEntry; disabled: boolean;
+  showError: (k: HackathonField) => string | undefined;
+  set: (k: HackathonField) => (v: string) => void;
+  touch: (k: HackathonField) => () => void;
+}) {
   return (
-    <legend className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] text-fbc-blue mb-5">
-      <span>{n}</span>
-      <span>{children}</span>
-    </legend>
+    <fieldset>
+      <legend className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] text-fbc-blue mb-5">
+        <span>{n}</span>
+        <span>{title}</span>
+      </legend>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {fields.map((f) => (
+          <FormField key={f.key} f={f} value={values[f.key]} error={showError(f.key)} disabled={disabled}
+            onChange={set(f.key)} onBlur={touch(f.key)} />
+        ))}
+      </div>
+    </fieldset>
   );
 }
 
@@ -201,11 +205,12 @@ const fade = {
 
 export default function ApplyForm({ serverNow }: { serverNow: number }) {
   const [now, setNow] = useState(serverNow);
-  const [values, setValues] = useState<Values>(EMPTY);
-  const [touched, setTouched] = useState<Partial<Record<Field, boolean>>>({});
+  const [values, setValues] = useState<HackathonEntry>(EMPTY);
+  const [touched, setTouched] = useState<Partial<Record<HackathonField, boolean>>>({});
   const [attempted, setAttempted] = useState(false);
-  const [status, setStatus] = useState<"idle" | "sending" | "handoff" | "done">("idle");
-  const [handoffUrl, setHandoffUrl] = useState(GOOGLE_FORM_VIEW_URL);
+  const [status, setStatus] = useState<"idle" | "sending" | "done" | "fallback" | "already">("idle");
+  const [alreadyBy, setAlreadyBy] = useState<"email" | "projectId" | "browser">("browser");
+  const [fallbackUrl, setFallbackUrl] = useState("");
   const [trap, setTrap] = useState(""); // honeypot: real people never see or fill it
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -218,13 +223,22 @@ export default function ApplyForm({ serverNow }: { serverNow: number }) {
     return () => clearInterval(id);
   }, []);
 
+  // One entry per builder: this browser already sent one.
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(SUBMITTED_KEY)) setStatus("already");
+    } catch {
+      // storage blocked: the server-side email check still applies
+    }
+  }, []);
+
   const closed = hackathonPhase(now) !== "open";
   const errors = validate(values);
-  const showError = (k: Field) => (attempted || touched[k] ? errors[k] : undefined);
+  const showError = (k: HackathonField) => (attempted || touched[k] ? errors[k] : undefined);
   const sending = status === "sending";
 
-  const set = (k: Field) => (v: string) => setValues((s) => ({ ...s, [k]: v }));
-  const touch = (k: Field) => () => setTouched((t) => ({ ...t, [k]: true }));
+  const set = (k: HackathonField) => (v: string) => setValues((s) => ({ ...s, [k]: v }));
+  const touch = (k: HackathonField) => () => setTouched((t) => ({ ...t, [k]: true }));
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -238,26 +252,38 @@ export default function ApplyForm({ serverNow }: { serverNow: number }) {
     }
 
     const entry = clean(values);
-    if (SILENT_SUBMIT_READY) {
-      setStatus("sending");
+    setStatus("sending");
+    let result: { ok?: boolean; reason?: string; field?: "email" | "projectId" } = {};
+    try {
+      const res = await fetch("/api/hackathon/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(entry),
+      });
+      result = await res.json();
+    } catch {
+      // network error: offer the Google Form below
+    }
+
+    if (result.reason === "duplicate") {
+      setAlreadyBy(result.field ?? "email");
+      setStatus("already");
+    } else if (result.ok) {
       try {
-        // no-cors: the request reaches Google Forms even though the response can't be read
-        await fetch(GOOGLE_FORM_POST_URL, { method: "POST", mode: "no-cors", body: entryParams(entry) });
+        localStorage.setItem(SUBMITTED_KEY, JSON.stringify({ email: entry.email, at: Date.now() }));
       } catch {
-        // Opaque/no-cors errors are expected; the submission still goes through.
+        // storage blocked: fine, the entry is in
       }
       setStatus("done");
     } else {
-      // Video files can only be attached on Google Forms itself: open it prefilled.
-      const url = `${GOOGLE_FORM_VIEW_URL}?usp=pp_url&${entryParams(entry).toString()}`;
-      setHandoffUrl(url);
-      window.open(url, "_blank", "noopener,noreferrer");
-      setStatus("handoff");
+      setFallbackUrl(prefilledFormUrl(entry));
+      setStatus("fallback");
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const view = closed ? "closed" : status === "sending" ? "idle" : status;
+  const groupProps = { values, showError, disabled: sending, set, touch };
 
   return (
     <section className="relative overflow-hidden sec-plain pt-28 pb-20 sm:pt-32 sm:pb-28">
@@ -288,40 +314,9 @@ export default function ApplyForm({ serverNow }: { serverNow: number }) {
                 <div className="absolute -inset-8 rounded-[48px] bg-gradient-to-br from-fbc-blue/25 via-fbc-sky/10 to-transparent blur-3xl pointer-events-none" aria-hidden="true" />
                 <Card>
                   <form ref={formRef} onSubmit={submit} noValidate className="relative space-y-10">
-                    <fieldset>
-                      <GroupTitle n="01">About you</GroupTitle>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        {ABOUT_YOU.map((f) => (
-                          <FormField key={f.key} f={f} value={values[f.key]} error={showError(f.key)} disabled={sending}
-                            onChange={set(f.key)} onBlur={touch(f.key)} />
-                        ))}
-                      </div>
-                    </fieldset>
-
-                    <fieldset>
-                      <GroupTitle n="02">Your build</GroupTitle>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        {YOUR_BUILD.map((f) => (
-                          <FormField key={f.key} f={f} value={values[f.key]} error={showError(f.key)} disabled={sending}
-                            onChange={set(f.key)} onBlur={touch(f.key)} />
-                        ))}
-                      </div>
-                    </fieldset>
-
-                    {!SILENT_SUBMIT_READY && (
-                      <fieldset>
-                        <GroupTitle n="03">Demo video</GroupTitle>
-                        <div className="flex gap-4 rounded-xl border border-dashed border-fbc-border bg-fbc-navy/30 p-4">
-                          <Film size={20} className="text-fbc-blue flex-shrink-0 mt-0.5" />
-                          <div>
-                            <p className="text-sm font-semibold text-fbc-white">You&apos;ll attach it on the next step</p>
-                            <p className="text-xs text-fbc-muted mt-1 leading-relaxed">
-                              We open Google Forms with your details filled in. Sign in, add a short video of your product and press Submit.
-                            </p>
-                          </div>
-                        </div>
-                      </fieldset>
-                    )}
+                    <FieldGroup n="01" title="About you" fields={ABOUT_YOU} {...groupProps} />
+                    <FieldGroup n="02" title="Your build" fields={YOUR_BUILD} {...groupProps} />
+                    <FieldGroup n="03" title="Demo video" fields={DEMO_VIDEO} {...groupProps} />
 
                     {/* honeypot */}
                     <div className="absolute -left-[9999px] w-px h-px overflow-hidden" aria-hidden="true">
@@ -333,10 +328,8 @@ export default function ApplyForm({ serverNow }: { serverNow: number }) {
                       <button type="submit" disabled={sending} className={`${btnPrimary} disabled:opacity-70`}>
                         {sending ? (
                           <><Loader2 size={17} className="animate-spin" /> Submitting</>
-                        ) : SILENT_SUBMIT_READY ? (
-                          <>Submit entry <ArrowRight size={17} /></>
                         ) : (
-                          <>Continue to video upload <ArrowUpRight size={17} /></>
+                          <>Submit entry <ArrowRight size={17} /></>
                         )}
                       </button>
                       {attempted && Object.keys(errors).length > 0 && (
@@ -346,51 +339,6 @@ export default function ApplyForm({ serverNow }: { serverNow: number }) {
                   </form>
                 </Card>
               </div>
-            </motion.div>
-          )}
-
-          {view === "handoff" && (
-            <motion.div key="handoff" {...fade}>
-              <Card>
-                <div className="text-center">
-                  <StateIcon><Film size={24} /></StateIcon>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-fbc-blue mt-6">One last step</p>
-                  <h1 className="font-gigasans font-bold text-3xl sm:text-4xl text-fbc-white mt-2 mb-3">Attach your demo video</h1>
-                  <p className="text-fbc-muted text-sm sm:text-base max-w-md mx-auto">
-                    Your entry opened in a new tab with your details filled in. Sign in with Google, add your video and press Submit there.
-                  </p>
-                </div>
-
-                <ol className="mt-8 space-y-3 max-w-sm mx-auto">
-                  {[
-                    { label: "Details filled in", state: "done" },
-                    { label: "Attach a short video of your product", state: "live" },
-                    { label: "Press Submit on Google Forms", state: "next" },
-                  ].map((s) => (
-                    <li key={s.label} className="flex items-center gap-3 text-sm">
-                      {s.state === "done" ? (
-                        <span className="flex w-6 h-6 items-center justify-center rounded-full bg-fbc-blue text-white"><Check size={13} strokeWidth={3} /></span>
-                      ) : s.state === "live" ? (
-                        <span className="relative flex w-6 h-6 items-center justify-center rounded-full border-2 border-fbc-blue">
-                          <span className="w-2 h-2 rounded-full bg-fbc-blue" />
-                        </span>
-                      ) : (
-                        <span className="w-6 h-6 rounded-full border border-fbc-border" />
-                      )}
-                      <span className={s.state === "next" ? "text-fbc-muted" : "text-fbc-white"}>{s.label}</span>
-                    </li>
-                  ))}
-                </ol>
-
-                <div className="mt-9 flex flex-col items-center gap-4">
-                  <a href={handoffUrl} target="_blank" rel="noopener noreferrer" className={btnPrimary}>
-                    Open the form again <ArrowUpRight size={17} />
-                  </a>
-                  <button type="button" onClick={() => setStatus("idle")} className={linkQuiet}>
-                    <Pencil size={13} /> Edit my details
-                  </button>
-                </div>
-              </Card>
             </motion.div>
           )}
 
@@ -408,6 +356,56 @@ export default function ApplyForm({ serverNow }: { serverNow: number }) {
                       <Ticket size={17} /> Get tickets
                     </a>
                     <Link href="/hackathon" className={linkQuiet}>Back to the hackathon <ArrowRight size={14} /></Link>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          )}
+
+          {view === "already" && (
+            <motion.div key="already" {...fade}>
+              <Card>
+                <div className="text-center">
+                  <StateIcon tone="emerald"><Check size={26} strokeWidth={3} /></StateIcon>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-fbc-blue mt-6">One entry per builder</p>
+                  <h1 className="font-gigasans font-bold text-3xl sm:text-4xl text-fbc-white mt-2 mb-3">Submission already made</h1>
+                  <p className="text-fbc-muted text-sm sm:text-base max-w-md mx-auto">
+                    {alreadyBy === "email"
+                      ? "An entry with this email is already in."
+                      : alreadyBy === "projectId"
+                      ? "An entry for this Serverpod project is already in."
+                      : "You've already sent an entry from this browser."}{" "}
+                    Need to change something? Email{" "}
+                    <a href={`mailto:${CONTACT_EMAIL}?subject=Hackathon%20entry`} className="text-fbc-blue hover:underline">{CONTACT_EMAIL}</a>.
+                  </p>
+                  <div className="mt-9 flex flex-wrap justify-center items-center gap-x-6 gap-y-3">
+                    <a href={TICKETS_URL} target="_blank" rel="noopener noreferrer" className={btnPrimary}>
+                      <Ticket size={17} /> Get tickets
+                    </a>
+                    <Link href="/hackathon" className={linkQuiet}>Back to the hackathon <ArrowRight size={14} /></Link>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          )}
+
+          {view === "fallback" && (
+            <motion.div key="fallback" {...fade}>
+              <Card>
+                <div className="text-center">
+                  <StateIcon><ArrowUpRight size={24} /></StateIcon>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-fbc-blue mt-6">One more step</p>
+                  <h1 className="font-gigasans font-bold text-3xl sm:text-4xl text-fbc-white mt-2 mb-3">Finish on Google Forms</h1>
+                  <p className="text-fbc-muted text-sm sm:text-base max-w-md mx-auto">
+                    We couldn&apos;t send your entry from here. Your answers are already filled in there; sign in if Google asks, then press Submit.
+                  </p>
+                  <div className="mt-9 flex flex-col items-center gap-4">
+                    <a href={fallbackUrl} target="_blank" rel="noopener noreferrer" className={btnPrimary}>
+                      Open Google Forms <ArrowUpRight size={17} />
+                    </a>
+                    <button type="button" onClick={() => setStatus("idle")} className={linkQuiet}>
+                      <Pencil size={13} /> Edit my details
+                    </button>
                   </div>
                 </div>
               </Card>
