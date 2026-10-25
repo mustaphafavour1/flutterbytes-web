@@ -3,9 +3,14 @@ import {
   GOOGLE_FORM_POST_URL, HACKATHON_FORM, entryParams,
   type HackathonEntry, type HackathonField,
 } from "@/data/hackathon";
-import { claimEntry, releaseEntry } from "@/lib/hackathon-registry";
+import { claimEntry, registryStatus, releaseEntry } from "@/lib/hackathon-registry";
 
 export const dynamic = "force-dynamic";
+
+/** Status check: open /api/hackathon/submit to see if the one-entry check is on. */
+export async function GET() {
+  return NextResponse.json(await registryStatus(), { headers: { "Cache-Control": "no-store" } });
+}
 
 const MAX_LEN = 5000;
 
