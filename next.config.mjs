@@ -12,6 +12,7 @@ const nextConfig = {
     outputFileTracingIncludes: {
       '/': ['./public/past_speakers/**', './public/speakers_2026/**', './public/gallery/**', './public/committee/**'],
       '/speakers': ['./public/past_speakers/**', './public/speakers_2026/**'],
+      '/agenda': ['./public/speakers_2026/**'],
       '/gallery': ['./public/gallery/**'],
       '/about': ['./public/committee/**'],
     },

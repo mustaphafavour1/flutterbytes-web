@@ -4,12 +4,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import type { AgendaSession } from "@/data/fallback-agenda";
+import { AGENDA_2026, daySessions } from "@/data/agenda-2026";
 
 interface Props {
-  friday: AgendaSession[];
-  saturday: AgendaSession[];
-  agendaVisible: boolean;
+  pastSessions: AgendaSession[];
 }
+
+const DAY_SESSIONS = { friday: daySessions(AGENDA_2026[0]), saturday: daySessions(AGENDA_2026[1]) };
 
 /* ── GitHub-contribution-style agenda grid ── */
 function AgendaGrid({ sessions }: { sessions: AgendaSession[] }) {
@@ -126,29 +127,9 @@ function AgendaGrid({ sessions }: { sessions: AgendaSession[] }) {
   );
 }
 
-/* ── Coming-soon version ── */
-function AgendaComingSoon({ sessions }: { sessions: AgendaSession[] }) {
-  return (
-    <div className="relative">
-      <div className="pointer-events-none select-none" style={{ filter: "blur(5px)", opacity: 0.25 }}>
-        <AgendaGrid sessions={sessions} />
-      </div>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="bg-fbc-card/95 backdrop-blur-xl rounded-2xl px-8 py-7 text-center border border-fbc-border max-w-xs shadow-2xl">
-          <div className="text-3xl mb-3">🛠️</div>
-          <h3 className="font-gigasans font-bold text-fbc-white text-lg mb-2">Agenda in the works</h3>
-          <p className="text-fbc-muted text-sm leading-relaxed">
-            We&apos;re curating the best sessions for you.<br />Check back soon.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default function AgendaPreview({ friday, saturday, agendaVisible }: Props) {
-  const [tab, setTab] = useState<"past" | "friday" | "saturday">("past");
-  const sessions = tab === "friday" ? friday : tab === "saturday" ? saturday : [...friday, ...saturday];
+export default function AgendaPreview({ pastSessions }: Props) {
+  const [tab, setTab] = useState<"friday" | "saturday" | "past">("friday");
+  const sessions = tab === "past" ? pastSessions : DAY_SESSIONS[tab];
 
   return (
     <section id="agenda" className="relative py-16 sm:py-24 md:py-32 sec-bg-2 overflow-hidden">
@@ -174,9 +155,9 @@ export default function AgendaPreview({ friday, saturday, agendaVisible }: Props
         <AnimateOnScroll delay={0.1}>
           <div className="flex gap-2 mb-6 justify-center" role="tablist">
             {([
-              ["past",     "Past Editions"],
               ["friday",   "Friday, Nov 6"],
               ["saturday", "Saturday, Nov 7"],
+              ["past",     "Past Editions"],
             ] as const).map(([val, label]) => (
               <button
                 key={val}
@@ -204,12 +185,7 @@ export default function AgendaPreview({ friday, saturday, agendaVisible }: Props
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.18 }}
             >
-              {tab === "past"
-                ? <AgendaGrid sessions={sessions} />
-                : agendaVisible
-                  ? <AgendaGrid sessions={sessions} />
-                  : <AgendaComingSoon sessions={sessions} />
-              }
+              <AgendaGrid sessions={sessions} />
             </motion.div>
           </AnimatePresence>
         </AnimateOnScroll>
