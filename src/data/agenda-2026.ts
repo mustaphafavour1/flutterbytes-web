@@ -23,11 +23,18 @@ export type AgendaItem =
   | { type: "plenary"; start: string; end: string; kind: PlenaryKind; title: string; speakers?: string[]; href?: string }
   | { type: "talks"; start: string; end: string; talks: Talk[] };
 
+/** A named stretch of the day; holds every item starting at or after `from` until the next chapter. */
+export interface Chapter {
+  title: string;
+  from: string;
+}
+
 export interface AgendaDay {
   id: "fri" | "sat";
   date: string; // YYYY-MM-DD
   label: string;
   halls: Hall[];
+  chapters: Chapter[];
   items: AgendaItem[];
 }
 
@@ -40,6 +47,12 @@ export const AGENDA_2026: AgendaDay[] = [
     date: "2026-11-06",
     label: "Friday, Nov 6",
     halls: ["Ruby", "Sapphire"],
+    chapters: [
+      { title: "Kick-off", from: "08:30" },
+      { title: "Deep dives", from: "10:45" },
+      { title: "Afternoon tracks", from: "13:20" },
+      { title: "Wrap-up", from: "15:10" },
+    ],
     items: [
       { type: "plenary", start: "08:30", end: "09:00", kind: "registration", title: "Registration" },
       { type: "plenary", start: "09:00", end: "09:10", kind: "opening", title: "Opening & welcome" },
@@ -88,6 +101,12 @@ export const AGENDA_2026: AgendaDay[] = [
     date: "2026-11-07",
     label: "Saturday, Nov 7",
     halls: ["Ruby", "Sapphire", "Opal"],
+    chapters: [
+      { title: "Kick-off", from: "08:30" },
+      { title: "Deep dives", from: "11:15" },
+      { title: "Afternoon tracks", from: "13:20" },
+      { title: "Wrap-up", from: "15:10" },
+    ],
     items: [
       { type: "plenary", start: "08:30", end: "09:00", kind: "registration", title: "Registration" },
       { type: "plenary", start: "09:00", end: "09:10", kind: "opening", title: "Opening & welcome" },
@@ -201,3 +220,24 @@ export const daySessions = (day: AgendaDay): AgendaSession[] =>
     speaker: talk.speakers.join(", "),
     hall: `${talk.hall} Hall`,
   }));
+
+export type PlenaryItem = Extract<AgendaItem, { type: "plenary" }>;
+export type Segment =
+  | { kind: "chapter"; index: number; title: string; items: AgendaItem[] }
+  | { kind: "break"; item: PlenaryItem };
+
+/** The day as chapters, with breaks as separators between them. */
+export function daySegments(day: AgendaDay): Segment[] {
+  const out: Segment[] = [];
+  for (const item of day.items) {
+    if (item.type === "plenary" && item.kind === "break") {
+      out.push({ kind: "break", item });
+      continue;
+    }
+    const index = day.chapters.reduce((acc, c, i) => (item.start >= c.from ? i : acc), 0);
+    const last = out[out.length - 1];
+    if (last?.kind === "chapter" && last.index === index) last.items.push(item);
+    else out.push({ kind: "chapter", index, title: day.chapters[index].title, items: [item] });
+  }
+  return out;
+}
