@@ -5,7 +5,7 @@ import type { AgendaSession } from "@/data/fallback-agenda";
  * Times are 24h "HH:MM" in WAT (UTC+1). A `talks` slot puts each talk in its
  * hall; a talk only carries its own start/end when it differs from the slot.
  */
-export type Hall = "Ruby" | "Emerald" | "Sapphire";
+export type Hall = "Ruby" | "Sapphire" | "Opal";
 export type TalkKind = "Keynote" | "Lightning talk" | "Workshop" | "Session";
 export type PlenaryKind =
   | "registration" | "opening" | "games" | "break" | "sponsor" | "demo" | "panel" | "hackathon" | "closing";
@@ -39,7 +39,7 @@ export const AGENDA_2026: AgendaDay[] = [
     id: "fri",
     date: "2026-11-06",
     label: "Friday, Nov 6",
-    halls: ["Ruby", "Emerald"],
+    halls: ["Ruby", "Sapphire"],
     items: [
       { type: "plenary", start: "08:30", end: "09:00", kind: "registration", title: "Registration" },
       { type: "plenary", start: "09:00", end: "09:10", kind: "opening", title: "Opening & welcome" },
@@ -53,29 +53,29 @@ export const AGENDA_2026: AgendaDay[] = [
       { type: "plenary", start: "10:25", end: "10:35", kind: "games", title: "Games" },
       { type: "talks", start: "10:45", end: "11:30", talks: [
         t("Workshop", "Ruby", "One Language, Full Stack: Agentive Flutter UI with genui_catalog + Serverpod", ["Omar Farouk"]),
-        t("Workshop", "Emerald", "Building Your First AI-Powered Solution", ["Mary Olasupo"]),
+        t("Workshop", "Sapphire", "Building Your First AI-Powered Solution", ["Mary Olasupo"]),
       ] },
       { type: "talks", start: "11:40", end: "12:05", talks: [
         t("Session", "Ruby", "Designing Flutter Apps for Distributed Systems", ["Nikki Eke"]),
-        t("Session", "Emerald", "Your Flutter App Is Only Half the Product: AI Backends That Scale", ["Ifeoluwa Obayemi"]),
+        t("Session", "Sapphire", "Your Flutter App Is Only Half the Product: AI Backends That Scale", ["Ifeoluwa Obayemi"]),
       ] },
       { type: "talks", start: "12:15", end: "13:10", talks: [
         t("Session", "Ruby", "Release with Confidence: AI-Assisted Releases with CodeRabbit & Codemagic", ["Ibrahim Sakariyah", "Kudus Rufai"], "12:15", "12:40"),
         t("Session", "Ruby", "The One-Man StartUp: Building Systems to Grow an Idea with AI", ["Favour Mustapha"], "12:45", "13:10"),
-        t("Workshop", "Emerald", "Design Systems in the Age of AI Agents", ["Oluwaseun Odunlade"], "12:15", "13:00"),
+        t("Workshop", "Sapphire", "Design Systems in the Age of AI Agents", ["Oluwaseun Odunlade"], "12:15", "13:00"),
       ] },
       { type: "plenary", start: "13:10", end: "13:20", kind: "break", title: "Coffee break" },
       { type: "talks", start: "13:20", end: "13:45", talks: [
         t("Session", "Ruby", "My Windows App Can Think, Hear and See", ["Daniel Oluremi"]),
-        t("Session", "Emerald", "Beyond Beautiful UIs: Building the Next Generation of Flutter Applications with Emerging Tech", ["Victor Mba"]),
+        t("Session", "Sapphire", "Beyond Beautiful UIs: Building the Next Generation of Flutter Applications with Emerging Tech", ["Victor Mba"]),
       ] },
       { type: "talks", start: "13:55", end: "14:20", talks: [
         t("Session", "Ruby", "Routes as Values: Navigation as Typed State", ["Samuel Abada"]),
-        t("Session", "Emerald", "Offline-First Flutter: Building Apps That Keep Working Without the Internet", ["Christian Emeka"]),
+        t("Session", "Sapphire", "Offline-First Flutter: Building Apps That Keep Working Without the Internet", ["Christian Emeka"]),
       ] },
       { type: "talks", start: "14:30", end: "14:55", talks: [
         t("Session", "Ruby", "Building Interactive CLI Apps with Dart", ["Lucky Ebere"]),
-        t("Session", "Emerald", "The Aristocracy of Technical Debt", ["Olaniyan Wisdom"]),
+        t("Session", "Sapphire", "The Aristocracy of Technical Debt", ["Olaniyan Wisdom"]),
       ] },
       { type: "plenary", start: "14:55", end: "15:10", kind: "break", title: "Afternoon break" },
       { type: "plenary", start: "15:10", end: "15:20", kind: "sponsor", title: "Sponsor session", speakers: ["Samuel Adekunle"] },
@@ -87,7 +87,7 @@ export const AGENDA_2026: AgendaDay[] = [
     id: "sat",
     date: "2026-11-07",
     label: "Saturday, Nov 7",
-    halls: ["Ruby", "Emerald", "Sapphire"],
+    halls: ["Ruby", "Sapphire", "Opal"],
     items: [
       { type: "plenary", start: "08:30", end: "09:00", kind: "registration", title: "Registration" },
       { type: "plenary", start: "09:00", end: "09:10", kind: "opening", title: "Opening & welcome" },
@@ -103,33 +103,33 @@ export const AGENDA_2026: AgendaDay[] = [
       { type: "plenary", start: "10:55", end: "11:05", kind: "games", title: "Games" },
       { type: "talks", start: "11:15", end: "12:00", talks: [
         t("Workshop", "Ruby", "Bring AI Home: Privacy, Ownership & the Local-First Future of Flutter", ["Daniel Modupe Asaboro"]),
-        t("Workshop", "Emerald", "ONNX: Running ML Models in Flutter with ONNX", ["Odinachi David"]),
-        t("Workshop", "Sapphire", "Offline by Design: A Local RAG Pipeline with Dart, Ollama & ObjectBox", ["Ayodeji Michael Ogundairo"]),
+        t("Workshop", "Sapphire", "ONNX: Running ML Models in Flutter with ONNX", ["Odinachi David"]),
+        t("Workshop", "Opal", "Offline by Design: A Local RAG Pipeline with Dart, Ollama & ObjectBox", ["Ayodeji Michael Ogundairo"]),
       ] },
       { type: "talks", start: "12:10", end: "12:35", talks: [
         t("Session", "Ruby", "Your App's Next User Is an AI Agent: Android AppFunctions", ["Oluwaseyi Ajadi", "Jesse Osile"]),
-        t("Session", "Emerald", "The Agentic Shift: Zero-Code Integration Tests with Gherkin & Marionette", ["Sebastine Odeh"]),
-        t("Session", "Sapphire", "Building with Serverpod", ["Jamiu Okanlawon"]),
+        t("Session", "Sapphire", "The Agentic Shift: Zero-Code Integration Tests with Gherkin & Marionette", ["Sebastine Odeh"]),
+        t("Session", "Opal", "No Controllers. No Tweens. Just State. (Nib Motion)", ["Connel Asikong"]),
       ] },
       { type: "talks", start: "12:45", end: "13:10", talks: [
-        t("Session", "Ruby", "No Controllers. No Tweens. Just State. (Nib Motion)", ["Connel Asikong"]),
-        t("Session", "Emerald", "Beyond 2D: Building 3D Apps and Games with Just Flutter", ["Olanrewaju Taiwo"]),
-        t("Session", "Sapphire", "Shaping the Impossible: Production-Ready CustomPainter Techniques", ["Mrinal Jain"]),
+        t("Session", "Ruby", "Giving Your Coding Agent the Full Stack", ["Jamiu Okanlawon"]),
+        t("Session", "Sapphire", "Beyond 2D: Building 3D Apps and Games with Just Flutter", ["Olanrewaju Taiwo"]),
+        t("Session", "Opal", "Shaping the Impossible: Production-Ready CustomPainter Techniques", ["Mrinal Jain"]),
       ] },
       { type: "plenary", start: "13:10", end: "13:20", kind: "break", title: "Coffee break" },
       { type: "talks", start: "13:20", end: "13:45", talks: [
         t("Session", "Ruby", "Building Production Agentic Workflows with Flutter, Firebase Genkit & Gemini", ["David Oluwabusayo"]),
-        t("Session", "Emerald", "When the AI Builds the Widget Tree: Performance for GenUI Apps", ["Gidudu Muyobo Nicholas"]),
-        t("Session", "Sapphire", "Beyond Crash Logs: Event-Driven Telemetry in Flutter Apps", ["Christopher Nwosu-Madueke"]),
+        t("Session", "Sapphire", "When the AI Builds the Widget Tree: Performance for GenUI Apps", ["Gidudu Muyobo Nicholas"]),
+        t("Session", "Opal", "Beyond Crash Logs: Event-Driven Telemetry in Flutter Apps", ["Christopher Nwosu-Madueke"]),
       ] },
       { type: "talks", start: "13:55", end: "14:20", talks: [
         t("Session", "Ruby", "Closing the AI Loop: Figma MCP → Coding Agent → Maestro MCP", ["Adewale Adeosun"]),
-        t("Session", "Emerald", "When AI Is Coming for Your Job: Avoid It or Integrate It?", ["Thecapstone Mogbolu"]),
-        t("Session", "Sapphire", "Building Better Products with AI and Automation", ["Victory Abiodun-Omoniyi"]),
+        t("Session", "Sapphire", "When AI Is Coming for Your Job: Avoid It or Integrate It?", ["Thecapstone Mogbolu"]),
+        t("Session", "Opal", "Building Better Products with AI and Automation", ["Victory Abiodun-Omoniyi"]),
       ] },
       { type: "talks", start: "14:30", end: "14:55", talks: [
         t("Session", "Ruby", "Beyond Chatbots: Building Interactive AI Experiences in Flutter", ["Mayowa Olutuyo"]),
-        t("Session", "Emerald", "Spec-Driven Development: Using AI Agents to Build Flutter Apps from Requirements to Code", ["Emmanuel Akinfulubi"]),
+        t("Session", "Sapphire", "Spec-Driven Development: Using AI Agents to Build Flutter Apps from Requirements to Code", ["Emmanuel Akinfulubi"]),
       ] },
       { type: "plenary", start: "14:55", end: "15:10", kind: "break", title: "Afternoon break" },
       { type: "plenary", start: "15:10", end: "15:40", kind: "panel", title: "Panel session" },

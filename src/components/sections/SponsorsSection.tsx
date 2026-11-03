@@ -7,17 +7,23 @@ import AnimateOnScroll from "@/components/AnimateOnScroll";
 
 /**
  * Sponsors — transparent logos live in /public/sponsors/ and sit on white chips.
- * Flutter is the lone headline sponsor (first row); everyone else follows below.
+ * This year's sponsors (the ones with a tier) show large in the first row;
+ * past sponsors follow, smaller, under a divider.
  */
-type Sponsor = { name: string; logo: string; website: string; tier?: string };
+type Tier = "headline" | "gold" | "bronze";
+type Sponsor = { name: string; logo: string; website: string; tier?: Tier };
+
+const TIER_COLOR: Record<Tier, string> = { headline: "#2A9DF4", gold: "#D4A537", bronze: "#B87333" };
 
 const SPONSORS: Sponsor[] = [
+  // 2026
   { name: "Flutter",            logo: "flutter.png",            website: "https://flutter.dev/",              tier: "headline" },
+  { name: "Serverpod",          logo: "serverpod.png",          website: "https://serverpod.dev/",            tier: "gold" },
+  { name: "Shorebird",          logo: "shorebird.png",          website: "https://shorebird.dev/",            tier: "bronze" },
+  // past editions
   { name: "Google",             logo: "google.png",             website: "https://www.google.com" },
-  { name: "Serverpod",          logo: "serverpod.png",          website: "https://serverpod.dev/" },
   { name: "Cake Wallet",        logo: "cake-wallet.png",        website: "https://cakewallet.com/" },
   { name: "Codemagic",          logo: "codemagic.png",          website: "https://codemagic.io/start/" },
-  { name: "Shorebird",          logo: "shorebird.png",          website: "https://shorebird.dev/" },
   { name: "Invertase",          logo: "invertase.png",          website: "https://invertase.io/" },
   { name: "FlutterFlow",        logo: "flutter-flow.png",       website: "https://flutterflow.io/" },
   { name: "Very Good Ventures", logo: "very-good-ventures.png", website: "https://verygood.ventures/" },
@@ -32,18 +38,17 @@ const SPONSORS: Sponsor[] = [
 const GMAIL_DECK =
   "https://mail.google.com/mail/?view=cm&fs=1&to=contact.flutterbytes@gmail.com&su=Sponsorship%20Deck%20Request&body=Hello%20FlutterBytes%20team%2C%20I%27d%20love%20to%20sponsor%20the%20next%20edition.";
 
-function SponsorCard({ sponsor, fillIdx, myIdx, headline = false }: {
-  sponsor: Sponsor; fillIdx: number; myIdx: number; headline?: boolean;
-}) {
+function SponsorCard({ sponsor, fillIdx, myIdx }: { sponsor: Sponsor; fillIdx: number; myIdx: number }) {
   const [hover, setHover] = useState(false);
   const isActive = myIdx === fillIdx;
   const isFilled = myIdx < fillIdx;
   const revealed = isFilled || hover;
 
+  const large = !!sponsor.tier; // this year's sponsors
   const tierLabel = sponsor.tier ? `${sponsor.tier.charAt(0).toUpperCase()}${sponsor.tier.slice(1)} Sponsor` : null;
   const logoSrc = `/sponsors/${sponsor.logo}`;
-  const width = headline ? "w-56 sm:w-64" : "w-36 sm:w-40";
-  const height = headline ? 116 : 88;
+  const width = large ? "w-56 sm:w-64" : "w-36 sm:w-40";
+  const height = large ? 116 : 88;
 
   return (
     <a
@@ -85,33 +90,12 @@ function SponsorCard({ sponsor, fillIdx, myIdx, headline = false }: {
           />
         </div>
       </div>
-      {/* Tier label (only the headline sponsor has one) */}
-      <span
-        className={`${headline ? "text-xs" : "text-[9px]"} font-semibold uppercase tracking-wide h-4 leading-4`}
-        style={{ color: headline ? "#E5C07B" : undefined }}
-      >
-        {tierLabel}
-      </span>
-    </a>
-  );
-}
-
-function YourBrandCard() {
-  return (
-    <a href="/sponsors" className="flex flex-col items-center gap-2 transition-transform hover:-translate-y-1">
-      <motion.div
-        className="w-36 sm:w-40 rounded-full flex flex-col items-center justify-center gap-0.5"
-        style={{ height: 88, border: "1.5px dashed rgba(42,157,244,0.4)" }}
-        animate={{
-          borderColor: ["rgba(42,157,244,0.2)", "rgba(42,157,244,0.7)", "rgba(42,157,244,0.2)"],
-          boxShadow: ["0 0 0 rgba(42,157,244,0)", "0 0 16px rgba(42,157,244,0.3)", "0 0 0 rgba(42,157,244,0)"],
-        }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <span className="text-fbc-blue text-xl leading-none">+</span>
-        <span className="text-fbc-white text-xs font-semibold">Your Brand</span>
-      </motion.div>
-      <span className="text-fbc-muted/60 text-[9px] uppercase tracking-wide h-4 leading-4">Become a sponsor</span>
+      {/* Tier label (this year's sponsors only) */}
+      {sponsor.tier && (
+        <span className="text-xs font-semibold uppercase tracking-wide h-4 leading-4" style={{ color: TIER_COLOR[sponsor.tier] }}>
+          {tierLabel}
+        </span>
+      )}
     </a>
   );
 }
@@ -126,8 +110,8 @@ export default function SponsorsSection() {
     return () => clearInterval(id);
   }, []);
 
-  const headline = SPONSORS[0];
-  const rest = SPONSORS.slice(1);
+  const current = SPONSORS.filter((s) => s.tier);
+  const past = SPONSORS.filter((s) => !s.tier);
 
   return (
     <section id="sponsors" className="relative py-16 sm:py-24 md:py-32 sec-bg-2 overflow-hidden">
@@ -142,16 +126,28 @@ export default function SponsorsSection() {
           </p>
         </AnimateOnScroll>
 
-        {/* Headline sponsor alone, then everyone else */}
+        {/* This year's sponsors, large */}
         <AnimateOnScroll delay={0.1}>
-          <div className="flex flex-col items-center gap-y-10 mb-6">
-            <SponsorCard sponsor={headline} fillIdx={fillIdx} myIdx={0} headline />
-            <div className="flex flex-wrap justify-center gap-x-4 gap-y-6">
-              {rest.map((s, i) => (
-                <SponsorCard key={s.name} sponsor={s} fillIdx={fillIdx} myIdx={i + 1} />
-              ))}
-              <YourBrandCard />
-            </div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-fbc-blue text-center mb-6">2026 sponsors</p>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-8">
+            {current.map((s, i) => (
+              <SponsorCard key={s.name} sponsor={s} fillIdx={fillIdx} myIdx={i} />
+            ))}
+          </div>
+        </AnimateOnScroll>
+
+        {/* Past sponsors, smaller, under a divider */}
+        <AnimateOnScroll delay={0.15}>
+          <div className="flex items-center gap-4 mt-14 mb-8" aria-hidden="true">
+            <span className="h-px flex-1 bg-fbc-border/60" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-fbc-muted">Past sponsors</span>
+            <span className="h-px flex-1 bg-fbc-border/60" />
+          </div>
+          <h3 className="sr-only">Past sponsors</h3>
+          <div className="flex flex-wrap justify-center gap-x-4 gap-y-6 mb-6">
+            {past.map((s, i) => (
+              <SponsorCard key={s.name} sponsor={s} fillIdx={fillIdx} myIdx={current.length + i} />
+            ))}
           </div>
         </AnimateOnScroll>
 

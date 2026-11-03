@@ -21,7 +21,11 @@ interface Props {
 
 /* ── 2026 schedule ── */
 
-const HALL_COLOR: Record<Hall, string> = { Ruby: "#E11D48", Emerald: "#10B981", Sapphire: "#3B82F6" };
+const HALL_COLOR: Record<Hall, string> = {
+  Ruby: "#E11D48",
+  Sapphire: "#2563EB",
+  Opal: "linear-gradient(135deg, #A5F3FC, #F9A8D4, #C4B5FD)",
+};
 
 const KIND_STYLE: Record<TalkKind, string> = {
   Keynote: "text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/30",
