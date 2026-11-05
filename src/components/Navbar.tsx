@@ -10,6 +10,7 @@ import { HACKATHON_CLOSES } from "@/data/hackathon";
 const navLinks = [
   { label: "Be a sponsor", href: "/#sponsors" },
   { label: "Event Agenda", href: "/agenda" },
+  { label: "Get your DP", href: "/dp" },
   { label: "Speakers", href: "/speakers" },
   { label: "Hackathon", href: "/hackathon" },
   { label: "About us", href: "/about" },

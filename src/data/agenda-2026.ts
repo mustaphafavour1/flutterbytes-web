@@ -46,7 +46,7 @@ export const AGENDA_2026: AgendaDay[] = [
     id: "fri",
     date: "2026-11-06",
     label: "Friday, Nov 6",
-    halls: ["Ruby", "Sapphire"],
+    halls: ["Opal", "Sapphire"],
     chapters: [
       { title: "Kick-off", from: "08:30" },
       { title: "Deep dives", from: "10:45" },
@@ -57,37 +57,37 @@ export const AGENDA_2026: AgendaDay[] = [
       { type: "plenary", start: "08:30", end: "09:00", kind: "registration", title: "Registration" },
       { type: "plenary", start: "09:00", end: "09:10", kind: "opening", title: "Opening & welcome" },
       { type: "talks", start: "09:15", end: "09:30", talks: [
-        t("Lightning talk", "Ruby", "Using Trigonometry, Randomness & Math in Advanced Flutter Animations", ["Olumide Olubosede"]),
+        t("Lightning talk", "Opal", "Using Trigonometry, Randomness & Math in Advanced Flutter Animations", ["Olumide Olubosede"]),
       ] },
-      { type: "talks", start: "09:35", end: "10:05", talks: [t("Keynote", "Ruby", undefined, ["David Adegoke"])] },
+      { type: "talks", start: "09:35", end: "10:05", talks: [t("Keynote", "Opal", undefined, ["David Adegoke"])] },
       { type: "talks", start: "10:10", end: "10:25", talks: [
-        t("Lightning talk", "Ruby", "The Invisible Features: Building Trust & Security into Flutter Apps", ["Oladapo Olatubosun"]),
+        t("Lightning talk", "Opal", "The Invisible Features: Building Trust & Security into Flutter Apps", ["Oladapo Olatubosun"]),
       ] },
       { type: "plenary", start: "10:25", end: "10:35", kind: "games", title: "Games" },
       { type: "talks", start: "10:45", end: "11:30", talks: [
-        t("Workshop", "Ruby", "One Language, Full Stack: Agentive Flutter UI with genui_catalog + Serverpod", ["Omar Farouk"]),
+        t("Workshop", "Opal", "One Language, Full Stack: Agentive Flutter UI with genui_catalog + Serverpod", ["Omar Farouk"]),
         t("Workshop", "Sapphire", "Building Your First AI-Powered Solution", ["Mary Olasupo"]),
       ] },
       { type: "talks", start: "11:40", end: "12:05", talks: [
-        t("Session", "Ruby", "Designing Flutter Apps for Distributed Systems", ["Nikki Eke"]),
+        t("Session", "Opal", "Designing Flutter Apps for Distributed Systems", ["Nikki Eke"]),
         t("Session", "Sapphire", "Your Flutter App Is Only Half the Product: AI Backends That Scale", ["Ifeoluwa Obayemi"]),
       ] },
       { type: "talks", start: "12:15", end: "13:10", talks: [
-        t("Session", "Ruby", "Release with Confidence: AI-Assisted Releases with CodeRabbit & Codemagic", ["Ibrahim Sakariyah", "Kudus Rufai"], "12:15", "12:40"),
-        t("Session", "Ruby", "The One-Man StartUp: Building Systems to Grow an Idea with AI", ["Favour Mustapha"], "12:45", "13:10"),
+        t("Session", "Opal", "Release with Confidence: AI-Assisted Releases with CodeRabbit & Codemagic", ["Ibrahim Sakariyah", "Kudus Rufai"], "12:15", "12:40"),
+        t("Session", "Opal", "The One-Man StartUp: Building Systems to Grow an Idea with AI", ["Favour Mustapha"], "12:45", "13:10"),
         t("Workshop", "Sapphire", "Design Systems in the Age of AI Agents", ["Oluwaseun Odunlade"], "12:15", "13:00"),
       ] },
       { type: "plenary", start: "13:10", end: "13:20", kind: "break", title: "Coffee break" },
       { type: "talks", start: "13:20", end: "13:45", talks: [
-        t("Session", "Ruby", "My Windows App Can Think, Hear and See", ["Daniel Oluremi"]),
+        t("Session", "Opal", "My Windows App Can Think, Hear and See", ["Daniel Oluremi"]),
         t("Session", "Sapphire", "Beyond Beautiful UIs: Building the Next Generation of Flutter Applications with Emerging Tech", ["Victor Mba"]),
       ] },
       { type: "talks", start: "13:55", end: "14:20", talks: [
-        t("Session", "Ruby", "Routes as Values: Navigation as Typed State", ["Samuel Abada"]),
+        t("Session", "Opal", "Routes as Values: Navigation as Typed State", ["Samuel Abada"]),
         t("Session", "Sapphire", "Offline-First Flutter: Building Apps That Keep Working Without the Internet", ["Christian Emeka"]),
       ] },
       { type: "talks", start: "14:30", end: "14:55", talks: [
-        t("Session", "Ruby", "Building Interactive CLI Apps with Dart", ["Lucky Ebere"]),
+        t("Session", "Opal", "Building Interactive CLI Apps with Dart", ["Lucky Ebere"]),
         t("Session", "Sapphire", "The Aristocracy of Technical Debt", ["Olaniyan Wisdom"]),
       ] },
       { type: "plenary", start: "14:55", end: "15:10", kind: "break", title: "Afternoon break" },

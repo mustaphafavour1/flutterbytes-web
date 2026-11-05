@@ -39,6 +39,7 @@ const linkCols = [
     heading: "Participate",
     links: [
       { label: "Get tickets", href: "https://www.harpen.in/flutterbytes-conference-2026" },
+      { label: "Get your DP", href: "/dp" },
       { label: "Apply to volunteer", href: "/apply-volunteer" },
       { label: "Product showcase", href: "/product-showcase" },
       { label: "FlutterBytes Hackathon", href: "/hackathon" },
