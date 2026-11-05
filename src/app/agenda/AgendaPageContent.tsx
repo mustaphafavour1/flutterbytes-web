@@ -27,6 +27,7 @@ type HallFilter = Hall | "all";
 /** Gem colours for the halls (Opal is iridescent). */
 const HALL_SWATCH: Record<Hall, string> = {
   Ruby: "#E11D48",
+  Emerald: "#10B981",
   Sapphire: "#2563EB",
   Opal: "linear-gradient(135deg, #A5F3FC, #F9A8D4, #C4B5FD)",
 };
@@ -65,7 +66,9 @@ function chapterSummary(items: AgendaItem[], hall: HallFilter) {
   const talks = items.flatMap((i) =>
     i.type !== "talks" ? [] : hall === "all" || i.talks.length === 1 ? i.talks : i.talks.filter((x) => x.hall === hall)
   );
-  if (!talks.length) return items.map((i) => (i.type === "plenary" ? i.title : "")).filter(Boolean).join(" · ");
+  if (!talks.length) {
+    return items.map((i) => (i.type !== "plenary" ? "" : i.kind === "panel" ? "Panel session" : i.title)).filter(Boolean).join(" · ");
+  }
   const kinds: TalkKind[] = ["Keynote", "Workshop", "Session", "Lightning talk"];
   return kinds
     .map((k) => [k, talks.filter((x) => x.kind === k).length] as const)
@@ -153,24 +156,47 @@ function KeynotePanel({ talk, photos }: { talk: Talk; photos: Photos }) {
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-amber-600 dark:text-amber-400">
             Keynote · {talk.hall} Hall
           </p>
-          <p className="font-gigasans font-bold text-xl sm:text-3xl leading-tight text-fbc-white mt-1">{name}</p>
-          {talk.title && <p className="text-sm text-fbc-muted mt-1">{talk.title}</p>}
+          {talk.title ? (
+            <>
+              <h3 className="font-gigasans font-bold text-xl sm:text-2xl leading-snug text-fbc-white mt-1">{talk.title}</h3>
+              <p className="font-semibold text-sm sm:text-base text-fbc-muted mt-1">{name}</p>
+            </>
+          ) : (
+            <p className="font-gigasans font-bold text-xl sm:text-3xl leading-tight text-fbc-white mt-1">{name}</p>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function PlenaryLine({ item }: { item: PlenaryItem }) {
+function PlenaryLine({ item, photos }: { item: PlenaryItem; photos: Photos }) {
   const Icon = PLENARY_ICON[item.kind];
+  const panel = item.kind === "panel";
+  const faces = [...(item.speakers ?? []), ...(item.moderator ? [item.moderator] : [])];
   return (
-    <div className="flex items-center gap-3 py-1">
+    <div className={`flex gap-3 py-1 ${panel ? "items-start" : "items-center"}`}>
       <span className="flex w-8 h-8 flex-shrink-0 items-center justify-center rounded-lg bg-fbc-blue/10 text-fbc-blue">
         <Icon size={15} />
       </span>
       <div className="min-w-0">
+        {panel && item.title !== "Panel session" && (
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-fbc-blue mb-0.5">Panel session</p>
+        )}
         <p className="font-gigasans font-semibold text-fbc-white leading-tight">{item.title}</p>
-        {item.speakers && <p className="text-xs text-fbc-muted mt-0.5">{item.speakers.join(" & ")}</p>}
+        {panel && faces.length > 0 ? (
+          <div className="flex items-center gap-2.5 mt-2">
+            <div className="flex -space-x-2">
+              {faces.map((n) => <Avatar key={n} name={n} photo={photos[n]} size={24} />)}
+            </div>
+            <div className="text-xs text-fbc-muted leading-snug">
+              {item.speakers && <p>Panelists: {andList(item.speakers)}</p>}
+              {item.moderator && <p>Moderator: {item.moderator}</p>}
+            </div>
+          </div>
+        ) : (
+          item.speakers && <p className="text-xs text-fbc-muted mt-0.5">{item.speakers.join(" & ")}</p>
+        )}
       </div>
       {item.href ? (
         <Link href={item.href} className="group ml-auto inline-flex items-center gap-1.5 text-xs font-semibold text-fbc-blue whitespace-nowrap">
@@ -205,7 +231,7 @@ function RailItem({ item, day, hall, photos, now }: { item: AgendaItem; day: Age
   let content: React.ReactNode;
   let gold = false;
   if (item.type === "plenary") {
-    content = <PlenaryLine item={item} />;
+    content = <PlenaryLine item={item} photos={photos} />;
   } else if (item.talks.length === 1 && item.talks[0].kind === "Keynote") {
     gold = true;
     content = <KeynotePanel talk={item.talks[0]} photos={photos} />;

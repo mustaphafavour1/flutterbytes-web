@@ -1,18 +1,18 @@
 import type { AgendaSession } from "@/data/fallback-agenda";
 
 /**
- * FlutterBytes 2026 agenda (from "FlutterBytes 2026 — Final Agenda").
+ * FlutterBytes 2026 agenda (from "FlutterBytes 2026 — Final Agenda", final version).
  * Times are 24h "HH:MM" in WAT (UTC+1). A `talks` slot puts each talk in its
  * hall; a talk only carries its own start/end when it differs from the slot.
  */
-export type Hall = "Ruby" | "Sapphire" | "Opal";
+export type Hall = "Ruby" | "Emerald" | "Sapphire" | "Opal";
 export type TalkKind = "Keynote" | "Lightning talk" | "Workshop" | "Session";
 export type PlenaryKind =
   | "registration" | "opening" | "games" | "break" | "sponsor" | "demo" | "panel" | "hackathon" | "closing";
 
 export interface Talk {
   kind: TalkKind;
-  title?: string; // keynotes have a speaker but no announced title
+  title?: string;
   speakers: string[];
   hall: Hall;
   start?: string;
@@ -20,7 +20,12 @@ export interface Talk {
 }
 
 export type AgendaItem =
-  | { type: "plenary"; start: string; end: string; kind: PlenaryKind; title: string; speakers?: string[]; href?: string }
+  | {
+      type: "plenary"; start: string; end: string; kind: PlenaryKind; title: string;
+      speakers?: string[]; // panelists for a panel
+      moderator?: string;
+      href?: string;
+    }
   | { type: "talks"; start: string; end: string; talks: Talk[] };
 
 /** A named stretch of the day; holds every item starting at or after `from` until the next chapter. */
@@ -46,54 +51,58 @@ export const AGENDA_2026: AgendaDay[] = [
     id: "fri",
     date: "2026-11-06",
     label: "Friday, Nov 6",
-    halls: ["Opal", "Sapphire"],
+    halls: ["Emerald", "Sapphire"],
     chapters: [
       { title: "Kick-off", from: "08:30" },
       { title: "Deep dives", from: "10:45" },
-      { title: "Afternoon tracks", from: "13:20" },
-      { title: "Wrap-up", from: "15:10" },
+      { title: "Afternoon tracks", from: "12:50" },
+      { title: "Wrap-up", from: "14:40" },
     ],
     items: [
       { type: "plenary", start: "08:30", end: "09:00", kind: "registration", title: "Registration" },
       { type: "plenary", start: "09:00", end: "09:10", kind: "opening", title: "Opening & welcome" },
       { type: "talks", start: "09:15", end: "09:30", talks: [
-        t("Lightning talk", "Opal", "Using Trigonometry, Randomness & Math in Advanced Flutter Animations", ["Olumide Olubosede"]),
+        t("Lightning talk", "Emerald", "Using Trigonometry, Randomness & Math in Advanced Flutter Animations", ["Olumide Olubosede"]),
       ] },
-      { type: "talks", start: "09:35", end: "10:05", talks: [t("Keynote", "Opal", undefined, ["David Adegoke"])] },
+      { type: "talks", start: "09:35", end: "10:05", talks: [
+        t("Keynote", "Emerald", "The AI-Ready Flutter Engineer: Building for What's Next", ["David Adegoke"]),
+      ] },
       { type: "talks", start: "10:10", end: "10:25", talks: [
-        t("Lightning talk", "Opal", "The Invisible Features: Building Trust & Security into Flutter Apps", ["Oladapo Olatubosun"]),
+        t("Lightning talk", "Emerald", "The Invisible Features: Building Trust & Security into Flutter Apps", ["Oladapo Olatubosun"]),
       ] },
       { type: "plenary", start: "10:25", end: "10:35", kind: "games", title: "Games" },
       { type: "talks", start: "10:45", end: "11:30", talks: [
-        t("Workshop", "Opal", "One Language, Full Stack: Agentive Flutter UI with genui_catalog + Serverpod", ["Omar Farouk"]),
+        t("Workshop", "Emerald", "One Language, Full Stack: Agentive Flutter UI with genui_catalog + Serverpod", ["Omar Farouk"]),
         t("Workshop", "Sapphire", "Building Your First AI-Powered Solution", ["Mary Olasupo"]),
       ] },
       { type: "talks", start: "11:40", end: "12:05", talks: [
-        t("Session", "Opal", "Designing Flutter Apps for Distributed Systems", ["Nikki Eke"]),
+        t("Session", "Emerald", "Designing Flutter Apps for Distributed Systems", ["Nikki Eke"]),
         t("Session", "Sapphire", "Your Flutter App Is Only Half the Product: AI Backends That Scale", ["Ifeoluwa Obayemi"]),
       ] },
-      { type: "talks", start: "12:15", end: "13:10", talks: [
-        t("Session", "Opal", "Release with Confidence: AI-Assisted Releases with CodeRabbit & Codemagic", ["Ibrahim Sakariyah", "Kudus Rufai"], "12:15", "12:40"),
-        t("Session", "Opal", "The One-Man StartUp: Building Systems to Grow an Idea with AI", ["Favour Mustapha"], "12:45", "13:10"),
-        t("Workshop", "Sapphire", "Design Systems in the Age of AI Agents", ["Oluwaseun Odunlade"], "12:15", "13:00"),
+      { type: "talks", start: "12:15", end: "12:40", talks: [
+        t("Session", "Emerald", "Release with Confidence: AI-Assisted Releases with CodeRabbit & Codemagic", ["Ibrahim Sakariyah", "Kudus Rufai"]),
+        t("Session", "Sapphire", "Design Systems in the Age of AI Agents", ["Oluwaseun Odunlade"]),
       ] },
-      { type: "plenary", start: "13:10", end: "13:20", kind: "break", title: "Coffee break" },
-      { type: "talks", start: "13:20", end: "13:45", talks: [
-        t("Session", "Opal", "My Windows App Can Think, Hear and See", ["Daniel Oluremi"]),
+      { type: "plenary", start: "12:40", end: "12:50", kind: "break", title: "Coffee break" },
+      { type: "talks", start: "12:50", end: "13:15", talks: [
+        t("Session", "Emerald", "My Windows App Can Think, Hear and See", ["Daniel Oluremi"]),
         t("Session", "Sapphire", "Beyond Beautiful UIs: Building the Next Generation of Flutter Applications with Emerging Tech", ["Victor Mba"]),
       ] },
-      { type: "talks", start: "13:55", end: "14:20", talks: [
-        t("Session", "Opal", "Routes as Values: Navigation as Typed State", ["Samuel Abada"]),
+      { type: "talks", start: "13:25", end: "13:50", talks: [
+        t("Session", "Emerald", "The One-Man StartUp: Building Systems to Grow an Idea with AI", ["Favour Mustapha"]),
         t("Session", "Sapphire", "Offline-First Flutter: Building Apps That Keep Working Without the Internet", ["Christian Emeka"]),
       ] },
-      { type: "talks", start: "14:30", end: "14:55", talks: [
-        t("Session", "Opal", "Building Interactive CLI Apps with Dart", ["Lucky Ebere"]),
+      { type: "talks", start: "14:00", end: "14:25", talks: [
+        t("Session", "Emerald", "Building Interactive CLI Apps with Dart", ["Lucky Ebere"]),
         t("Session", "Sapphire", "The Aristocracy of Technical Debt", ["Olaniyan Wisdom"]),
       ] },
-      { type: "plenary", start: "14:55", end: "15:10", kind: "break", title: "Afternoon break" },
-      { type: "plenary", start: "15:10", end: "15:20", kind: "sponsor", title: "Sponsor session", speakers: ["Samuel Adekunle"] },
-      { type: "plenary", start: "15:25", end: "15:55", kind: "panel", title: "Panel session" },
-      { type: "plenary", start: "15:55", end: "16:00", kind: "closing", title: "Gift presentation & vote of thanks" },
+      { type: "plenary", start: "14:25", end: "14:40", kind: "break", title: "Lunch break" },
+      { type: "plenary", start: "14:40", end: "14:50", kind: "sponsor", title: "Sponsor session", speakers: ["Samuel Adekunle"] },
+      {
+        type: "plenary", start: "14:55", end: "15:25", kind: "panel", title: "Panel session",
+        speakers: ["Nikki Eke", "Jesse Osile", "Samuel Adekunle"], moderator: "Iyinoluwa Ogundairo",
+      },
+      { type: "plenary", start: "15:25", end: "15:30", kind: "closing", title: "Gift presentation & vote of thanks" },
     ],
   },
   {
@@ -113,7 +122,9 @@ export const AGENDA_2026: AgendaDay[] = [
       { type: "talks", start: "09:15", end: "09:30", talks: [
         t("Lightning talk", "Ruby", "Can We Measure Flutter Performance Like Test Coverage?", ["Michael Ogundipe"]),
       ] },
-      { type: "talks", start: "09:35", end: "10:05", talks: [t("Keynote", "Ruby", undefined, ["Sodiq Akinjobi"])] },
+      { type: "talks", start: "09:35", end: "10:05", talks: [
+        t("Keynote", "Ruby", "Becoming A Flutter AI Engineer", ["Sodiq Akinjobi"]),
+      ] },
       { type: "talks", start: "10:10", end: "10:25", talks: [
         t("Lightning talk", "Ruby", "Beyond the Office: How to Land and Keep Your Remote Job", ["David Micah-Daniels"]),
       ] },
@@ -133,7 +144,7 @@ export const AGENDA_2026: AgendaDay[] = [
       { type: "talks", start: "12:45", end: "13:10", talks: [
         t("Session", "Ruby", "Giving Your Coding Agent the Full Stack", ["Jamiu Okanlawon"]),
         t("Session", "Sapphire", "Beyond 2D: Building 3D Apps and Games with Just Flutter", ["Olanrewaju Taiwo"]),
-        t("Session", "Opal", "Shaping the Impossible: Production-Ready CustomPainter Techniques", ["Mrinal Jain"]),
+        t("Session", "Opal", "Routes as Values: Navigation as Typed State", ["Samuel Abada"]),
       ] },
       { type: "plenary", start: "13:10", end: "13:20", kind: "break", title: "Coffee break" },
       { type: "talks", start: "13:20", end: "13:45", talks: [
@@ -149,9 +160,13 @@ export const AGENDA_2026: AgendaDay[] = [
       { type: "talks", start: "14:30", end: "14:55", talks: [
         t("Session", "Ruby", "Beyond Chatbots: Building Interactive AI Experiences in Flutter", ["Mayowa Olutuyo"]),
         t("Session", "Sapphire", "Spec-Driven Development: Using AI Agents to Build Flutter Apps from Requirements to Code", ["Emmanuel Akinfulubi"]),
+        t("Session", "Opal", "Do We Still Need to Write Code as Mobile Engineers?", ["Ayotomide Babalola"]),
       ] },
-      { type: "plenary", start: "14:55", end: "15:10", kind: "break", title: "Afternoon break" },
-      { type: "plenary", start: "15:10", end: "15:40", kind: "panel", title: "Panel session" },
+      { type: "plenary", start: "14:55", end: "15:10", kind: "break", title: "Lunch break" },
+      {
+        type: "plenary", start: "15:10", end: "15:40", kind: "panel", title: "Shipping Flutter AI Apps: From Cool Demo to Real Product",
+        speakers: ["Sebastine Odeh", "Ayodeji Michael Ogundairo", "Victory Abiodun-Omoniyi"], moderator: "Emmanuel Aliyu",
+      },
       { type: "plenary", start: "15:45", end: "16:25", kind: "hackathon", title: "Hackathon presentation", href: "/hackathon" },
       { type: "plenary", start: "16:25", end: "16:30", kind: "closing", title: "Gift presentation & vote of thanks" },
     ],
@@ -194,7 +209,9 @@ export const allTalks = (day: AgendaDay) =>
 /** Speakers named in the agenda (talks and plenary items), in order of appearance. */
 export const agendaSpeakerNames = () =>
   Array.from(new Set(AGENDA_2026.flatMap((day) =>
-    day.items.flatMap((item) => (item.type === "talks" ? item.talks.flatMap((x) => x.speakers) : item.speakers ?? []))
+    day.items.flatMap((item) =>
+      item.type === "talks" ? item.talks.flatMap((x) => x.speakers) : [...(item.speakers ?? []), ...(item.moderator ? [item.moderator] : [])]
+    )
   )));
 
 export function dayStats(day: AgendaDay) {
