@@ -129,7 +129,7 @@ export const AGENDA_2026: AgendaDay[] = [
         t("Lightning talk", "Ruby", "Beyond the Office: How to Land and Keep Your Remote Job", ["David Micah-Daniels"]),
       ] },
       { type: "plenary", start: "10:30", end: "10:40", kind: "sponsor", title: "Sponsor session", speakers: ["Samuel Adekunle"] },
-      { type: "plenary", start: "10:45", end: "10:55", kind: "demo", title: "Product demo" },
+      { type: "plenary", start: "10:45", end: "10:55", kind: "demo", title: "Product demo: Yewo", speakers: ["Rebecca Saka"] },
       { type: "plenary", start: "10:55", end: "11:05", kind: "games", title: "Games" },
       { type: "talks", start: "11:15", end: "12:00", talks: [
         t("Workshop", "Ruby", "Bring AI Home: Privacy, Ownership & the Local-First Future of Flutter", ["Daniel Modupe Asaboro"]),
