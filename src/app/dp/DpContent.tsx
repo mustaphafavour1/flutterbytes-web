@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Script from "next/script";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ImagePlus, ShieldCheck, Sparkles, type LucideIcon } from "lucide-react";
@@ -30,10 +30,76 @@ const OPTIONS: Record<Mode, { slug: string; label: string; tagline: string; icon
       "Pick a style: Midnight Grid or Code Rain",
       "Create your image, then download or share it",
     ],
-    note: "Up to 3 AI images per person. Your photo is only used to make your image and is deleted right after.",
+    note: "Your photo is only used to make your image and is deleted right after.",
   },
 };
 const MODES = Object.keys(OPTIONS) as Mode[];
+
+/** Same height the Stampdx script gives its iframe. */
+const MAKER_HEIGHT = "max(560px, min(760px, 92vh))";
+
+function MakerSpinner({ fallbackHref }: { fallbackHref?: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.35 }}
+      className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4"
+      style={{ background: "#0A0E1B" }}
+      role="status"
+    >
+      <span className="h-11 w-11 rounded-full border-[3px] border-white/10 border-t-fbc-blue border-r-fbc-sky/60 animate-spin" aria-hidden="true" />
+      <span className="text-xs text-white/60">Loading your DP maker…</span>
+      {fallbackHref && (
+        <p className="text-xs text-white/60 text-center px-8">
+          Taking longer than usual.{" "}
+          <a href={fallbackHref} target="_blank" rel="noopener noreferrer" className="text-fbc-sky underline underline-offset-2">
+            Open the maker in a new tab ↗
+          </a>
+        </p>
+      )}
+    </motion.div>
+  );
+}
+
+/**
+ * One Stampdx maker. The embed script adds its iframe inside the data-stampdx
+ * div; a spinner covers the frame until that iframe has loaded.
+ */
+function Maker({ mode, active }: { mode: Mode; active: boolean }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [stalled, setStalled] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    // "load" doesn't bubble, but a capturing listener on the wrapper still sees the iframe's.
+    const onLoad = (e: Event) => {
+      if ((e.target as HTMLElement).tagName === "IFRAME") setLoaded(true);
+    };
+    el.addEventListener("load", onLoad, true);
+    return () => el.removeEventListener("load", onLoad, true);
+  }, []);
+
+  // Still nothing after 15s on screen (e.g. blocked script): offer the maker in a new tab.
+  useEffect(() => {
+    if (!active || loaded) return;
+    const id = setTimeout(() => setStalled(true), 15_000);
+    return () => clearTimeout(id);
+  }, [active, loaded]);
+
+  return (
+    <div className={active ? "relative" : "hidden"} style={{ minHeight: MAKER_HEIGHT }}>
+      <div ref={ref} data-stampdx={OPTIONS[mode].slug} data-title={`FlutterBytes 2026 ${OPTIONS[mode].label} maker`} />
+      <AnimatePresence>
+        {!loaded && (
+          <MakerSpinner key="spinner" fallbackHref={stalled ? `https://www.stampdx.com/embed/${OPTIONS[mode].slug}` : undefined} />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function DpContent() {
   const [mode, setMode] = useState<Mode>("legacy");
@@ -118,13 +184,11 @@ export default function DpContent() {
           <div className="grad-ring relative rounded-[36px] p-2.5 sm:p-3 shadow-2xl" style={GRADIENT_RING}>
             <div className="relative rounded-[24px] overflow-hidden" style={{ background: "#0A0E1B" }}>
               {ready ? (
-                MODES.map((m) => (
-                  <div key={m} className={m === mode ? "" : "hidden"}>
-                    <div data-stampdx={OPTIONS[m].slug} data-title={`FlutterBytes 2026 ${OPTIONS[m].label} maker`} />
-                  </div>
-                ))
+                MODES.map((m) => <Maker key={m} mode={m} active={m === mode} />)
               ) : (
-                <div className="animate-pulse" style={{ height: "min(760px, 92vh)", minHeight: 560 }} />
+                <div className="relative" style={{ height: MAKER_HEIGHT }}>
+                  <MakerSpinner />
+                </div>
               )}
             </div>
           </div>
