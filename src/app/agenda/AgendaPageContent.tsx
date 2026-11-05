@@ -195,7 +195,14 @@ function PlenaryLine({ item, photos }: { item: PlenaryItem; photos: Photos }) {
             </div>
           </div>
         ) : (
-          item.speakers && <p className="text-xs text-fbc-muted mt-0.5">{item.speakers.join(" & ")}</p>
+          item.speakers && (
+            <div className="flex items-center gap-2 mt-1">
+              <div className="flex -space-x-2">
+                {item.speakers.map((n) => <Avatar key={n} name={n} photo={photos[n]} size={20} />)}
+              </div>
+              <p className="text-xs text-fbc-muted">{item.speakers.join(" & ")}</p>
+            </div>
+          )
         )}
       </div>
       {item.href ? (
